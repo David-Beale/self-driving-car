@@ -1,5 +1,5 @@
 import { formattedTiles } from "../data/formattedMapData";
-import { startingRoadWorks } from "../roadWorks/startingRoadWorks";
+import { startingRoadWorks } from "./startingRoadWorks";
 import Graph from "./helpers/graph.js";
 import Vertex from "./helpers/vertex.js";
 export const map = new Graph({ directed: true });

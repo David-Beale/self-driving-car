@@ -38,6 +38,7 @@ const Controls = (props, ref) => {
       interpolate(parameter, progress)
     );
   }
+
   useFrame(() => {
     if (animate.current) {
       if (linearProgress.current < 1) {
@@ -66,6 +67,10 @@ const Controls = (props, ref) => {
     () => void controls.current.addEventListener("change", invalidate),
     [invalidate]
   );
+  useEffect(() => {
+    camera.position.set(1500, -1500, 2000);
+    controls.current.target.set(1500, -1500, 0);
+  }, []);
 
   // run the layout, animating on change
   useAnimatedMovement({

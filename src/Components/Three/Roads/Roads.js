@@ -11,8 +11,8 @@ export default function Roads() {
         if (!type) continue;
         array.push({
           type: textures[type],
-          x: j * 100 - 1500,
-          y: -i * 100 + 1500,
+          x: j * 100,
+          y: -i * 100,
         });
       }
     }
