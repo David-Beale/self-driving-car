@@ -1,0 +1,33 @@
+const vertices = [
+  "67A",
+  "67B",
+  "67C",
+  "67D",
+  "73A",
+  "73B",
+  "73C",
+  "73D",
+  "79A",
+  "79B",
+  "79C",
+  "79D",
+  "89A",
+  "89B",
+  "89C",
+  "89D",
+  "106A",
+  "106B",
+  "106C",
+  "106D",
+  "113A",
+  "113B",
+  "113C",
+  "113D",
+  "120A",
+  "120B",
+  "120C",
+  "120D",
+];
+export const startingRoadWorks = (map) => {
+  vertices.forEach((vertexName) => (map.graphObj[vertexName].roadWorks = true));
+};

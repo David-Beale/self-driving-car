@@ -9,7 +9,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function Instructions() {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const onClose = () => {
     setOpen(false);
