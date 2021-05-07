@@ -10,6 +10,7 @@ import RoadWorks from "./RoadWorks/RoadWorks";
 import { map, verticesMap } from "./graph/graphSetup";
 
 import { ThreeContainer } from "./ThreeStyle";
+import TrafficLights from "./TrafficLights/TrafficLights";
 
 export default function Three() {
   const controlsRef = useRef();
@@ -36,6 +37,7 @@ export default function Three() {
           <RoadWorks map={map} />
         </Suspense>
         <Roads />
+        <TrafficLights verticesMap={verticesMap} enabled={true} />
         <ambientLight color="#ffffff" intensity={1} />
       </Canvas>
       <Loader />
