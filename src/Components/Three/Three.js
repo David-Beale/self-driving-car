@@ -1,4 +1,4 @@
-import React, { useRef, Suspense, useEffect } from "react";
+import React, { useRef, Suspense, useState } from "react";
 import { Canvas } from "react-three-fiber";
 import { Stats, Sphere, Environment, Loader, Sky } from "@react-three/drei";
 
@@ -15,6 +15,7 @@ import TrafficLights from "./TrafficLights/TrafficLights";
 
 export default function Three() {
   const controlsRef = useRef();
+  const [selectedVertex, setSelectedVertex] = useState(null);
 
   const move = () => {
     controlsRef.current?.moveCamera({ name: "start", easing: "slow" });
@@ -38,9 +39,12 @@ export default function Three() {
             </Sphere>
             <Ground />
             <RoadWorks map={map} />
-            <Roads />
+            <Roads
+              verticesMap={verticesMap}
+              setSelectedVertex={setSelectedVertex}
+            />
             <TrafficLights verticesMap={verticesMap} enabled={true} />
-            <Player />
+            <Player map={map} selectedVertex={selectedVertex} />
           </Suspense>
         </group>
         <Sky

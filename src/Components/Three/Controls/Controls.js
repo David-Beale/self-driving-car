@@ -70,7 +70,7 @@ const Controls = (props, ref) => {
   useEffect(() => {
     camera.position.set(0, 0, 1250);
     controls.current.target.set(0, 0, 0);
-  }, []);
+  }, [camera]);
 
   // run the layout, animating on change
   useAnimatedMovement({

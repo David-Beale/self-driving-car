@@ -14,7 +14,7 @@ export default function TrafficLights({ verticesMap, enabled }) {
       setColor2("green");
       trafficLights.forEach((tile) => {
         const { index, i, j, lightSet } = tile;
-        verticesMap[i][j][index] = lightSet === 2 ? "green" : false;
+        verticesMap[i][j][index].light = lightSet === 2 ? "green" : false;
       });
     } else if (counter === 180) {
       setColor1("yellow");
@@ -24,7 +24,7 @@ export default function TrafficLights({ verticesMap, enabled }) {
       setColor2("red");
       trafficLights.forEach((tile) => {
         const { index, i, j, lightSet } = tile;
-        verticesMap[i][j][index] = lightSet === 1 ? "green" : false;
+        verticesMap[i][j][index].light = lightSet === 1 ? "green" : false;
       });
     } else if (counter === 380) {
       setColor1("yellow");
@@ -46,7 +46,7 @@ export default function TrafficLights({ verticesMap, enabled }) {
         >
           <boxBufferGeometry attach="geometry" args={[50, 5, 5]} />
           <meshBasicMaterial
-            color={tile.lightSet === 2 ? color1 : color2}
+            color={tile.lightSet === 1 ? color1 : color2}
             attach="material"
           />
         </mesh>
