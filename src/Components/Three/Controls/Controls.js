@@ -68,8 +68,8 @@ const Controls = (props, ref) => {
     [invalidate]
   );
   useEffect(() => {
-    camera.position.set(1500, -1500, 2000);
-    controls.current.target.set(1500, -1500, 0);
+    camera.position.set(0, 0, 1250);
+    controls.current.target.set(0, 0, 0);
   }, []);
 
   // run the layout, animating on change

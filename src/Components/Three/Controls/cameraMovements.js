@@ -1,12 +1,12 @@
 import { useRef, useEffect } from "react";
 
 function start(parameters) {
-  parameters.position.targetX = 1500;
-  parameters.position.targetY = -1500;
-  parameters.position.targetZ = 2000;
+  parameters.position.targetX = 0;
+  parameters.position.targetY = 0;
+  parameters.position.targetZ = 1250;
 
-  parameters.target.targetX = 1500;
-  parameters.target.targetY = -1500;
+  parameters.target.targetX = 0;
+  parameters.target.targetY = 0;
   parameters.target.targetZ = 0;
 
   parameters.up.targetX = 0;

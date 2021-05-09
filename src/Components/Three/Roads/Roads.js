@@ -26,6 +26,7 @@ export default function Roads() {
           frustumCulled={false}
           position={[tile.x, tile.y, 11]}
           renderOrder={2}
+          onClick={() => console.log(tile)}
         >
           <boxBufferGeometry attach="geometry" args={[100, 100, 20]} />
           <meshStandardMaterial
