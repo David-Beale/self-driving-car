@@ -60,6 +60,7 @@ export default class Player {
   secondClick(vertex) {
     const startVertex = this.nextVertex?.value || this.currentVertex.value;
     const { path } = this.runPathfinding(startVertex, vertex.value);
+    this.direction2 = null;
     if (this.compare) return this.comparePaths;
     this.pathArray = path;
     this.pathIndex = this.nextVertex ? -1 : 0;
@@ -309,6 +310,7 @@ export default class Player {
       movement = this.movement2;
     }
     if (movement === "straight") return;
+
     if (
       (direction === 90 && movement === "right") ||
       (direction === 0 && movement === "left")
@@ -317,18 +319,19 @@ export default class Player {
     } else if (
       (direction === 180 && movement === "right") ||
       (direction === 90 && movement === "left")
-    )
+    ) {
       return [vertex.x, vertex.y + 50];
-    else if (
+    } else if (
       (direction === 270 && movement === "right") ||
       (direction === 180 && movement === "left")
-    )
+    ) {
       return [vertex.x, vertex.y];
-    else if (
+    } else if (
       (direction === 0 && movement === "right") ||
       (direction === 270 && movement === "left")
-    )
+    ) {
       return [vertex.x + 50, vertex.y];
+    }
   }
   getTarget() {
     switch (this.movement2) {
@@ -390,7 +393,6 @@ export default class Player {
   rightTurn(startX, startY, initialAngle) {
     const angle = initialAngle + this.counter * (45 / this.stepCount);
     this.carAngle = angle + 90;
-
     const xPos = startX - RADIUS * Math.cos((Math.PI / 180) * angle);
     const yPos = startY - RADIUS * Math.sin((Math.PI / 180) * angle);
 

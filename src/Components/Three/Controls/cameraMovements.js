@@ -52,7 +52,6 @@ export function useAnimatedMovement({ parameters, movement, animate }) {
   const prevMovement = useRef(movement);
   useEffect(() => {
     if (movement && movement !== prevMovement.current) {
-      console.log("move");
       updateCoords({
         parameters,
         movement,

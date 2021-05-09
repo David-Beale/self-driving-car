@@ -61,28 +61,8 @@ export default function Roads({ verticesMap, setSelectedVertex }) {
           onPointerDown={mouseDown}
           onPointerUp={(e) => mouseUp(e, tile)}
         >
-          <boxBufferGeometry attach="geometry" args={[100, 100, 20]} />
-          <meshStandardMaterial
-            color="rgb(73, 73, 73)"
-            attachArray="material"
-          />
-          <meshStandardMaterial
-            color="rgb(73, 73, 73)"
-            attachArray="material"
-          />
-          <meshStandardMaterial
-            color="rgb(73, 73, 73)"
-            attachArray="material"
-          />
-          <meshStandardMaterial
-            color="rgb(73, 73, 73)"
-            attachArray="material"
-          />
-          <meshStandardMaterial map={tile.type} attachArray="material" />
-          <meshStandardMaterial
-            color="rgb(73, 73, 73)"
-            attachArray="material"
-          />
+          <planeBufferGeometry attach="geometry" args={[100, 100, 20]} />
+          <meshStandardMaterial map={tile.type} attach="material" />
         </mesh>
       ))}
     </>

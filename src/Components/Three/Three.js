@@ -43,7 +43,7 @@ export default function Three() {
               verticesMap={verticesMap}
               setSelectedVertex={setSelectedVertex}
             />
-            <TrafficLights verticesMap={verticesMap} enabled={true} />
+            <TrafficLights verticesMap={verticesMap} enabled={false} />
             <Player map={map} selectedVertex={selectedVertex} />
           </Suspense>
         </group>

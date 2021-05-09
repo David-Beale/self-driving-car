@@ -29,7 +29,7 @@ export default function Player({ map, selectedVertex }) {
     <primitive
       ref={playerRef}
       object={gltf.scene.children[0]}
-      position={[75, -75, 21]}
+      position={[75, -75, 11]}
       scale={selectedVertex || newPlayer.currentVertex ? 0.05 : 0}
       rotation={[0, 0, Math.PI / 2]}
     />
