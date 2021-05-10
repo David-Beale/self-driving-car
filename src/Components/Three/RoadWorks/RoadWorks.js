@@ -1,4 +1,3 @@
-import * as THREE from "three";
 import { useMemo } from "react";
 import { useTexture } from "@react-three/drei";
 import roadWorksImage from "../../../Assets/roadworks.png";
@@ -28,7 +27,7 @@ export default function RoadWorks({ map }) {
         <mesh
           key={tile.key}
           frustumCulled={false}
-          position={[tile.x, tile.y, 25]}
+          position={[tile.x, tile.y, 13]}
           renderOrder={4}
         >
           <planeBufferGeometry attach="geometry" args={[50, 50]} />
