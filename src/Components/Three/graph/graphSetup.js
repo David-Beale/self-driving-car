@@ -129,3 +129,5 @@ for (let i = 0; i < formattedTiles.length; i++) {
 }
 
 startingRoadWorks(map);
+
+map.array = Object.keys(map.graphObj);

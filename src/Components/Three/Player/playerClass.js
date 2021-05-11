@@ -34,6 +34,7 @@ export default class Player {
     } else if (this.pathArray) {
       this.calculateNextStep();
     }
+    if (this.currentVertex) this.currentVertex.internalCounter++;
   }
 
   addMap(map) {

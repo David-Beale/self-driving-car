@@ -50,7 +50,7 @@ export default function Player({ map, selectedVertex }) {
           transparent
           depthTest={false}
           lineWidth={3}
-          color={"blue"}
+          color={"lightblue"}
         />
       </mesh>
     </>

@@ -27,12 +27,13 @@ export default function RoadWorks({ map }) {
         <mesh
           key={tile.key}
           frustumCulled={false}
-          position={[tile.x, tile.y, 13]}
+          position={[tile.x, tile.y, 20]}
           renderOrder={4}
         >
           <planeBufferGeometry attach="geometry" args={[50, 50]} />
           <meshBasicMaterial
             transparent={true}
+            opacity={0.3}
             map={texture}
             attach="material"
           />

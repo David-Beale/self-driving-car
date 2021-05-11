@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { useTexture } from "@react-three/drei";
-import grass from "../../Assets/grass.jpg";
+import grass from "../../../Assets/grass.jpg";
 
 export default function Ground() {
   const texture = useTexture(grass);

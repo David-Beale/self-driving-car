@@ -3,7 +3,7 @@ import { Canvas } from "react-three-fiber";
 import { Stats, Sphere, Environment, Loader, Sky } from "@react-three/drei";
 
 import Controls from "./Controls/Controls";
-import Ground from "./Ground";
+import Ground from "./Ground/Ground";
 import Roads from "./Roads/Roads";
 import RoadWorks from "./RoadWorks/RoadWorks";
 import Player from "./Player/Player";
@@ -12,10 +12,16 @@ import { map, verticesMap } from "./graph/graphSetup";
 
 import { ThreeContainer } from "./ThreeStyle";
 import TrafficLights from "./TrafficLights/TrafficLights";
+import { useSelector } from "react-redux";
+import TrafficConditions from "./TrafficConditions/TrafficConditions";
 
 export default function Three() {
   const controlsRef = useRef();
   const [selectedVertex, setSelectedVertex] = useState(null);
+  const trafficLights = useSelector(({ settings }) => settings.trafficLights);
+  const trafficConditions = useSelector(
+    ({ settings }) => settings.trafficConditions
+  );
 
   const move = () => {
     controlsRef.current?.moveCamera({ name: "start", easing: "slow" });
@@ -28,7 +34,7 @@ export default function Three() {
         camera={{ far: 40000 }}
         invalidateFrameloop={true}
       >
-        <Stats className="stats" />
+        {/* <Stats className="stats" /> */}
         <ambientLight color="#ffffff" intensity={1} />
         <group position={[-1500, 1500, 0]}>
           <Controls ref={controlsRef} />
@@ -43,7 +49,8 @@ export default function Three() {
               verticesMap={verticesMap}
               setSelectedVertex={setSelectedVertex}
             />
-            <TrafficLights verticesMap={verticesMap} enabled={false} />
+            <TrafficLights verticesMap={verticesMap} enabled={trafficLights} />
+            <TrafficConditions map={map} enabled={trafficConditions} />
             <Player map={map} selectedVertex={selectedVertex} />
           </Suspense>
         </group>
