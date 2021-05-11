@@ -4,6 +4,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import * as meshline from "threejs-meshline";
 import PlayerPath from "./PlayerPath";
 import playerClass from "./playerClass";
+import ClickIndicator from "./ClickIndicator";
 
 extend(meshline);
 const newPlayer = new playerClass();
@@ -38,6 +39,7 @@ export default function Player({ map, selectedVertex }) {
         rotation={[0, 0, Math.PI / 2]}
       />
       <PlayerPath newPlayer={newPlayer} />
+      <ClickIndicator selectedVertex={selectedVertex} />
     </>
   );
 }

@@ -1,12 +1,7 @@
 import dijkstra from "../graph/helpers/dijkstra";
 import dijkstraTime from "../graph/helpers/dijkstra-time";
-import playerCarImg from "../../../Assets/player.png";
-import ClickIndicator from "./clickIndicator";
 import { getCurve } from "./ellipseCurve";
 const RADIUS = 25;
-const clickIndicator = new ClickIndicator(RADIUS);
-const playerCar = new Image();
-playerCar.src = playerCarImg;
 const COLORS = {
   distance: "rgb(58, 94, 211)",
   time: "yellow",
@@ -26,8 +21,6 @@ export default class Player {
     this.maxSpeed = 5;
   }
   run() {
-    clickIndicator.run();
-
     if (this.compare) {
       this.drawPath(this.comparePaths.time.path, 0, COLORS.time);
       this.drawPath(this.comparePaths.distance.path, 0, COLORS.distance);
