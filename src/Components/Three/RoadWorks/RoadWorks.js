@@ -7,8 +7,7 @@ export default function RoadWorks({ map }) {
 
   const roadWorksTiles = useMemo(() => {
     const array = [];
-    const arrayOfVertices = Object.keys(map.graphObj);
-    arrayOfVertices.forEach((vertexName) => {
+    map.array.forEach((vertexName) => {
       const vertex = map.graphObj[vertexName];
       if (vertex.roadWorks) {
         array.push({
@@ -33,7 +32,7 @@ export default function RoadWorks({ map }) {
           <planeBufferGeometry attach="geometry" args={[50, 50]} />
           <meshBasicMaterial
             transparent={true}
-            opacity={0.3}
+            opacity={0.5}
             map={texture}
             attach="material"
           />

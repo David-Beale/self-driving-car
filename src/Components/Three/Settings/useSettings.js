@@ -13,9 +13,6 @@ export const useSettings = () => {
   settingsRef.current.computerNumber = useSelector(
     ({ settings }) => settings.computerNumber
   );
-  settingsRef.current.collisionBoxes = useSelector(
-    ({ settings }) => settings.collisionBoxes
-  );
 
   return settingsRef;
 };

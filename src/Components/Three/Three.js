@@ -14,6 +14,7 @@ import { ThreeContainer } from "./ThreeStyle";
 import TrafficLights from "./TrafficLights/TrafficLights";
 import { useSelector } from "react-redux";
 import TrafficConditions from "./TrafficConditions/TrafficConditions";
+import CollisionBoxes from "./CollisionBoxes/CollisionBoxes";
 
 export default function Three() {
   const controlsRef = useRef();
@@ -22,6 +23,7 @@ export default function Three() {
   const trafficConditions = useSelector(
     ({ settings }) => settings.trafficConditions
   );
+  const collisionBoxes = useSelector(({ settings }) => settings.collisionBoxes);
 
   const move = () => {
     controlsRef.current?.moveCamera({ name: "start", easing: "slow" });
@@ -51,6 +53,7 @@ export default function Three() {
             />
             <TrafficLights verticesMap={verticesMap} enabled={trafficLights} />
             <TrafficConditions map={map} enabled={trafficConditions} />
+            <CollisionBoxes map={map} enabled={collisionBoxes} />
             <Player map={map} selectedVertex={selectedVertex} />
           </Suspense>
         </group>
