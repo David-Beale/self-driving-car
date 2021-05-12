@@ -90,6 +90,7 @@ const Controls = (props, ref) => {
 
   return (
     <trackballControls
+      enabled={!props.roadWorks}
       ref={controls}
       args={[camera, gl.domElement]}
       enableDamping

@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useTexture } from "@react-three/drei";
 import roadWorksImage from "../../../Assets/roadworks.png";
 
-export default function RoadWorks({ map }) {
+export default function RoadWorks({ map, updateRoadWorks }) {
   const texture = useTexture(roadWorksImage);
 
   const roadWorksTiles = useMemo(() => {
@@ -18,7 +18,8 @@ export default function RoadWorks({ map }) {
       }
     });
     return array;
-  }, [map]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, updateRoadWorks]);
 
   return (
     <>

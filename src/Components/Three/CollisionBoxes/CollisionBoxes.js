@@ -1,14 +1,5 @@
 import { useFrame } from "@react-three/fiber";
-import { useMemo, useState } from "react";
-
-const drawYellowCircle = (c, x, y, radius) => {
-  c.beginPath();
-  c.arc(x, y, radius, 0, Math.PI * 2, false);
-  c.fillStyle = "rgba(, 0.35)";
-  c.strokeStyle = "red";
-  c.stroke();
-  c.fill();
-};
+import { useState } from "react";
 
 export default function CollisionBoxes({ map, enabled }) {
   const [collisionBoxes, setCollisionBoxes] = useState([]);

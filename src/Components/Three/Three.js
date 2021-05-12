@@ -21,12 +21,17 @@ export default function Three() {
   const dispatch = useDispatch();
   const controlsRef = useRef();
   const [selectedVertex, setSelectedVertex] = useState(null);
+  const [updateRoadWorks, setUpdateRoadWorks] = useState(false);
   const trafficLights = useSelector(({ settings }) => settings.trafficLights);
   const trafficConditions = useSelector(
     ({ settings }) => settings.trafficConditions
   );
   const collisionBoxes = useSelector(({ settings }) => settings.collisionBoxes);
   const pathfindingMode = useSelector(({ mode }) => mode.mode);
+  const addRoadWorks = useSelector(({ roadWorks }) => roadWorks.addRoadWorks);
+  const removeRoadWorks = useSelector(
+    ({ roadWorks }) => roadWorks.removeRoadWorks
+  );
 
   const move = () => {
     controlsRef.current?.moveCamera({ name: "start", easing: "slow" });
@@ -37,7 +42,10 @@ export default function Three() {
   ]);
 
   return (
-    <ThreeContainer>
+    <ThreeContainer
+      addRoadWorks={addRoadWorks}
+      removeRoadWorks={removeRoadWorks}
+    >
       <Canvas
         colorManagement={false}
         camera={{ far: 40000 }}
@@ -46,17 +54,23 @@ export default function Three() {
         {/* <Stats className="stats" /> */}
         <ambientLight color="#ffffff" intensity={1} />
         <group position={[-1500, 1500, 0]}>
-          <Controls ref={controlsRef} />
+          <Controls
+            ref={controlsRef}
+            roadWorks={addRoadWorks || removeRoadWorks}
+          />
 
           <Suspense fallback={null}>
             <Sphere position={[0, 0, 50]} args={[50, 10, 10]} onClick={move}>
               <meshBasicMaterial attach="material" color="hotpink" />
             </Sphere>
             <Ground />
-            <RoadWorks map={map} />
+            <RoadWorks map={map} updateRoadWorks={updateRoadWorks} />
             <Roads
               verticesMap={verticesMap}
               setSelectedVertex={setSelectedVertex}
+              addRoadWorks={addRoadWorks}
+              removeRoadWorks={removeRoadWorks}
+              setUpdateRoadWorks={setUpdateRoadWorks}
             />
             <TrafficLights verticesMap={verticesMap} enabled={trafficLights} />
             <TrafficConditions map={map} enabled={trafficConditions} />

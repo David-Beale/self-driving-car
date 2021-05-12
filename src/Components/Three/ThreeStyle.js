@@ -8,4 +8,6 @@ export const ThreeContainer = styled.div`
   right: 0;
   bottom: 0;
   background-color: black;
+  cursor: ${(props) =>
+    props.addRoadWorks ? "crosshair" : props.removeRoadWorks ? "no-drop" : ""};
 `;
