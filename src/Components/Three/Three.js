@@ -54,7 +54,8 @@ export default function Three() {
         invalidateFrameloop={true}
       >
         {/* <Stats className="stats" /> */}
-        <ambientLight color="#ffffff" intensity={1} />
+        <ambientLight color="#ffffff" intensity={0.75} />
+        <directionalLight color="#ffffff" position={[1000, 0, 500]} />
         <group position={[-1500, 1500, 0]}>
           <Controls
             ref={controlsRef}

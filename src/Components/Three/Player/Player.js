@@ -13,7 +13,8 @@ export default function Player({
   pathfindingMode,
   dispatchStats,
 }) {
-  const gltf = useLoader(GLTFLoader, "./playerCar/scene.gltf");
+  const gltf = useLoader(GLTFLoader, "./playerCar3/scene.gltf");
+  console.log(gltf);
   const playerRef = useRef();
 
   useEffect(() => {
@@ -24,17 +25,17 @@ export default function Player({
     newPlayer.run();
     playerRef.current.position.x = newPlayer.currentX;
     playerRef.current.position.y = newPlayer.currentY;
-    playerRef.current.rotation.z = Math.PI / 2 + newPlayer.angle;
+    playerRef.current.rotation.y = Math.PI / 2 + newPlayer.angle;
   });
 
   return (
     <>
       <primitive
         ref={playerRef}
-        object={gltf.scene.children[0]}
+        object={gltf.scene}
         position={[75, -75, 11]}
-        scale={selectedVertex ? 0.05 : 0}
-        rotation={[0, 0, Math.PI / 2]}
+        scale={0.01}
+        rotation={[Math.PI / 2, Math.PI / 2, 0]}
       />
       <PlayerPath
         newPlayer={newPlayer}
