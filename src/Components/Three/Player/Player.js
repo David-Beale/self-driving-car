@@ -9,18 +9,18 @@ import ClickIndicator from "./ClickIndicator";
 extend(meshline);
 const newPlayer = new playerClass();
 
-export default function Player({ map, selectedVertex }) {
+export default function Player({
+  map,
+  selectedVertex,
+  pathfindingMode,
+  dispatchStats,
+}) {
   const gltf = useLoader(GLTFLoader, "./scene.gltf");
   const playerRef = useRef();
 
   useEffect(() => {
     newPlayer.addMap(map);
   }, [map]);
-
-  useEffect(() => {
-    if (!selectedVertex) return;
-    newPlayer.click(selectedVertex);
-  }, [selectedVertex]);
 
   useFrame(() => {
     newPlayer.run();
@@ -38,7 +38,12 @@ export default function Player({ map, selectedVertex }) {
         scale={selectedVertex ? 0.05 : 0}
         rotation={[0, 0, Math.PI / 2]}
       />
-      <PlayerPath newPlayer={newPlayer} />
+      <PlayerPath
+        newPlayer={newPlayer}
+        pathfindingMode={pathfindingMode}
+        selectedVertex={selectedVertex}
+        dispatchStats={dispatchStats}
+      />
       <ClickIndicator selectedVertex={selectedVertex} />
     </>
   );

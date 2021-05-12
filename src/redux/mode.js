@@ -20,7 +20,16 @@ const mode = createSlice({
       state.stats = false;
     },
     addStats(state, action) {
-      state.stats = action.payload;
+      state.stats = {
+        distance: {
+          distance: action.payload.distance.distance,
+          time: action.payload.distance.time,
+        },
+        time: {
+          distance: action.payload.time.distance,
+          time: action.payload.time.time,
+        },
+      };
     },
   },
 });

@@ -1,4 +1,4 @@
-import React, { useRef, Suspense, useState } from "react";
+import React, { useRef, Suspense, useState, useCallback } from "react";
 import { Canvas } from "react-three-fiber";
 import { Stats, Sphere, Environment, Loader, Sky } from "@react-three/drei";
 
@@ -12,11 +12,13 @@ import { map, verticesMap } from "./graph/graphSetup";
 
 import { ThreeContainer } from "./ThreeStyle";
 import TrafficLights from "./TrafficLights/TrafficLights";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import TrafficConditions from "./TrafficConditions/TrafficConditions";
 import CollisionBoxes from "./CollisionBoxes/CollisionBoxes";
+import { addStats } from "../../redux/mode";
 
 export default function Three() {
+  const dispatch = useDispatch();
   const controlsRef = useRef();
   const [selectedVertex, setSelectedVertex] = useState(null);
   const trafficLights = useSelector(({ settings }) => settings.trafficLights);
@@ -24,10 +26,15 @@ export default function Three() {
     ({ settings }) => settings.trafficConditions
   );
   const collisionBoxes = useSelector(({ settings }) => settings.collisionBoxes);
+  const pathfindingMode = useSelector(({ mode }) => mode.mode);
 
   const move = () => {
     controlsRef.current?.moveCamera({ name: "start", easing: "slow" });
   };
+
+  const dispatchStats = useCallback((res) => dispatch(addStats(res)), [
+    dispatch,
+  ]);
 
   return (
     <ThreeContainer>
@@ -54,7 +61,12 @@ export default function Three() {
             <TrafficLights verticesMap={verticesMap} enabled={trafficLights} />
             <TrafficConditions map={map} enabled={trafficConditions} />
             <CollisionBoxes map={map} enabled={collisionBoxes} />
-            <Player map={map} selectedVertex={selectedVertex} />
+            <Player
+              map={map}
+              selectedVertex={selectedVertex}
+              pathfindingMode={pathfindingMode}
+              dispatchStats={dispatchStats}
+            />
           </Suspense>
         </group>
         <Sky
