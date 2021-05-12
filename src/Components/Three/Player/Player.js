@@ -1,12 +1,10 @@
 import { useEffect, useRef } from "react";
-import { extend, useFrame, useLoader } from "@react-three/fiber";
+import { useFrame, useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import * as meshline from "threejs-meshline";
 import PlayerPath from "./PlayerPath";
 import playerClass from "./playerClass";
 import ClickIndicator from "./ClickIndicator";
 
-extend(meshline);
 const newPlayer = new playerClass();
 
 export default function Player({
@@ -15,7 +13,7 @@ export default function Player({
   pathfindingMode,
   dispatchStats,
 }) {
-  const gltf = useLoader(GLTFLoader, "./scene.gltf");
+  const gltf = useLoader(GLTFLoader, "./playerCar/scene.gltf");
   const playerRef = useRef();
 
   useEffect(() => {

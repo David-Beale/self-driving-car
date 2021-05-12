@@ -68,7 +68,7 @@ export default function Roads({
     roadWorks(e, tile, addRoadWorks);
   };
   const mouseUp = (e, tile) => {
-    if (addRoadWorks || removeRoadWorks) return;
+    if (addRoadWorks || removeRoadWorks || !prevMouse.current) return;
     const dist =
       Math.abs(prevMouse.current.x - e.clientX) +
       Math.abs(prevMouse.current.y - e.clientY);

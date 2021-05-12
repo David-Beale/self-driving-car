@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import TrafficConditions from "./TrafficConditions/TrafficConditions";
 import CollisionBoxes from "./CollisionBoxes/CollisionBoxes";
 import { addStats } from "../../redux/mode";
+import ComputerController from "./computer/ComputerController";
 
 export default function Three() {
   const dispatch = useDispatch();
@@ -37,9 +38,10 @@ export default function Three() {
     controlsRef.current?.moveCamera({ name: "start", easing: "slow" });
   };
 
-  const dispatchStats = useCallback((res) => dispatch(addStats(res)), [
-    dispatch,
-  ]);
+  const dispatchStats = useCallback(
+    (res) => dispatch(addStats(res)),
+    [dispatch]
+  );
 
   return (
     <ThreeContainer
@@ -81,6 +83,7 @@ export default function Three() {
               pathfindingMode={pathfindingMode}
               dispatchStats={dispatchStats}
             />
+            <ComputerController map={map} number={30} />
           </Suspense>
         </group>
         <Sky
