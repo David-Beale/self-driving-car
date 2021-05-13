@@ -20,7 +20,7 @@ import ComputerController from "./computer/ComputerController";
 
 export default function Three() {
   const dispatch = useDispatch();
-  const controlsRef = useRef();
+  const playerRef = useRef();
   const [selectedVertex, setSelectedVertex] = useState(null);
   const [updateRoadWorks, setUpdateRoadWorks] = useState(false);
   const trafficLights = useSelector(({ settings }) => settings.trafficLights);
@@ -33,10 +33,7 @@ export default function Three() {
   const removeRoadWorks = useSelector(
     ({ roadWorks }) => roadWorks.removeRoadWorks
   );
-
-  const move = () => {
-    controlsRef.current?.moveCamera({ name: "start", easing: "slow" });
-  };
+  const cameraLock = useSelector(({ settings }) => settings.cameraLock);
 
   const dispatchStats = useCallback(
     (res) => dispatch(addStats(res)),
@@ -54,18 +51,17 @@ export default function Three() {
         invalidateFrameloop={true}
       >
         {/* <Stats className="stats" /> */}
-        <ambientLight color="#ffffff" intensity={0.75} />
+        <ambientLight color="#ffffff" intensity={0.3} />
+        <directionalLight color="#ffffff" position={[-1000, 1000, 500]} />
         <directionalLight color="#ffffff" position={[1000, 0, 500]} />
         <group position={[-1500, 1500, 0]}>
           <Controls
-            ref={controlsRef}
+            cameraLock={cameraLock}
             roadWorks={addRoadWorks || removeRoadWorks}
+            playerRef={playerRef}
           />
 
           <Suspense fallback={null}>
-            <Sphere position={[0, 0, 50]} args={[50, 10, 10]} onClick={move}>
-              <meshBasicMaterial attach="material" color="hotpink" />
-            </Sphere>
             <Ground />
             <RoadWorks map={map} updateRoadWorks={updateRoadWorks} />
             <Roads
@@ -79,6 +75,7 @@ export default function Three() {
             <TrafficConditions map={map} enabled={trafficConditions} />
             <CollisionBoxes map={map} enabled={collisionBoxes} />
             <Player
+              playerRef={playerRef}
               map={map}
               selectedVertex={selectedVertex}
               pathfindingMode={pathfindingMode}

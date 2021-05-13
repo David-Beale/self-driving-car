@@ -7,9 +7,7 @@ export const useSettings = () => {
   settingsRef.current.trafficLights = useSelector(
     ({ settings }) => settings.trafficLights
   );
-  settingsRef.current.cameraLock = useSelector(
-    ({ settings }) => settings.cameraLock
-  );
+
   settingsRef.current.computerNumber = useSelector(
     ({ settings }) => settings.computerNumber
   );

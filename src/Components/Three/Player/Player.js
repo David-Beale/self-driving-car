@@ -8,14 +8,13 @@ import ClickIndicator from "./ClickIndicator";
 const newPlayer = new playerClass();
 
 export default function Player({
+  playerRef,
   map,
   selectedVertex,
   pathfindingMode,
   dispatchStats,
 }) {
   const gltf = useLoader(GLTFLoader, "./playerCar3/scene.gltf");
-  console.log(gltf);
-  const playerRef = useRef();
 
   useEffect(() => {
     newPlayer.addMap(map);

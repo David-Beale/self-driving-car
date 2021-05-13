@@ -18,7 +18,7 @@ export default function ComputerCar({ car }) {
       <primitive
         ref={carRef}
         object={gltf.nodes[car.model].clone()}
-        position={[1475, -1475, 21]}
+        position={[1475, -1475, 16]}
         scale={7}
       />
     </>
