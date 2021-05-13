@@ -80,7 +80,7 @@ export function useAnimatedMovement({
   const linearProgress = useRef(0);
 
   useEffect(() => {
-    if (cameraLock === undefined) {
+    if (cameraLock === undefined || !playerRef.current.position.x) {
       return;
     }
     parameters.current.position = { ...camera.position };
@@ -95,7 +95,7 @@ export function useAnimatedMovement({
     } else {
       movement.current = "reset";
     }
-  }, [cameraLock, camera, controls]);
+  }, [cameraLock, camera, controls, playerRef]);
 
   useFrame(() => {
     if (!movement.current) return;
@@ -104,8 +104,6 @@ export function useAnimatedMovement({
     } else {
       move();
     }
-    // update the view as the vis is interacted with
-    controls.current.update();
   });
 
   const move = () => {

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import { extend, useThree } from "react-three-fiber";
+import { extend, useFrame, useThree } from "react-three-fiber";
 import { TrackballControls } from "three/examples/jsm/controls/TrackballControls";
 import * as THREE from "three";
 
@@ -12,6 +12,10 @@ export default function Controls({ cameraLock, roadWorks, playerRef }) {
   const controls = useRef();
   const { camera, gl, invalidate } = useThree();
 
+  useFrame(() => {
+    // update the view as the vis is interacted with
+    controls.current.update();
+  });
   useEffect(
     () => void controls.current.addEventListener("change", invalidate),
     [invalidate]
