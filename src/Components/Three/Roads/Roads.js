@@ -90,7 +90,7 @@ export default function Roads({
           onPointerMove={(e) => mouseMove(e, tile)}
         >
           <planeBufferGeometry attach="geometry" args={[100, 100, 20]} />
-          <meshStandardMaterial map={tile.type} attach="material" />
+          <meshBasicMaterial map={tile.type} attach="material" />
         </mesh>
       ))}
     </>

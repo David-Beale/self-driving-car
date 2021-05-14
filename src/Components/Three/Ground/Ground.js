@@ -11,7 +11,7 @@ export default function Ground() {
   return (
     <mesh frustumCulled={false} position={[0, 0, 0]} renderOrder={1}>
       <planeBufferGeometry attach="geometry" args={[20000, 20000]} />
-      <meshStandardMaterial map={texture} attach="material" />
+      <meshBasicMaterial map={texture} attach="material" />
     </mesh>
   );
 }

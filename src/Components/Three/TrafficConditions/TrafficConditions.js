@@ -22,9 +22,10 @@ export default function TrafficConditions({ map, enabled }) {
   const meshRef = useRef();
   const colorAttrib = useRef();
 
-  const colorArray = useMemo(() => new Float32Array(map.array.length * 3), [
-    map,
-  ]);
+  const colorArray = useMemo(
+    () => new Float32Array(map.array.length * 3),
+    [map]
+  );
 
   useFrame(() => {
     if (!enabled) return;
@@ -67,7 +68,7 @@ export default function TrafficConditions({ map, enabled }) {
               args={[colorArray, 3]}
             />
           </planeBufferGeometry>
-          <meshStandardMaterial
+          <meshBasicMaterial
             attach="material"
             vertexColors={THREE.VertexColors}
             transparent={true}
