@@ -34,6 +34,7 @@ export default function Three() {
     ({ roadWorks }) => roadWorks.removeRoadWorks
   );
   const cameraLock = useSelector(({ settings }) => settings.cameraLock);
+  const computerNumber = useSelector(({ settings }) => settings.computerNumber);
 
   const dispatchStats = useCallback(
     (res) => dispatch(addStats(res)),
@@ -81,7 +82,7 @@ export default function Three() {
               pathfindingMode={pathfindingMode}
               dispatchStats={dispatchStats}
             />
-            <ComputerController map={map} number={30} />
+            <ComputerController map={map} number={computerNumber} />
           </Suspense>
         </group>
         <Sky

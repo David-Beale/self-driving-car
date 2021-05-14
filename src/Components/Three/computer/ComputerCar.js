@@ -9,6 +9,7 @@ export default function ComputerCar({ car }) {
 
   useFrame(() => {
     car.run();
+    if (!carRef.current) return;
     carRef.current.position.x = car.currentX;
     carRef.current.position.y = car.currentY;
     carRef.current.rotation.z = Math.PI / 2 + car.angle;
