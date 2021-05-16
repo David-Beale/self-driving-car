@@ -1,12 +1,12 @@
-import { useBox } from "@react-three/cannon";
+import { useBox, useCylinder } from "@react-three/cannon";
 import { useEffect } from "react";
 
 export default function TrafficLight({ tile, color }) {
-  const [ref, api] = useBox(() => ({
+  const [ref, api] = useCylinder(() => ({
     type: "Static",
     position: [tile.x, 1, tile.z],
-    args: [5, 0.5, 0.5],
-    rotation: [0, tile.rotation, 0],
+    args: [0.25, 0.25, 5, 12],
+    rotation: [Math.PI / 2, 0, tile.rotation],
   }));
   useEffect(() => {
     const yValue = color === "red" ? 1 : 2;
@@ -14,8 +14,8 @@ export default function TrafficLight({ tile, color }) {
   }, [color, api, tile]);
   return (
     <mesh ref={ref} frustumCulled={false}>
-      <boxBufferGeometry attach="geometry" args={[5, 0.5, 0.5]} />
-      <meshBasicMaterial color={color} attach="material" />
+      <cylinderBufferGeometry attach="geometry" args={[0.25, 0.25, 5, 12]} />
+      <meshLambertMaterial color={color} attach="material" />
     </mesh>
   );
 }

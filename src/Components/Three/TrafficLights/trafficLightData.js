@@ -19,10 +19,10 @@ const zOffsets = {
   R: -2.5,
 };
 const rotation = {
-  U: 0,
-  D: 0,
-  L: 0.5 * Math.PI,
-  R: 0.5 * Math.PI,
+  U: 0.5 * Math.PI,
+  D: 0.5 * Math.PI,
+  L: 0,
+  R: 0,
 };
 const indexLookup = {
   U: 0,
