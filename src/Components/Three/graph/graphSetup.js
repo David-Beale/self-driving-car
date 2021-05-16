@@ -4,11 +4,11 @@ import Graph from "./helpers/graph.js";
 import Vertex from "./helpers/vertex.js";
 export const map = new Graph({ directed: true });
 
-const setupVertices = (idCounter, x, y) => {
-  let vertexA = new Vertex(idCounter + "A", x, y);
-  let vertexB = new Vertex(idCounter + "B", x + 50, y);
-  let vertexC = new Vertex(idCounter + "C", x, y + 50);
-  let vertexD = new Vertex(idCounter + "D", x + 50, y + 50);
+const setupVertices = (idCounter, x, z) => {
+  let vertexA = new Vertex(idCounter + "A", x, z);
+  let vertexB = new Vertex(idCounter + "B", x + 5, z);
+  let vertexC = new Vertex(idCounter + "C", x, z + 5);
+  let vertexD = new Vertex(idCounter + "D", x + 5, z + 5);
   return [vertexA, vertexB, vertexC, vertexD];
 };
 
@@ -113,7 +113,7 @@ for (let i = 0; i < formattedTiles.length; i++) {
       verticesMap[i].push(0);
       continue;
     }
-    const newVertices = setupVertices(idCounter, j * 100, i * 100);
+    const newVertices = setupVertices(idCounter, j * 10, i * 10);
     newVertices.forEach((vertex) => map.addVertex(vertex));
     verticesMap[i].push(newVertices);
     idCounter++;

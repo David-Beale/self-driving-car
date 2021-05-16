@@ -11,15 +11,15 @@ export default function Ground() {
 
   const [ref] = usePlane(() => ({
     type: "Static",
-    rotation: [0, 0, -Math.PI / 2],
+    rotation: [-Math.PI / 2, 0, 0],
     position: [0, 0, 0],
   }));
 
   return (
     <mesh ref={ref} frustumCulled={false} position={[0, 0, 0]} renderOrder={1}>
       <planeBufferGeometry attach="geometry" args={[1000, 1000]} />
-      <meshBasicMaterial map={texture} attach="material" />
-      {/* <meshBasicMaterial transparent={true} attach="material" /> */}
+      {/* <meshBasicMaterial map={texture} attach="material" /> */}
+      <meshBasicMaterial transparent={true} opacity={0} attach="material" />
     </mesh>
   );
 }

@@ -22,7 +22,7 @@ export default function Controls({ cameraLock, roadWorks, playerRef }) {
   );
 
   useEffect(() => {
-    camera.position.set(0, 0, 12);
+    camera.position.set(0, 20, 30);
     controls.current.target.set(0, 0, 0);
   }, [camera]);
 

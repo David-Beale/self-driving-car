@@ -55,13 +55,13 @@ export default function Player({
   return (
     <>
       <Vehicle
-        position={[152.5, -152.5, 5]}
-        rotation={[Math.PI / 2, Math.PI / 2, 0]}
+        position={[152.5, 5, 152.5]}
+        rotation={[0, Math.PI / 2, 0]}
         angularVelocity={[0, 0.5, 0]}
       />
       <Pillar
-        rotation={[Math.PI / 2, Math.PI / 2, 0]}
-        position={[160, -150, 10]}
+        rotation={[0, Math.PI / 2, 0]}
+        position={[160, 5, 150]}
         userData={{ id: "pillar-1" }}
       />
       {/* <primitive ref={playerRef} object={gltf.scene} scale={0.1} /> */}

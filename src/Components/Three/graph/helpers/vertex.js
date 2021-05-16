@@ -1,8 +1,8 @@
 class Vertex {
-  constructor(value, x, y) {
+  constructor(value, x, z) {
     this.value = value;
     this.x = x;
-    this.y = y;
+    this.z = z;
     this.edges = [];
     this.occupied = false;
     this.light = "green";

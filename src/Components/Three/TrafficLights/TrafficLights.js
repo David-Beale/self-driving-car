@@ -51,11 +51,11 @@ export default function TrafficLights({ verticesMap, enabled }) {
           <mesh
             key={tile.key}
             frustumCulled={false}
-            position={[tile.x, tile.y, 18]}
-            rotation={[0, 0, tile.rotation]}
+            position={[tile.x, 1, tile.z]}
+            rotation={[0, tile.rotation, 0]}
             renderOrder={5}
           >
-            <boxBufferGeometry attach="geometry" args={[50, 5, 5]} />
+            <boxBufferGeometry attach="geometry" args={[5, 0.5, 0.5]} />
             <meshBasicMaterial
               color={tile.lightSet === 1 ? color1 : color2}
               attach="material"

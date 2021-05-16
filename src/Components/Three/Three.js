@@ -70,16 +70,17 @@ export default function Three() {
         invalidateFrameloop={true}
       >
         <Physics
-          gravity={[0, 0, -10]}
+          gravity={[0, -10, 0]}
           broadphase="SAP"
           {...defaultContactMaterial}
           allowSleep
         >
           {/* <Stats className="stats" /> */}
           <ambientLight color="#ffffff" intensity={0.3} />
-          <directionalLight color="#ffffff" position={[-100, 100, 50]} />
-          <directionalLight color="#ffffff" position={[100, 0, 50]} />
-          <group position={[-150, 150, 0]}>
+          <directionalLight color="#ffffff" position={[-100, 50, 50]} />
+          <directionalLight color="#ffffff" position={[100, 50, 50]} />
+          <Ground />
+          <group position={[-150, 0, -150]}>
             <Controls
               cameraLock={cameraLock}
               roadWorks={addRoadWorks || removeRoadWorks}
@@ -87,8 +88,7 @@ export default function Three() {
             />
 
             <Suspense fallback={null}>
-              <Ground />
-              {/* <RoadWorks map={map} updateRoadWorks={updateRoadWorks} />
+              <RoadWorks map={map} updateRoadWorks={updateRoadWorks} />
               <Roads
                 verticesMap={verticesMap}
                 setSelectedVertex={setSelectedVertex}
@@ -101,7 +101,7 @@ export default function Three() {
                 enabled={trafficLights}
               />
               <TrafficConditions map={map} enabled={trafficConditions} />
-              <CollisionBoxes map={map} enabled={collisionBoxes} /> */}
+              {/* <CollisionBoxes map={map} enabled={collisionBoxes} /> */}
               {/* <Box position={[1525, -1525, 0]} args={[45, 20, 25]}>
                 <meshPhongMaterial
                   attach="material"
@@ -121,9 +121,8 @@ export default function Three() {
             </Suspense>
           </group>
           <Sky
-            distance={450000} // Camera distance (default=450000)
-            sunPosition={[0, 1, 0]} // Sun position normal (defaults to inclination and azimuth if not set)
-            inclination={0} // Sun elevation angle from 0 to 1 (default=0)
+            distance={45000} // Camera distance (default=450000)
+            inclination={0.49} // Sun elevation angle from 0 to 1 (default=0)
             azimuth={0.25} // Sun rotation around the Y axis from 0 to 1 (default=0.25)
           />
         </Physics>

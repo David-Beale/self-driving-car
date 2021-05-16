@@ -7,16 +7,16 @@ const lightSet = {
   R: 2,
 };
 const xOffsets = {
-  U: -25,
-  D: 25,
-  L: -50,
-  R: 50,
+  U: -2.5,
+  D: 2.5,
+  L: -5.0,
+  R: 5.0,
 };
-const yOffsets = {
-  U: 50,
-  D: -50,
-  L: -25,
-  R: 25,
+const zOffsets = {
+  U: -5.0,
+  D: 5.0,
+  L: 2.5,
+  R: -2.5,
 };
 const rotation = {
   U: 0,
@@ -39,8 +39,8 @@ mapData.forEach((row, rowIndex) => {
       trafficLights.push({
         i: rowIndex,
         j: tileIndex,
-        y: -rowIndex * 100 + yOffsets[tile],
-        x: tileIndex * 100 + xOffsets[tile],
+        z: rowIndex * 10 + zOffsets[tile],
+        x: tileIndex * 10 + xOffsets[tile],
         rotation: rotation[tile],
         lightSet: lightSet[tile],
         index: indexLookup[tile],

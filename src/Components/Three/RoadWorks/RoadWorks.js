@@ -11,9 +11,9 @@ export default function RoadWorks({ map, updateRoadWorks }) {
       const vertex = map.graphObj[vertexName];
       if (vertex.roadWorks) {
         array.push({
-          x: vertex.x - 25,
-          y: -vertex.y + 25,
-          key: `${vertex.x}:${vertex.y}`,
+          x: vertex.x - 2.5,
+          z: vertex.z - 2.5,
+          key: `${vertex.x}:${vertex.z}`,
         });
       }
     });
@@ -27,10 +27,11 @@ export default function RoadWorks({ map, updateRoadWorks }) {
         <mesh
           key={tile.key}
           frustumCulled={false}
-          position={[tile.x, tile.y, 20]}
+          position={[tile.x, 0.1, tile.z]}
+          rotation={[-Math.PI / 2, 0, 0]}
           renderOrder={4}
         >
-          <planeBufferGeometry attach="geometry" args={[50, 50]} />
+          <planeBufferGeometry attach="geometry" args={[5, 5]} />
           <meshBasicMaterial
             transparent={true}
             opacity={0.5}

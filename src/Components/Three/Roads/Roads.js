@@ -19,8 +19,8 @@ export default function Roads({
         if (!type) continue;
         array.push({
           type: textures[type],
-          x: j * 100,
-          y: -i * 100,
+          x: j * 10,
+          z: i * 10,
           vertices: verticesMap[i][j],
         });
       }
@@ -29,16 +29,16 @@ export default function Roads({
   }, [verticesMap]);
 
   const getVertex = (e, tile) => {
-    const x = e.point.x + 1500 - tile.x;
-    const y = e.point.y - 1500 - tile.y;
+    const x = e.point.x + 150 - tile.x;
+    const z = e.point.z + 150 - tile.z;
     switch (true) {
-      case x <= 0 && y > 0:
+      case x <= 0 && z <= 0:
         return tile.vertices[0];
-      case x > 0 && y > 0:
+      case x > 0 && z <= 0:
         return tile.vertices[1];
-      case x <= 0 && y <= 0:
+      case x <= 0 && z > 0:
         return tile.vertices[2];
-      case x > 0 && y <= 0:
+      case x > 0 && z > 0:
         return tile.vertices[3];
       default:
         break;
@@ -83,13 +83,14 @@ export default function Roads({
         <mesh
           key={index}
           frustumCulled={false}
-          position={[tile.x, tile.y, 11]}
+          position={[tile.x, 0, tile.z]}
+          rotation={[-Math.PI / 2, 0, 0]}
           renderOrder={2}
           onPointerDown={(e) => mouseDown(e, tile)}
           onPointerUp={(e) => mouseUp(e, tile)}
           onPointerMove={(e) => mouseMove(e, tile)}
         >
-          <planeBufferGeometry attach="geometry" args={[100, 100, 20]} />
+          <planeBufferGeometry attach="geometry" args={[10, 10, 2]} />
           <meshBasicMaterial map={tile.type} attach="material" />
         </mesh>
       ))}
