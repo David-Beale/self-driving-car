@@ -1,10 +1,8 @@
 import { useEffect } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import PlayerPath from "./Path/PlayerPath";
 import playerClass from "./playerClass";
 import ClickIndicator from "./ClickIndicator";
-import { useBox, useCylinder } from "@react-three/cannon";
 import Vehicle from "./Vehicle/Vehicle";
 
 // const newPlayer = new playerClass();
@@ -37,32 +35,12 @@ export default function Player({
   //   rotation: [Math.PI / 2, Math.PI / 2, 0],
   // }));
 
-  function Pillar(props) {
-    const args = [3.5, 3.5, 10, 36];
-    const [ref] = useCylinder(() => ({
-      mass: 1,
-      args,
-      ...props,
-    }));
-    return (
-      <mesh ref={ref}>
-        <cylinderBufferGeometry args={args} />
-        <meshNormalMaterial />
-      </mesh>
-    );
-  }
-
   return (
     <>
       <Vehicle
-        position={[152.5, 5, 152.5]}
+        position={[147.5, 5, 157.5]}
         rotation={[0, Math.PI / 2, 0]}
-        angularVelocity={[0, 0.5, 0]}
-      />
-      <Pillar
-        rotation={[0, Math.PI / 2, 0]}
-        position={[160, 5, 150]}
-        userData={{ id: "pillar-1" }}
+        angularVelocity={[0, 1.69, 0]}
       />
       {/* <primitive ref={playerRef} object={gltf.scene} scale={0.1} /> */}
       {/* <PlayerPath
