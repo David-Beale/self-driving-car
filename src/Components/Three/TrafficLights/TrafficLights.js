@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { trafficLights } from "./trafficLightData";
+import TrafficLight from "./TrafficLight";
 
 let counter = 0;
 
@@ -48,19 +49,11 @@ export default function TrafficLights({ verticesMap, enabled }) {
     <>
       {enabled &&
         trafficLights.map((tile) => (
-          <mesh
+          <TrafficLight
             key={tile.key}
-            frustumCulled={false}
-            position={[tile.x, 1, tile.z]}
-            rotation={[0, tile.rotation, 0]}
-            renderOrder={5}
-          >
-            <boxBufferGeometry attach="geometry" args={[5, 0.5, 0.5]} />
-            <meshBasicMaterial
-              color={tile.lightSet === 1 ? color1 : color2}
-              attach="material"
-            />
-          </mesh>
+            tile={tile}
+            color={tile.lightSet === 1 ? color1 : color2}
+          />
         ))}
     </>
   );
