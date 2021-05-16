@@ -47,6 +47,7 @@ export default function Controls({ cameraLock, roadWorks, playerRef }) {
         MIDDLE: THREE.MOUSE.ZOOM,
         RIGHT: THREE.MOUSE.ROTATE,
       }}
+      keys={[]}
     />
   );
 }
