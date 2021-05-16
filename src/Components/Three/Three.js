@@ -11,7 +11,6 @@ import {
 import { Physics, useBox, useCylinder } from "@react-three/cannon";
 
 import Controls from "./Controls/Controls";
-import Ground from "./Ground/Ground";
 import Roads from "./Roads/Roads";
 import RoadWorks from "./RoadWorks/RoadWorks";
 import Player from "./Player/Player";
@@ -79,7 +78,6 @@ export default function Three() {
           <ambientLight color="#ffffff" intensity={0.3} />
           <directionalLight color="#ffffff" position={[-100, 50, 50]} />
           <directionalLight color="#ffffff" position={[100, 50, 50]} />
-          <Ground />
           <group position={[-150, 0, -150]}>
             <Controls
               cameraLock={cameraLock}

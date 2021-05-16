@@ -1,6 +1,7 @@
-import { useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import { formattedTiles } from "../data/formattedMapData";
 import { textures } from "./RoadTextures";
+import Road from "./Road";
 
 export default function Roads({
   verticesMap,
@@ -44,55 +45,63 @@ export default function Roads({
         break;
     }
   };
-  const roadWorks = (e, tile, add) => {
-    const vertex = getVertex(e, tile);
-    if (!vertex) return;
-    if ((add && vertex.roadWorks) || (!add && !vertex.roadWorks)) return;
-    vertex.roadWorks = add ? true : false;
-    setUpdateRoadWorks([true]);
-  };
-  const mouseDown = (e, tile) => {
-    prevMouse.current = { x: e.clientX, y: e.clientY };
-    if (!addRoadWorks && !removeRoadWorks) return;
-    roadWorks(e, tile, addRoadWorks);
-    document.addEventListener("pointerup", handleMouseUp, true);
-  };
+  const roadWorks = useCallback(
+    (e, tile, add) => {
+      const vertex = getVertex(e, tile);
+      if (!vertex) return;
+      if ((add && vertex.roadWorks) || (!add && !vertex.roadWorks)) return;
+      vertex.roadWorks = add ? true : false;
+      setUpdateRoadWorks([true]);
+    },
+    [setUpdateRoadWorks]
+  );
 
-  const handleMouseUp = (e) => {
+  const handleMouseUp = useCallback((e) => {
     document.removeEventListener("pointerup", handleMouseUp, true);
     prevMouse.current = null;
-  };
+  }, []);
 
-  const mouseMove = (e, tile) => {
-    if (!prevMouse.current || (!addRoadWorks && !removeRoadWorks)) return;
-    roadWorks(e, tile, addRoadWorks);
-  };
-  const mouseUp = (e, tile) => {
-    if (addRoadWorks || removeRoadWorks || !prevMouse.current) return;
-    const dist =
-      Math.abs(prevMouse.current.x - e.clientX) +
-      Math.abs(prevMouse.current.y - e.clientY);
-    if (dist > 10) return;
-    const vertex = getVertex(e, tile);
-    setSelectedVertex(vertex);
-  };
+  const mouseDown = useCallback(
+    (e, tile) => {
+      prevMouse.current = { x: e.clientX, y: e.clientY };
+      if (!addRoadWorks && !removeRoadWorks) return;
+      roadWorks(e, tile, addRoadWorks);
+      document.addEventListener("pointerup", handleMouseUp, true);
+    },
+    [addRoadWorks, handleMouseUp, removeRoadWorks, roadWorks]
+  );
+
+  const mouseMove = useCallback(
+    (e, tile) => {
+      if (!prevMouse.current || (!addRoadWorks && !removeRoadWorks)) return;
+      roadWorks(e, tile, addRoadWorks);
+    },
+    [addRoadWorks, removeRoadWorks, roadWorks]
+  );
+
+  const mouseUp = useCallback(
+    (e, tile) => {
+      if (addRoadWorks || removeRoadWorks || !prevMouse.current) return;
+      const dist =
+        Math.abs(prevMouse.current.x - e.clientX) +
+        Math.abs(prevMouse.current.y - e.clientY);
+      if (dist > 10) return;
+      const vertex = getVertex(e, tile);
+      setSelectedVertex(vertex);
+    },
+    [addRoadWorks, removeRoadWorks, setSelectedVertex]
+  );
 
   return (
     <>
       {roadTiles.map((tile, index) => (
-        <mesh
+        <Road
           key={index}
-          frustumCulled={false}
-          position={[tile.x, 0, tile.z]}
-          rotation={[-Math.PI / 2, 0, 0]}
-          renderOrder={2}
-          onPointerDown={(e) => mouseDown(e, tile)}
-          onPointerUp={(e) => mouseUp(e, tile)}
-          onPointerMove={(e) => mouseMove(e, tile)}
-        >
-          <planeBufferGeometry attach="geometry" args={[10, 10, 2]} />
-          <meshBasicMaterial map={tile.type} attach="material" />
-        </mesh>
+          tile={tile}
+          mouseDown={mouseDown}
+          mouseUp={mouseUp}
+          mouseMove={mouseMove}
+        />
       ))}
     </>
   );
