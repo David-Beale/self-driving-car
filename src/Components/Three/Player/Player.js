@@ -57,8 +57,8 @@ export default function Player({
         pathfindingMode={pathfindingMode}
         selectedVertex={selectedVertex}
         dispatchStats={dispatchStats}
-      />
-      <ClickIndicator selectedVertex={selectedVertex} /> */}
+      />*/}
+      <ClickIndicator selectedVertex={selectedVertex} />
     </>
   );
 }
