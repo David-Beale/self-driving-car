@@ -1,7 +1,7 @@
 import dijkstra from "../graph/helpers/dijkstra";
 import dijkstraTime from "../graph/helpers/dijkstra-time";
 import { getCurve } from "./ellipseCurve";
-const RADIUS = 25;
+const RADIUS = 2.5;
 const COLORS = {
   distance: "rgb(58, 94, 211)",
   time: "yellow",
@@ -28,6 +28,7 @@ export default class Player {
   addMap(map) {
     this.map = map.graphObj;
     this.arrayOfVertices = Object.keys(map.graphObj);
+    this.firstClick(this.map["156A"]);
   }
   //
   // ─── USER INTERACTIONS ──────────────────────────────────────────────────────────
@@ -50,6 +51,7 @@ export default class Player {
     const startVertex = this.nextVertex?.value || this.currentVertex.value;
 
     this.runPathfinding(startVertex, vertex.value);
+    // console.log(this.pathArray, this.arrayOfSteps);
 
     if (this.compare) return this.comparePaths;
 
@@ -165,9 +167,11 @@ export default class Player {
     this.counter++;
   }
   lerpMovement(speedLimited) {
-    const { x: nextX, y: nextY, angle: nextAngle } = this.arrayOfSteps[
-      this.arrayOfSteps.length - 1
-    ];
+    const {
+      x: nextX,
+      y: nextY,
+      angle: nextAngle,
+    } = this.arrayOfSteps[this.arrayOfSteps.length - 1];
     this.currentX += speedLimited * (nextX - this.current.x);
     this.currentY += speedLimited * (nextY - this.current.y);
     this.angle += speedLimited * (nextAngle - this.current.angle);
@@ -224,7 +228,7 @@ export default class Player {
     this.pathParameters = {
       arrayOfSteps: [],
       currentX: 0,
-      currentY: 0,
+      currentZ: 0,
       currentAngle: 0,
     };
 
@@ -246,12 +250,12 @@ export default class Player {
     const currentVertex = this.map[pathArray[0]];
     const nextVertex = this.map[pathArray[1]];
     this.pathParameters.currentX = currentVertex.x;
-    this.pathParameters.currentY = currentVertex.y;
+    this.pathParameters.currentZ = currentVertex.z;
     this.pathParameters.currentAngle = this.getAngle(
       this.pathParameters.currentX,
-      this.pathParameters.currentY,
+      this.pathParameters.currentZ,
       nextVertex.x,
-      nextVertex.y
+      nextVertex.z
     );
 
     this.straight(nextVertex, currentVertex, this.stepCount / 2);
@@ -261,7 +265,7 @@ export default class Player {
       const prevVertex = this.map[pathArray[i - 1]];
       const currentVertex = this.map[pathArray[i]];
       const nextVertex = this.map[pathArray[i + 1]];
-      if (prevVertex.x !== nextVertex.x && prevVertex.y !== nextVertex.y) {
+      if (prevVertex.x !== nextVertex.x && prevVertex.z !== nextVertex.z) {
         this.turn(prevVertex, nextVertex);
       } else {
         this.straight(nextVertex, currentVertex, this.stepCount);
@@ -276,48 +280,50 @@ export default class Player {
   }
   turn(prevVertex, nextVertex) {
     const centerX = (prevVertex.x + nextVertex.x) / 2;
-    const centerY = (prevVertex.y + nextVertex.y) / 2;
+    const centerZ = (prevVertex.z + nextVertex.z) / 2;
     const endX =
       this.pathParameters.currentX === centerX ? nextVertex.x : centerX;
-    const endY =
-      this.pathParameters.currentY === centerY ? nextVertex.y : centerY;
-    const curve = getCurve(
+    const endZ =
+      this.pathParameters.currentZ === centerZ ? nextVertex.z : centerZ;
+
+    const { curve, direction } = getCurve(
       centerX,
-      -centerY,
+      centerZ,
       this.pathParameters.currentX,
-      -this.pathParameters.currentY,
+      this.pathParameters.currentZ,
       endX,
-      -endY
+      endZ
     );
     for (let j = 1; j < curve.length; j++) {
       const { angle, point } = curve[j];
       this.pathParameters.arrayOfSteps.push({
-        x: Math.round(point.x) - RADIUS,
-        y: Math.round(point.y) + RADIUS,
-        z: 12,
+        x: point.x - RADIUS,
+        y: 0.5,
+        z: -point.y - RADIUS,
         angle,
+        direction,
       });
       const final = curve[curve.length - 1];
       this.pathParameters.currentX = final.point.x;
-      this.pathParameters.currentY = -final.point.y;
+      this.pathParameters.currentZ = -final.point.y;
       this.pathParameters.currentAngle = final.angle;
     }
   }
   straight(nextVertex, currentVertex, length) {
     const dx = (nextVertex.x - currentVertex.x) / this.stepCount;
-    const dy = (nextVertex.y - currentVertex.y) / this.stepCount;
+    const dz = (nextVertex.z - currentVertex.z) / this.stepCount;
     for (let i = 0; i < length; i++) {
       this.pathParameters.currentX += dx;
-      this.pathParameters.currentY += dy;
+      this.pathParameters.currentZ += dz;
       this.pathParameters.arrayOfSteps.push({
         x: this.pathParameters.currentX - RADIUS,
-        y: -this.pathParameters.currentY + RADIUS,
-        z: 12,
+        y: 0.5,
+        z: this.pathParameters.currentZ - RADIUS,
         angle: this.pathParameters.currentAngle,
       });
     }
   }
-  getAngle(startX, startY, nextX, nextY) {
+  getAngle(startX, startZ, nextX, nextZ) {
     let angle;
     switch (true) {
       case startX > nextX:
@@ -326,10 +332,10 @@ export default class Player {
       case startX < nextX:
         angle = 0;
         break;
-      case startY < nextY:
+      case startZ < nextZ:
         angle = (3 * Math.PI) / 2;
         break;
-      case startY > nextY:
+      case startZ > nextZ:
         angle = Math.PI / 2;
         break;
       default:

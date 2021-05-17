@@ -55,17 +55,17 @@ export default function PlayerPath({
             pathRef={pathRefDistance}
             vertices={compare.distance}
             color={COLORS["distance"]}
-            width={5}
+            width={0.5}
           />
           <Line
             pathRef={pathRefTime}
             vertices={compare.time}
             color={COLORS["time"]}
-            width={2}
+            width={0.2}
           />
         </>
       ) : (
-        <Line pathRef={pathRef} vertices={[]} color={color} width={3} />
+        <Line pathRef={pathRef} vertices={[]} color={color} width={0.3} />
       )}
     </>
   );

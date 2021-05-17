@@ -6,7 +6,7 @@ import ClickIndicator from "./ClickIndicator";
 import Vehicle from "./Vehicle/Vehicle";
 import { useManualControls } from "./useManualControls";
 
-// const newPlayer = new playerClass();
+const newPlayer = new playerClass();
 const parameters = {
   maxSteerVal: 0.5,
   maxForce: 1000,
@@ -30,9 +30,9 @@ export default function Player({
     engineForce,
     parameters
   );
-  // useEffect(() => {
-  //   newPlayer.addMap(map);
-  // }, [map]);
+  useEffect(() => {
+    newPlayer.addMap(map);
+  }, [map]);
 
   useFrame(() => {
     // newPlayer.run();
@@ -52,12 +52,12 @@ export default function Player({
         engineForce={engineForce}
         brakeForce={brakeForce}
       />
-      {/* <PlayerPath
+      <PlayerPath
         newPlayer={newPlayer}
         pathfindingMode={pathfindingMode}
         selectedVertex={selectedVertex}
         dispatchStats={dispatchStats}
-      />*/}
+      />
       <ClickIndicator selectedVertex={selectedVertex} />
     </>
   );

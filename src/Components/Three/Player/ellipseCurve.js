@@ -1,18 +1,19 @@
 import * as THREE from "three";
-const RADIUS = 25;
+const RADIUS = 2.5;
 const STEP_COUNT = 10;
-export const getCurve = (cx, cy, startX, startY, endX, endY) => {
+export const getCurve = (cx, cz, startX, startZ, endX, endZ) => {
+  //flip the z-axis. z increases as you go down which is the opposite of what we want
   const { startAngle, endAngle, clockwise } = getCircleParameters(
     cx,
-    cy,
+    -cz,
     startX,
-    startY,
+    -startZ,
     endX,
-    endY
+    -endZ
   );
   const curve = new THREE.EllipseCurve(
     cx,
-    cy,
+    -cz,
     RADIUS,
     RADIUS,
     startAngle,
@@ -22,64 +23,67 @@ export const getCurve = (cx, cy, startX, startY, endX, endY) => {
   );
   const points = curve.getPoints(STEP_COUNT);
 
-  return points.map((point, index) => {
-    return {
-      point,
-      angle: +curve
-        .getTangent(index / STEP_COUNT)
-        .angle()
-        .toFixed(3),
-    };
-  });
+  return {
+    curve: points.map((point, index) => {
+      return {
+        point,
+        angle: +curve
+          .getTangent(index / STEP_COUNT)
+          .angle()
+          .toFixed(3),
+      };
+    }),
+    direction: clockwise ? "right" : "left",
+  };
 };
 
-const getCircleParameters = (cx, cy, startX, startY, endX, endY) => {
+const getCircleParameters = (cx, cz, startX, startZ, endX, endZ) => {
   switch (true) {
     //Clockwise
-    case startX > cx && startX > endX && startY > endY:
+    case startX > cx && startX > endX && startZ > endZ:
       return {
         startAngle: 0,
         endAngle: (3 * Math.PI) / 2,
         clockwise: true,
       };
-    case startY < cy && startX > endX && startY < endY:
+    case startZ < cz && startX > endX && startZ < endZ:
       return {
         startAngle: (3 * Math.PI) / 2,
         endAngle: Math.PI,
         clockwise: true,
       };
-    case startX < cx && startX < endX && startY < endY:
+    case startX < cx && startX < endX && startZ < endZ:
       return {
         startAngle: Math.PI,
         endAngle: Math.PI / 2,
         clockwise: true,
       };
-    case startY > cy && startX < endX && startY > endY:
+    case startZ > cz && startX < endX && startZ > endZ:
       return {
         startAngle: Math.PI / 2,
         endAngle: 0,
         clockwise: true,
       };
     //Anti Clockwise
-    case startX > cx && startX > endX && startY < endY:
+    case startX > cx && startX > endX && startZ < endZ:
       return {
         startAngle: 0,
         endAngle: Math.PI / 2,
         clockwise: false,
       };
-    case startY > cy && startX > endX && startY > endY:
+    case startZ > cz && startX > endX && startZ > endZ:
       return {
         startAngle: Math.PI / 2,
         endAngle: Math.PI,
         clockwise: false,
       };
-    case startX < cx && startX < endX && startY > endY:
+    case startX < cx && startX < endX && startZ > endZ:
       return {
         startAngle: Math.PI,
         endAngle: (3 * Math.PI) / 2,
         clockwise: false,
       };
-    case startY < cy && startX < endX && startY < endY:
+    case startZ < cz && startX < endX && startZ < endZ:
       return {
         startAngle: (3 * Math.PI) / 2,
         endAngle: 0,
