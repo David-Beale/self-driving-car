@@ -1,12 +1,17 @@
-import { useEffect } from "react";
-import { useFrame, useLoader } from "@react-three/fiber";
+import { useEffect, useState } from "react";
+import { useFrame } from "@react-three/fiber";
 import PlayerPath from "./Path/PlayerPath";
 import playerClass from "./playerClass";
 import ClickIndicator from "./ClickIndicator";
 import Vehicle from "./Vehicle/Vehicle";
+import { useManualControls } from "./useManualControls";
 
 // const newPlayer = new playerClass();
-
+const parameters = {
+  maxSteerVal: 0.5,
+  maxForce: 1000,
+  maxBrakeForce: 20,
+};
 export default function Player({
   // playerRef,
   map,
@@ -14,8 +19,17 @@ export default function Player({
   pathfindingMode,
   dispatchStats,
 }) {
-  // const gltf = useLoader(GLTFLoader, "./playerCar4/scene.gltf");
+  const [steeringValue, setSteeringValue] = useState(0);
+  const [engineForce, setEngineForce] = useState(0);
+  const [brakeForce, setBrakeForce] = useState(0);
 
+  useManualControls(
+    setSteeringValue,
+    setEngineForce,
+    setBrakeForce,
+    engineForce,
+    parameters
+  );
   // useEffect(() => {
   //   newPlayer.addMap(map);
   // }, [map]);
@@ -27,22 +41,17 @@ export default function Player({
     // playerRef.current.rotation.y = Math.PI / 2 + newPlayer.angle;
   });
 
-  // const [playerRef, playerApi] = useBox(() => ({
-  //   type: "Dynamic",
-  //   mass: 1,
-  //   args: [25, 5, 5],
-  //   position: [75, -75, 11],
-  //   rotation: [Math.PI / 2, Math.PI / 2, 0],
-  // }));
-
   return (
     <>
       <Vehicle
         position={[147.5, 5, 157.5]}
         rotation={[0, Math.PI / 2, 0]}
         angularVelocity={[0, 1.69, 0]}
+        parameters={parameters}
+        steeringValue={steeringValue}
+        engineForce={engineForce}
+        brakeForce={brakeForce}
       />
-      {/* <primitive ref={playerRef} object={gltf.scene} scale={0.1} /> */}
       {/* <PlayerPath
         newPlayer={newPlayer}
         pathfindingMode={pathfindingMode}

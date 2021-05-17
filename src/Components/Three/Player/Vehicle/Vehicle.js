@@ -6,7 +6,15 @@ import Wheel from "./Wheel";
 import { useWheels } from "./useWheels";
 import { useControls } from "./useControls";
 
-export default function Vehicle({ position, rotation, angularVelocity }) {
+export default function Vehicle({
+  position,
+  rotation,
+  angularVelocity,
+  parameters,
+  steeringValue,
+  engineForce,
+  brakeForce,
+}) {
   // chassisBody
   const chassis = useRef();
 
@@ -21,7 +29,7 @@ export default function Vehicle({ position, rotation, angularVelocity }) {
     indexUpAxis: 1,
   }));
 
-  useControls(api);
+  useControls(api, steeringValue, engineForce, brakeForce);
 
   return (
     <group ref={vehicle}>

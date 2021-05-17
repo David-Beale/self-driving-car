@@ -1,4 +1,4 @@
-import { useBox, useCylinder } from "@react-three/cannon";
+import { useCylinder } from "@react-three/cannon";
 import { useEffect } from "react";
 
 export default function TrafficLight({ tile, color }) {
