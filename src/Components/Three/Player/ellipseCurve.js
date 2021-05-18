@@ -33,7 +33,7 @@ export const getCurve = (cx, cz, startX, startZ, endX, endZ) => {
           .toFixed(3),
       };
     }),
-    direction: clockwise ? "right" : "left",
+    direction: clockwise ? -1 : 1,
   };
 };
 

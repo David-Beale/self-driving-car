@@ -3,13 +3,7 @@ import { formattedTiles } from "../data/formattedMapData";
 import { textures } from "./RoadTextures";
 import Road from "./Road";
 
-export default function Roads({
-  verticesMap,
-  setSelectedVertex,
-  addRoadWorks,
-  removeRoadWorks,
-  setUpdateRoadWorks,
-}) {
+export default function Roads({ verticesMap, setSelectedVertex }) {
   const prevMouse = useRef(null);
 
   const roadTiles = useMemo(() => {
@@ -45,43 +39,14 @@ export default function Roads({
         break;
     }
   };
-  const roadWorks = useCallback(
-    (e, tile, add) => {
-      const vertex = getVertex(e, tile);
-      if (!vertex) return;
-      if ((add && vertex.roadWorks) || (!add && !vertex.roadWorks)) return;
-      vertex.roadWorks = add ? true : false;
-      setUpdateRoadWorks([true]);
-    },
-    [setUpdateRoadWorks]
-  );
 
-  const handleMouseUp = useCallback((e) => {
-    document.removeEventListener("pointerup", handleMouseUp, true);
-    prevMouse.current = null;
+  const mouseDown = useCallback((e) => {
+    prevMouse.current = { x: e.clientX, y: e.clientY };
   }, []);
-
-  const mouseDown = useCallback(
-    (e, tile) => {
-      prevMouse.current = { x: e.clientX, y: e.clientY };
-      if (!addRoadWorks && !removeRoadWorks) return;
-      roadWorks(e, tile, addRoadWorks);
-      document.addEventListener("pointerup", handleMouseUp, true);
-    },
-    [addRoadWorks, handleMouseUp, removeRoadWorks, roadWorks]
-  );
-
-  const mouseMove = useCallback(
-    (e, tile) => {
-      if (!prevMouse.current || (!addRoadWorks && !removeRoadWorks)) return;
-      roadWorks(e, tile, addRoadWorks);
-    },
-    [addRoadWorks, removeRoadWorks, roadWorks]
-  );
 
   const mouseUp = useCallback(
     (e, tile) => {
-      if (addRoadWorks || removeRoadWorks || !prevMouse.current) return;
+      if (!prevMouse.current) return;
       const dist =
         Math.abs(prevMouse.current.x - e.clientX) +
         Math.abs(prevMouse.current.y - e.clientY);
@@ -89,19 +54,13 @@ export default function Roads({
       const vertex = getVertex(e, tile);
       setSelectedVertex(vertex);
     },
-    [addRoadWorks, removeRoadWorks, setSelectedVertex]
+    [setSelectedVertex]
   );
 
   return (
     <>
       {roadTiles.map((tile, index) => (
-        <Road
-          key={index}
-          tile={tile}
-          mouseDown={mouseDown}
-          mouseUp={mouseUp}
-          mouseMove={mouseMove}
-        />
+        <Road key={index} tile={tile} mouseDown={mouseDown} mouseUp={mouseUp} />
       ))}
     </>
   );

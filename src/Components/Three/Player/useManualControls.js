@@ -5,8 +5,10 @@ function useKeyPress(target) {
   const [keyPressed, setKeyPressed] = useState(false);
 
   // If pressed key is our target key then set to true
-  const downHandler = ({ key }) =>
-    key === target ? setKeyPressed(true) : null;
+  const downHandler = (e) => {
+    e.preventDefault();
+    return e.key === target ? setKeyPressed(true) : null;
+  };
   const upHandler = ({ key }) => (key === target ? setKeyPressed(false) : null);
   useEffect(() => {
     // Add event listeners

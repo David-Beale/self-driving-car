@@ -1,28 +1,32 @@
 import dijkstra from "../graph/helpers/dijkstra";
-import dijkstraTime from "../graph/helpers/dijkstra-time";
 import { getCurve } from "./ellipseCurve";
 const RADIUS = 2.5;
-const COLORS = {
-  distance: "rgb(58, 94, 211)",
-  time: "yellow",
-};
 
 export default class Player {
   constructor() {
     this.angle = 0;
     this.stepCount = 10;
     this.counter = 0;
-    this.speedCounter = 0;
     this.arrayOfSteps = [];
-    this.pathfinding = "distance";
     this.startingCoords = [];
     this.comparePaths = {};
-    this.speed = 5;
-    this.maxSpeed = 5;
   }
-  run() {
-    if (!this.compare && this.pathArray) this.calculateNextStep();
-    if (this.currentVertex) this.currentVertex.internalCounter++;
+  run(x, z) {
+    // if (!this.compare && this.pathArray) this.calculateNextStep();
+    let flag = true;
+    while (flag) {
+      if (!this.arrayOfSteps.length) return;
+      const {
+        x: xTarget,
+        z: zTarget,
+        check,
+      } = this.arrayOfSteps[this.arrayOfSteps.length - 1];
+      flag = this.positionCheck(x, z, xTarget, check.dx, zTarget, check.dz);
+      if (flag) {
+        this.arrayOfSteps.pop();
+        this.pathGeometry.setVertices(this.arrayOfSteps);
+      }
+    }
   }
 
   addMap(map) {
@@ -51,10 +55,10 @@ export default class Player {
     const startVertex = this.nextVertex?.value || this.currentVertex.value;
 
     this.runPathfinding(startVertex, vertex.value);
-    // console.log(this.pathArray, this.arrayOfSteps);
 
     if (this.compare) return this.comparePaths;
-
+    this.pathGeometry.setVertices(this.arrayOfSteps);
+    console.log(this.arrayOfSteps);
     this.pathIndex = -1;
     if (!this.nextVertex) {
       this.counter = this.stepCount;
@@ -63,64 +67,11 @@ export default class Player {
   }
 
   runPathfinding(a, b) {
-    switch (this.pathfinding) {
-      case "distance": {
-        this.pathColor = COLORS.distance;
-        const res = dijkstra(this.map, a, b);
-        this.pathArray = res.path;
-        this.arrayOfSteps = this.buildPath(this.pathArray);
-        return;
-      }
-      case "time": {
-        this.pathColor = COLORS.time;
-        const res = dijkstraTime(this.map, a, b);
-        this.pathArray = res.path;
-        this.arrayOfSteps = this.buildPath(this.pathArray);
-        return;
-      }
-      case "compare": {
-        const { totalDistance: distanceDist, path: distancePath } = dijkstra(
-          this.map,
-          a,
-          b
-        );
-        const { totalDistance: timeTime, path: timePath } = dijkstraTime(
-          this.map,
-          a,
-          b
-        );
-        this.comparePaths.distance = {
-          distance: distanceDist,
-          path: distancePath,
-          time: this.getEstimatedTime(distancePath),
-          arrayOfSteps: this.buildPath(distancePath),
-        };
-        this.comparePaths.time = {
-          distance: timePath.length - 1,
-          path: timePath,
-          time: timeTime,
-          arrayOfSteps: this.buildPath(timePath),
-        };
-        this.compare = true;
-        return;
-      }
-      default:
-        return;
-    }
+    const res = dijkstra(this.map, a, b);
+    this.pathArray = res.path;
+    this.arrayOfSteps = this.buildPath(this.pathArray);
   }
-  modeSelect(mode) {
-    this.pathfinding = mode;
-    if (!this.compare) return;
-    this.compare = false;
-    this.pathColor = COLORS[mode];
-    this.pathArray = this.comparePaths[mode].path;
-    this.arrayOfSteps = this.comparePaths[mode].arrayOfSteps;
-    this.pathIndex = -1;
-    if (!this.nextVertex) {
-      this.counter = this.stepCount;
-      this.vertexCheck();
-    }
-  }
+
   getEstimatedTime(path) {
     let time = 0;
     for (let i = 1; i < path.length; i++) {
@@ -137,13 +88,8 @@ export default class Player {
     if (this.stopped) {
       this.checkExistingObstacles();
     }
-    if (this.stopped || this.compare) return;
+    if (this.stopped) return;
 
-    const speedLimited = this.speedCheck();
-    if (speedLimited) {
-      this.lerpMovement(speedLimited);
-      return;
-    }
     this.takeNextStep();
     this.vertexCheck();
   }
@@ -160,22 +106,7 @@ export default class Player {
       this.stopped = false;
     }
   }
-  speedCheck() {
-    this.speedCounter += this.speed;
-    if (this.speedCounter < this.maxSpeed) return this.speed / this.maxSpeed;
-    this.speedCounter = 0;
-    this.counter++;
-  }
-  lerpMovement(speedLimited) {
-    const {
-      x: nextX,
-      y: nextY,
-      angle: nextAngle,
-    } = this.arrayOfSteps[this.arrayOfSteps.length - 1];
-    this.currentX += speedLimited * (nextX - this.current.x);
-    this.currentY += speedLimited * (nextY - this.current.y);
-    this.angle += speedLimited * (nextAngle - this.current.angle);
-  }
+
   takeNextStep() {
     this.current = this.arrayOfSteps.pop(); //save this value to be used in lerp
     this.currentX = this.current.x;
@@ -196,30 +127,15 @@ export default class Player {
       return true;
     }
 
-    this.setSpeed();
     this.obstacleCheck();
   }
 
   destinationReached() {
     this.pathArray = null;
   }
-  setSpeed() {
-    if (this.nextVertex.roadWorks) {
-      this.speed = 1;
-    } else {
-      this.speed = 5;
-    }
-  }
+
   obstacleCheck() {
-    if (
-      !this.nextVertex.occupied &&
-      this.currentVertex.light === "green" &&
-      !this.compare
-    ) {
-      this.currentVertex.occupiedFalse();
-      this.nextVertex.occupied = true;
-      this.nextVertex.speed = this.speed;
-    } else {
+    if (this.currentVertex.light === "red") {
       this.stopped = true;
     }
   }
@@ -239,6 +155,7 @@ export default class Player {
     this.buildLastSegment(pathArray);
 
     const reversedArray = this.pathParameters.arrayOfSteps.reverse();
+    console.log(this.counter);
     const remainingSteps = this.stepCount - this.counter;
     const remainingPath = this.arrayOfSteps.slice(
       this.arrayOfSteps.length - remainingSteps,
@@ -258,7 +175,7 @@ export default class Player {
       nextVertex.z
     );
 
-    this.straight(nextVertex, currentVertex, this.stepCount / 2);
+    this.straight(currentVertex, nextVertex, this.stepCount / 2);
   }
   buildMiddleSegments(pathArray) {
     for (let i = 1; i < pathArray.length - 1; i++) {
@@ -268,7 +185,7 @@ export default class Player {
       if (prevVertex.x !== nextVertex.x && prevVertex.z !== nextVertex.z) {
         this.turn(prevVertex, nextVertex);
       } else {
-        this.straight(nextVertex, currentVertex, this.stepCount);
+        this.straight(currentVertex, nextVertex, this.stepCount);
       }
     }
   }
@@ -276,7 +193,7 @@ export default class Player {
     const nextVertex = this.map[pathArray[pathArray.length - 1]];
     const currentVertex = this.map[pathArray[pathArray.length - 2]];
 
-    this.straight(nextVertex, currentVertex, this.stepCount / 2);
+    this.straight(currentVertex, nextVertex, this.stepCount / 2);
   }
   turn(prevVertex, nextVertex) {
     const centerX = (prevVertex.x + nextVertex.x) / 2;
@@ -286,6 +203,9 @@ export default class Player {
     const endZ =
       this.pathParameters.currentZ === centerZ ? nextVertex.z : centerZ;
 
+    const dx = nextVertex.x - prevVertex.x;
+    const dz = nextVertex.z - prevVertex.z;
+
     const { curve, direction } = getCurve(
       centerX,
       centerZ,
@@ -294,33 +214,46 @@ export default class Player {
       endX,
       endZ
     );
-    for (let j = 1; j < curve.length; j++) {
-      const { angle, point } = curve[j];
-      this.pathParameters.arrayOfSteps.push({
+    for (let i = 1; i < curve.length; i++) {
+      const { angle, point } = curve[i];
+      const object = {
         x: point.x - RADIUS,
         y: 0.5,
         z: -point.y - RADIUS,
         angle,
-        direction,
-      });
+        check: { dx: Math.sign(dx), dz: Math.sign(dz) },
+      };
+      if (i === 1) {
+        object.direction = direction;
+        object.step = true;
+      }
+      this.pathParameters.arrayOfSteps.push(object);
       const final = curve[curve.length - 1];
       this.pathParameters.currentX = final.point.x;
       this.pathParameters.currentZ = -final.point.y;
       this.pathParameters.currentAngle = final.angle;
     }
   }
-  straight(nextVertex, currentVertex, length) {
+  straight(currentVertex, nextVertex, length) {
     const dx = (nextVertex.x - currentVertex.x) / this.stepCount;
     const dz = (nextVertex.z - currentVertex.z) / this.stepCount;
     for (let i = 0; i < length; i++) {
       this.pathParameters.currentX += dx;
       this.pathParameters.currentZ += dz;
-      this.pathParameters.arrayOfSteps.push({
+
+      const object = {
         x: this.pathParameters.currentX - RADIUS,
         y: 0.5,
         z: this.pathParameters.currentZ - RADIUS,
         angle: this.pathParameters.currentAngle,
-      });
+        check: { dx: Math.sign(dx), dz: Math.sign(dz) },
+      };
+      if (i === 0) {
+        object.direction = 0;
+        object.step = true;
+      }
+
+      this.pathParameters.arrayOfSteps.push(object);
     }
   }
   getAngle(startX, startZ, nextX, nextZ) {
@@ -342,5 +275,10 @@ export default class Player {
         break;
     }
     return +angle.toFixed(3);
+  }
+  positionCheck(x, z, xTarget, xDirection, zTarget, zDirection) {
+    if (xDirection && xDirection * (xTarget - x) > 1) return false;
+    if (zDirection && zDirection * (zTarget - z) > 1) return false;
+    return true;
   }
 }

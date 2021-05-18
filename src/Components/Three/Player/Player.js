@@ -12,13 +12,7 @@ const parameters = {
   maxForce: 1000,
   maxBrakeForce: 20,
 };
-export default function Player({
-  // playerRef,
-  map,
-  selectedVertex,
-  pathfindingMode,
-  dispatchStats,
-}) {
+export default function Player({ playerRef, map, selectedVertex }) {
   const [steeringValue, setSteeringValue] = useState(0);
   const [engineForce, setEngineForce] = useState(0);
   const [brakeForce, setBrakeForce] = useState(0);
@@ -35,7 +29,8 @@ export default function Player({
   }, [map]);
 
   useFrame(() => {
-    // newPlayer.run();
+    // console.log(playerRef.current.position.z);
+    newPlayer.run(playerRef.current.position.x, playerRef.current.position.z);
     // playerRef.current.position.x = newPlayer.currentX;
     // playerRef.current.position.y = newPlayer.currentY;
     // playerRef.current.rotation.y = Math.PI / 2 + newPlayer.angle;
@@ -44,20 +39,15 @@ export default function Player({
   return (
     <>
       <Vehicle
-        position={[147.5, 5, 157.5]}
-        rotation={[0, Math.PI / 2, 0]}
-        angularVelocity={[0, 1.69, 0]}
-        parameters={parameters}
+        playerRef={playerRef}
+        position={[147.5, 10, 157.5]}
+        rotation={[0, Math.PI, 0]}
+        angularVelocity={[-1.49 * Math.PI, 0, 0]}
         steeringValue={steeringValue}
         engineForce={engineForce}
         brakeForce={brakeForce}
       />
-      <PlayerPath
-        newPlayer={newPlayer}
-        pathfindingMode={pathfindingMode}
-        selectedVertex={selectedVertex}
-        dispatchStats={dispatchStats}
-      />
+      <PlayerPath newPlayer={newPlayer} selectedVertex={selectedVertex} />
       <ClickIndicator selectedVertex={selectedVertex} />
     </>
   );

@@ -7,21 +7,18 @@ import { useWheels } from "./useWheels";
 import { useControls } from "./useControls";
 
 export default function Vehicle({
+  playerRef,
   position,
   rotation,
   angularVelocity,
-  parameters,
   steeringValue,
   engineForce,
   brakeForce,
 }) {
-  // chassisBody
-  const chassis = useRef();
-
   const [wheels, wheelInfos] = useWheels();
 
   const [vehicle, api] = useRaycastVehicle(() => ({
-    chassisBody: chassis,
+    chassisBody: playerRef,
     wheels,
     wheelInfos,
     indexForwardAxis: 2,
@@ -34,7 +31,7 @@ export default function Vehicle({
   return (
     <group ref={vehicle}>
       <Chassis
-        ref={chassis}
+        ref={playerRef}
         rotation={rotation}
         position={position}
         angularVelocity={angularVelocity}

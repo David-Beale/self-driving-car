@@ -8,7 +8,7 @@ import { useAnimatedMovement } from "./cameraMovements";
 // extend THREE to include TrackballControls
 extend({ TrackballControls });
 
-export default function Controls({ cameraLock, roadWorks, playerRef }) {
+export default function Controls({ cameraLock, playerRef }) {
   const controls = useRef();
   const { camera, gl, invalidate } = useThree();
 
@@ -36,7 +36,6 @@ export default function Controls({ cameraLock, roadWorks, playerRef }) {
 
   return (
     <trackballControls
-      enabled={!roadWorks}
       ref={controls}
       args={[camera, gl.domElement]}
       enableDamping
