@@ -29,37 +29,42 @@ export const useManualControls = (
   setSteeringValue,
   setEngineForce,
   setBrakeForce,
+  setReset,
   engineForce,
   parameters
 ) => {
-  const forward = useKeyPress("w");
-  const backward = useKeyPress("s");
-  const left = useKeyPress("a");
-  const right = useKeyPress("d");
-  const brake = useKeyPress(" "); // space bar
+  // const forward = useKeyPress("w");
+  // const backward = useKeyPress("s");
+  // const left = useKeyPress("a");
+  // const right = useKeyPress("d");
+  // const brake = useKeyPress(" "); // space bar
+  const reset = useKeyPress("r");
 
   const { maxSteerVal, maxForce, maxBrakeForce } = parameters;
 
   useFrame(() => {
-    if (left && !right) {
-      setSteeringValue(maxSteerVal);
-    } else if (right && !left) {
-      setSteeringValue(-maxSteerVal);
-    } else {
-      setSteeringValue(0);
+    // if (left && !right) {
+    //   setSteeringValue(maxSteerVal);
+    // } else if (right && !left) {
+    //   setSteeringValue(-maxSteerVal);
+    // } else {
+    //   setSteeringValue(0);
+    // }
+    // if (forward && !backward) {
+    //   setBrakeForce(0);
+    //   setEngineForce(-maxForce);
+    // } else if (backward && !forward) {
+    //   setBrakeForce(0);
+    //   setEngineForce(maxForce);
+    // } else if (engineForce !== 0) {
+    //   setEngineForce(0);
+    // }
+    // if (brake) {
+    //   setBrakeForce(maxBrakeForce);
+    // }
+    // if (!brake) setBrakeForce(0);
+    if (reset) {
+      setReset([true]);
     }
-    if (forward && !backward) {
-      setBrakeForce(0);
-      setEngineForce(-maxForce);
-    } else if (backward && !forward) {
-      setBrakeForce(0);
-      setEngineForce(maxForce);
-    } else if (engineForce !== 0) {
-      setEngineForce(0);
-    }
-    if (brake) {
-      setBrakeForce(maxBrakeForce);
-    }
-    if (!brake) setBrakeForce(0);
   });
 };

@@ -56,7 +56,8 @@ export default function Three() {
               />
               <TrafficLights
                 verticesMap={verticesMap}
-                enabled={trafficLights}
+                enabled={false}
+                // enabled={trafficLights}
               />
               <Player
                 playerRef={playerRef}

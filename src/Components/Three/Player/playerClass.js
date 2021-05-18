@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import dijkstra from "../graph/helpers/dijkstra";
 import { getCurve } from "./ellipseCurve";
 const RADIUS = 2.5;
@@ -15,16 +16,39 @@ export default class Player {
     // if (!this.compare && this.pathArray) this.calculateNextStep();
     let flag = true;
     while (flag) {
-      if (!this.arrayOfSteps.length) return;
+      if (!this.arrayOfSteps.length) return ["end"];
       const {
         x: xTarget,
         z: zTarget,
         check,
       } = this.arrayOfSteps[this.arrayOfSteps.length - 1];
+      const vec1 = new THREE.Vector2(x, -z);
+      const vec2 = new THREE.Vector2(xTarget, -zTarget);
+      const vecDiff = vec2.sub(vec1);
+      const angle = vecDiff.angle();
+      let angleDiff = angle - this.rotation;
+      if (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
+      // if (angleDiff < 0) angleDiff -= 2 * Math.PI;
+      console.log(angleDiff);
+      if (Math.abs(angleDiff > 0.25)) console.log(angleDiff);
       flag = this.positionCheck(x, z, xTarget, check.dx, zTarget, check.dz);
       if (flag) {
-        this.arrayOfSteps.pop();
+        const nextStep = this.arrayOfSteps.pop();
         this.pathGeometry.setVertices(this.arrayOfSteps);
+        if (nextStep.next >= 0) {
+          this.vertexCheck();
+          const upcomingSteps = this.directions.slice(
+            nextStep.next + 1,
+            nextStep.next + 4
+          );
+          const breakingReqired = upcomingSteps.some((dir) => dir !== 0);
+          console.log(this.directions[nextStep.next]);
+          return [
+            this.directions[nextStep.next],
+            breakingReqired,
+            upcomingSteps.length < 3,
+          ];
+        }
       }
     }
   }
@@ -58,11 +82,11 @@ export default class Player {
 
     if (this.compare) return this.comparePaths;
     this.pathGeometry.setVertices(this.arrayOfSteps);
-    console.log(this.arrayOfSteps);
     this.pathIndex = -1;
+    console.log(this.pathArray);
     if (!this.nextVertex) {
       this.counter = this.stepCount;
-      this.vertexCheck();
+      // this.vertexCheck();
     }
   }
 
@@ -115,19 +139,19 @@ export default class Player {
   }
 
   vertexCheck() {
-    if (this.counter !== this.stepCount) return;
-    this.counter = 0;
+    // if (this.counter !== this.stepCount) return;
+    // this.counter = 0;
 
     this.pathIndex++;
     this.currentVertex = this.map[this.pathArray[this.pathIndex]];
     this.nextVertex = this.map[this.pathArray[this.pathIndex + 1]];
 
-    if (!this.nextVertex) {
-      this.destinationReached();
-      return true;
-    }
+    // if (!this.nextVertex) {
+    // this.destinationReached();
+    // return true;
+    // }
 
-    this.obstacleCheck();
+    // this.obstacleCheck();
   }
 
   destinationReached() {
@@ -146,6 +170,7 @@ export default class Player {
       currentX: 0,
       currentZ: 0,
       currentAngle: 0,
+      directions: [],
     };
 
     this.buildFirstSegment(pathArray);
@@ -155,12 +180,12 @@ export default class Player {
     this.buildLastSegment(pathArray);
 
     const reversedArray = this.pathParameters.arrayOfSteps.reverse();
-    console.log(this.counter);
     const remainingSteps = this.stepCount - this.counter;
     const remainingPath = this.arrayOfSteps.slice(
       this.arrayOfSteps.length - remainingSteps,
       this.arrayOfSteps.length
     );
+    this.directions = this.pathParameters.directions;
     return [...reversedArray, ...remainingPath];
   }
   buildFirstSegment(pathArray) {
@@ -224,8 +249,8 @@ export default class Player {
         check: { dx: Math.sign(dx), dz: Math.sign(dz) },
       };
       if (i === 1) {
-        object.direction = direction;
-        object.step = true;
+        object.next = this.pathParameters.directions.length;
+        this.pathParameters.directions.push(direction);
       }
       this.pathParameters.arrayOfSteps.push(object);
       const final = curve[curve.length - 1];
@@ -249,8 +274,8 @@ export default class Player {
         check: { dx: Math.sign(dx), dz: Math.sign(dz) },
       };
       if (i === 0) {
-        object.direction = 0;
-        object.step = true;
+        object.next = this.pathParameters.directions.length;
+        this.pathParameters.directions.push(0);
       }
 
       this.pathParameters.arrayOfSteps.push(object);
@@ -277,8 +302,8 @@ export default class Player {
     return +angle.toFixed(3);
   }
   positionCheck(x, z, xTarget, xDirection, zTarget, zDirection) {
-    if (xDirection && xDirection * (xTarget - x) > 1) return false;
-    if (zDirection && zDirection * (zTarget - z) > 1) return false;
+    if (xDirection && xDirection * (xTarget - x) > 2) return false;
+    if (zDirection && zDirection * (zTarget - z) > 2) return false;
     return true;
   }
 }

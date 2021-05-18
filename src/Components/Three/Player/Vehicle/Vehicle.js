@@ -14,6 +14,7 @@ export default function Vehicle({
   steeringValue,
   engineForce,
   brakeForce,
+  reset,
 }) {
   const [wheels, wheelInfos] = useWheels();
 
@@ -26,7 +27,7 @@ export default function Vehicle({
     indexUpAxis: 1,
   }));
 
-  useControls(api, steeringValue, engineForce, brakeForce);
+  useControls(api, playerRef, steeringValue, engineForce, brakeForce, reset);
 
   return (
     <group ref={vehicle}>
