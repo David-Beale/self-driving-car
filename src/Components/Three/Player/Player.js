@@ -47,55 +47,33 @@ export default function Player({ playerRef, map, selectedVertex }) {
       playerRef.current.position.x,
       playerRef.current.position.z
     );
-    if (res === undefined) {
-      if (slowDown.current && newPlayer.velocity > 7) {
-        console.log("breaking");
-        setEngineForce(newPlayer.velocity * 165);
-      } else if (
-        slowDown.current &&
-        newPlayer.velocity < 7 &&
-        engineForce > 0
-      ) {
-        setEngineForce(0);
-      }
-      return;
+    let force = -parameters.maxForce;
+    if (slowDown.current && newPlayer.velocity > 7) {
+      console.log("breaking");
+      force = 2400;
+      slowDown.current = true;
+    } else if (slowDown.current && newPlayer.velocity < 7 && engineForce > 0) {
+      force = 0;
+      slowDown.current = false;
+    } else if (newPlayer.velocity > 18) {
+      force = 0;
     }
     const [currentDirection, approachingTurn, approachingEnd] = res;
     curDir.current = currentDirection;
-    slowDown.current = approachingTurn || approachingEnd;
+    if (approachingTurn || approachingEnd) {
+      slowDown.current = true;
+      console.log("slowdown");
+    }
     if (currentDirection === "end") {
       setEngineForce(0);
       setBrakeForce(25);
       prevDir.current = 0;
       return;
     }
-    if (
-      (currentDirection && approachingTurn) ||
-      prevDir.current[0] === "double turn"
-    ) {
-      console.log("double turn");
-      const newDir = currentDirection || prevDir.current[1];
-      console.log(newDir);
-      setSteeringValue(newDir * 2 * parameters.maxSteerVal);
-      setEngineForce(-parameters.maxForce);
-      setBrakeForce(0);
-      prevDir.current = currentDirection
-        ? ["double turn", currentDirection]
-        : 0;
-    } else if (currentDirection || prevDir.current[0] === "turn") {
-      console.log("single turn");
-      const newDir = currentDirection || prevDir.current[1];
-      setSteeringValue(newDir * parameters.maxSteerVal);
-      setEngineForce(-parameters.maxForce);
-      setBrakeForce(0);
-      prevDir.current = currentDirection ? ["turn", currentDirection] : 0;
-    } else {
-      console.log("straight");
-      setBrakeForce(0);
-      setSteeringValue(0);
-      setEngineForce(-parameters.maxForce);
-      prevDir.current = currentDirection;
-    }
+    console.log(1.75 * currentDirection * parameters.maxSteerVal);
+    setBrakeForce(0);
+    setSteeringValue(1.75 * currentDirection * parameters.maxSteerVal);
+    setEngineForce(force);
   });
 
   return (

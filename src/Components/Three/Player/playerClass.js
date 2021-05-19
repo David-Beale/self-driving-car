@@ -28,9 +28,7 @@ export default class Player {
       const angle = vecDiff.angle();
       let angleDiff = angle - this.rotation;
       if (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
-      // if (angleDiff < 0) angleDiff -= 2 * Math.PI;
-      console.log(angleDiff);
-      if (Math.abs(angleDiff > 0.25)) console.log(angleDiff);
+      else if (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
       flag = this.positionCheck(x, z, xTarget, check.dx, zTarget, check.dz);
       if (flag) {
         const nextStep = this.arrayOfSteps.pop();
@@ -42,14 +40,10 @@ export default class Player {
             nextStep.next + 4
           );
           const breakingReqired = upcomingSteps.some((dir) => dir !== 0);
-          console.log(this.directions[nextStep.next]);
-          return [
-            this.directions[nextStep.next],
-            breakingReqired,
-            upcomingSteps.length < 3,
-          ];
+          return [angleDiff, breakingReqired, upcomingSteps.length < 3];
         }
       }
+      return [angleDiff];
     }
   }
 
