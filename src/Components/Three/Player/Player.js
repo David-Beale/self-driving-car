@@ -62,7 +62,10 @@ export default function Player({ map, selectedVertex, mode, player }) {
     let breakingForce = 0;
     if (slowDown.current && player.velocity > slowDown.current.minSpeed) {
       // console.log("breaking");
-      breakingForce = slowDown.current.breakingFactor * player.velocity;
+      breakingForce = Math.min(
+        slowDown.current.breakingFactor * player.velocity,
+        parameters.maxBrakeForce
+      );
     } else if (
       slowDown.current &&
       player.velocity < slowDown.current.minSpeed
@@ -78,12 +81,12 @@ export default function Player({ map, selectedVertex, mode, player }) {
       slowDown.current = { minSpeed: 8, breakingFactor: 1.1 };
       // console.log("slowdown");
     } else if (approachingEnd) {
-      slowDown.current = { minSpeed: 8, breakingFactor: 1.1 };
+      slowDown.current = { minSpeed: 3, breakingFactor: 2 };
     }
     if (currentDirection === "end") {
-      if (engineForce !== 0 || brakeForce !== 25) {
+      if (engineForce !== 0 || brakeForce !== parameters.maxBrakeForce) {
         setEngineForce(0);
-        setBrakeForce(25);
+        setBrakeForce(parameters.maxBrakeForce);
       }
       return;
     }

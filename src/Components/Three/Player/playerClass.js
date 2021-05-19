@@ -36,12 +36,12 @@ export default class Player {
         this.pathGeometry.setVertices(this.arrayOfSteps);
         if (nextStep.next >= 0) {
           this.vertexCheck();
-          const upcomingSteps = this.directions.slice(
-            nextStep.next + 1,
-            nextStep.next + 4
-          );
-          const breakingReqired = upcomingSteps.some((dir) => dir !== 0);
-          return [angleDiff, breakingReqired, upcomingSteps.length < 3];
+
+          const breakingReqired = this.directions
+            .slice(nextStep.next + 1, nextStep.next + 3)
+            .some((dir) => dir !== 0);
+          const approachingEnd = nextStep.next > this.directions.length - 4;
+          return [angleDiff, breakingReqired, approachingEnd];
         }
       }
       return [angleDiff];
