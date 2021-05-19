@@ -8,7 +8,7 @@ import { useAnimatedMovement } from "./cameraMovements";
 // extend THREE to include TrackballControls
 extend({ TrackballControls });
 
-export default function Controls({ cameraLock, playerRef }) {
+export default function Controls({ cameraLock, player }) {
   const controls = useRef();
   const { camera, gl, invalidate } = useThree();
 
@@ -31,7 +31,7 @@ export default function Controls({ cameraLock, playerRef }) {
     controls,
     camera,
     cameraLock,
-    playerRef,
+    player,
   });
 
   return (

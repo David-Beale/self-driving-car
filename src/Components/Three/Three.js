@@ -1,4 +1,4 @@
-import React, { useRef, Suspense, useState } from "react";
+import React, { Suspense, useState } from "react";
 import { Canvas } from "react-three-fiber";
 import { Loader, Sky } from "@react-three/drei";
 import { Physics } from "@react-three/cannon";
@@ -12,6 +12,8 @@ import { map, verticesMap } from "./graph/graphSetup";
 import { ThreeContainer } from "./ThreeStyle";
 import TrafficLights from "./TrafficLights/TrafficLights";
 import { useSelector } from "react-redux";
+import playerClass from "./Player/playerClass";
+const player = new playerClass();
 
 const defaultContactMaterial = {
   contactEquationRelaxation: 0.001,
@@ -19,7 +21,6 @@ const defaultContactMaterial = {
 };
 
 export default function Three() {
-  const playerRef = useRef();
   const [selectedVertex, setSelectedVertex] = useState(null);
 
   const trafficLights = useSelector(({ settings }) => settings.trafficLights);
@@ -45,10 +46,7 @@ export default function Three() {
           <directionalLight color="#ffffff" position={[-100, 50, 50]} />
           <directionalLight color="#ffffff" position={[100, 50, 50]} />
           <group position={[-150, 0, -150]}>
-            <Controls
-              cameraLock={cameraLock}
-              // playerRef={playerRef}
-            />
+            <Controls cameraLock={cameraLock} player={player} />
 
             <Suspense fallback={null}>
               <Roads
@@ -60,7 +58,7 @@ export default function Three() {
                 enabled={trafficLights}
               />
               <Player
-                playerRef={playerRef}
+                player={player}
                 map={map}
                 selectedVertex={selectedVertex}
                 mode={mode}

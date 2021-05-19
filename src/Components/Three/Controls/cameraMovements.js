@@ -19,40 +19,34 @@ const interpolate = (parameter, progress) => {
 };
 
 const findFollowX = (angle, x) => {
-  return 150 * Math.cos(angle + Math.PI / 2) + x - 1500;
+  return -30 * Math.cos(angle) + x - 150;
 };
-const findFollowY = (angle, y) => {
-  return 150 * Math.sin(angle + Math.PI / 2) + y + 1500;
+const findFollowZ = (angle, z) => {
+  return 30 * Math.sin(angle) + z - 150;
 };
 
 const findFollowTarget = (parameters, player) => {
-  parameters.position.targetX = findFollowX(
-    player.rotation.y,
-    player.position.x
-  );
-  parameters.position.targetY = findFollowY(
-    player.rotation.y,
-    player.position.y
-  );
-  parameters.position.targetZ = 100;
+  parameters.position.targetX = findFollowX(player.rotation, player.position.x);
+  parameters.position.targetY = 20;
+  parameters.position.targetZ = findFollowZ(player.rotation, player.position.z);
 
-  parameters.target.targetX = player.position.x - 1500;
-  parameters.target.targetY = player.position.y + 1500;
-  parameters.target.targetZ = 0;
+  parameters.target.targetX = player.position.x - 150;
+  parameters.target.targetY = 0;
+  parameters.target.targetZ = player.position.z - 150;
 
   parameters.up.targetX = 0;
-  parameters.up.targetY = 0;
-  parameters.up.targetZ = 1;
+  parameters.up.targetY = 1;
+  parameters.up.targetZ = 0;
 };
 
 const findTopDownTarget = (parameters, player) => {
-  parameters.position.targetX = player?.position.x - 1500 || 0;
-  parameters.position.targetY = player?.position.y + 1500 || 0;
-  parameters.position.targetZ = 1250;
+  parameters.position.targetX = player?.position.x - 150 || 0;
+  parameters.position.targetY = 30;
+  parameters.position.targetZ = player?.position.z - 120 || 0;
 
-  parameters.target.targetX = player?.position.x - 1500 || 0;
-  parameters.target.targetY = player?.position.y + 1500 || 0;
-  parameters.target.targetZ = 0;
+  parameters.target.targetX = player?.position.x - 150 || 0;
+  parameters.target.targetY = 0;
+  parameters.target.targetZ = player?.position.z - 150 || 0;
 
   parameters.up.targetX = 0;
   parameters.up.targetY = 1;
@@ -69,18 +63,13 @@ function interpolateSourceTarget(parameters, player, movement, progress) {
   });
 }
 
-export function useAnimatedMovement({
-  controls,
-  camera,
-  cameraLock,
-  playerRef,
-}) {
+export function useAnimatedMovement({ controls, camera, cameraLock, player }) {
   const parameters = useRef({ position: null, target: null, up: null });
   const movement = useRef(null);
   const linearProgress = useRef(0);
 
   useEffect(() => {
-    if (cameraLock === undefined || !playerRef.current.position.x) {
+    if (cameraLock === undefined || !player.position.x) {
       return;
     }
     parameters.current.position = { ...camera.position };
@@ -95,7 +84,7 @@ export function useAnimatedMovement({
     } else {
       movement.current = "reset";
     }
-  }, [cameraLock, camera, controls, playerRef]);
+  }, [cameraLock, camera, controls, player]);
 
   useFrame(() => {
     if (!movement.current) return;
@@ -112,7 +101,7 @@ export function useAnimatedMovement({
       const progress = d3.easeQuadInOut(linearProgress.current);
       interpolateSourceTarget(
         parameters.current,
-        playerRef.current,
+        player,
         movement.current,
         progress
       );
@@ -126,15 +115,15 @@ export function useAnimatedMovement({
   };
   const follow = () => {
     camera.position.set(
-      findFollowX(playerRef.current.rotation.y, playerRef.current.position.x),
-      findFollowY(playerRef.current.rotation.y, playerRef.current.position.y),
-      100
+      findFollowX(player.rotation, player.position.x),
+      20,
+      findFollowZ(player.rotation, player.position.z)
     );
     controls.current.target.set(
-      playerRef.current.position.x - 1500,
-      playerRef.current.position.y + 1500,
-      0
+      player.position.x - 150,
+      0,
+      player.position.z - 150
     );
-    camera.up.set(0, 0, 1);
+    camera.up.set(0, 1, 0);
   };
 }

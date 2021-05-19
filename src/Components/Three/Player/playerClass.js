@@ -6,20 +6,21 @@ const RADIUS = 2.5;
 export default class Player {
   constructor() {
     this.angle = 0;
+    this.position = {};
     this.stepCount = 10;
     this.counter = 0;
     this.arrayOfSteps = [];
     this.startingCoords = [];
     this.comparePaths = {};
   }
-  run(x, z) {
+  run() {
     // if (!this.compare && this.pathArray) this.calculateNextStep();
     let flag = true;
     while (flag) {
       if (!this.arrayOfSteps.length) return ["end"];
       const { x: xTarget, z: zTarget } =
         this.arrayOfSteps[this.arrayOfSteps.length - 1];
-      const vec1 = new THREE.Vector2(x, -z);
+      const vec1 = new THREE.Vector2(this.position.x, -this.position.z);
       const vec2 = new THREE.Vector2(xTarget, -zTarget);
 
       flag = vec1.distanceTo(vec2) < 2;
