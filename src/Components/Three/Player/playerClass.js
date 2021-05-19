@@ -17,19 +17,19 @@ export default class Player {
     let flag = true;
     while (flag) {
       if (!this.arrayOfSteps.length) return ["end"];
-      const {
-        x: xTarget,
-        z: zTarget,
-        check,
-      } = this.arrayOfSteps[this.arrayOfSteps.length - 1];
+      const { x: xTarget, z: zTarget } =
+        this.arrayOfSteps[this.arrayOfSteps.length - 1];
       const vec1 = new THREE.Vector2(x, -z);
       const vec2 = new THREE.Vector2(xTarget, -zTarget);
+
+      flag = vec1.distanceTo(vec2) < 2;
+
       const vecDiff = vec2.sub(vec1);
       const angle = vecDiff.angle();
       let angleDiff = angle - this.rotation;
       if (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
       else if (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
-      flag = this.positionCheck(x, z, xTarget, check.dx, zTarget, check.dz);
+
       if (flag) {
         const nextStep = this.arrayOfSteps.pop();
         this.pathGeometry.setVertices(this.arrayOfSteps);
@@ -222,9 +222,6 @@ export default class Player {
     const endZ =
       this.pathParameters.currentZ === centerZ ? nextVertex.z : centerZ;
 
-    const dx = nextVertex.x - prevVertex.x;
-    const dz = nextVertex.z - prevVertex.z;
-
     const { curve, direction } = getCurve(
       centerX,
       centerZ,
@@ -240,7 +237,6 @@ export default class Player {
         y: 0.5,
         z: -point.y - RADIUS,
         angle,
-        check: { dx: Math.sign(dx), dz: Math.sign(dz) },
       };
       if (i === 1) {
         object.next = this.pathParameters.directions.length;
@@ -265,7 +261,6 @@ export default class Player {
         y: 0.5,
         z: this.pathParameters.currentZ - RADIUS,
         angle: this.pathParameters.currentAngle,
-        check: { dx: Math.sign(dx), dz: Math.sign(dz) },
       };
       if (i === 0) {
         object.next = this.pathParameters.directions.length;
@@ -294,10 +289,5 @@ export default class Player {
         break;
     }
     return +angle.toFixed(3);
-  }
-  positionCheck(x, z, xTarget, xDirection, zTarget, zDirection) {
-    if (xDirection && xDirection * (xTarget - x) > 2) return false;
-    if (zDirection && zDirection * (zTarget - z) > 2) return false;
-    return true;
   }
 }
