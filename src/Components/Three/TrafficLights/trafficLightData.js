@@ -9,12 +9,12 @@ const lightSet = {
 const xOffsets = {
   U: -2.5,
   D: 2.5,
-  L: -5.0,
-  R: 5.0,
+  L: -4.0,
+  R: 4.0,
 };
 const zOffsets = {
-  U: -5.0,
-  D: 5.0,
+  U: -4.0,
+  D: 4.0,
   L: 2.5,
   R: -2.5,
 };

@@ -14,7 +14,7 @@ export default function TrafficLight({ tile, color }) {
   }, [color, api, tile]);
   return (
     <mesh ref={ref} frustumCulled={false}>
-      <cylinderBufferGeometry attach="geometry" args={[0.25, 0.25, 5, 12]} />
+      <cylinderBufferGeometry attach="geometry" args={[0.15, 0.15, 5, 12]} />
       <meshLambertMaterial color={color} attach="material" />
     </mesh>
   );
