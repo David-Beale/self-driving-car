@@ -14,12 +14,14 @@ const parameters = {
   maxForce: 1000,
   maxBrakeForce: 20,
 };
-export default function Player({ playerRef, map, selectedVertex }) {
+export default function Player({ playerRef, map, selectedVertex, mode }) {
   const [steeringValue, setSteeringValue] = useState(0);
   const [engineForce, setEngineForce] = useState(0);
   const [brakeForce, setBrakeForce] = useState(0);
   const [reset, setReset] = useState(false);
   const slowDown = useRef(0);
+  const modeRef = useRef();
+  modeRef.current = mode;
 
   useManualControls(
     setSteeringValue,
@@ -27,7 +29,8 @@ export default function Player({ playerRef, map, selectedVertex }) {
     setBrakeForce,
     setReset,
     engineForce,
-    parameters
+    parameters,
+    mode
   );
   useEffect(() => {
     newPlayer.addMap(map);
@@ -41,11 +44,17 @@ export default function Player({ playerRef, map, selectedVertex }) {
     });
   }, [map, playerRef]);
 
+  useEffect(() => {
+    if (!selectedVertex || modeRef.current !== "mouse") return;
+    newPlayer.click(selectedVertex);
+  }, [selectedVertex]);
+
   useFrame(() => {
     const res = newPlayer.run(
       playerRef.current.position.x,
       playerRef.current.position.z
     );
+    if (mode !== "mouse") return;
     let force = 0;
     let breakingForce = 0;
     if (slowDown.current && newPlayer.velocity > slowDown.current.minSpeed) {
@@ -93,7 +102,7 @@ export default function Player({ playerRef, map, selectedVertex }) {
         brakeForce={brakeForce}
         reset={reset}
       />
-      <PlayerPath newPlayer={newPlayer} selectedVertex={selectedVertex} />
+      <PlayerPath newPlayer={newPlayer} />
       <ClickIndicator selectedVertex={selectedVertex} />
     </>
   );

@@ -5,13 +5,8 @@ import Line from "./Line";
 
 extend(meshline);
 
-export default memo(function PlayerPath({ newPlayer, selectedVertex }) {
+export default memo(function PlayerPath({ newPlayer }) {
   const pathRef = useRef();
-
-  useEffect(() => {
-    if (!selectedVertex) return;
-    newPlayer.click(selectedVertex);
-  }, [newPlayer, selectedVertex]);
 
   useEffect(() => {
     newPlayer.pathGeometry = pathRef.current.geometry;

@@ -25,6 +25,7 @@ export default function Three() {
   const trafficLights = useSelector(({ settings }) => settings.trafficLights);
 
   const cameraLock = useSelector(({ settings }) => settings.cameraLock);
+  const mode = useSelector(({ mode }) => mode.mode);
 
   return (
     <ThreeContainer>
@@ -56,13 +57,13 @@ export default function Three() {
               />
               <TrafficLights
                 verticesMap={verticesMap}
-                enabled={false}
-                // enabled={trafficLights}
+                enabled={trafficLights}
               />
               <Player
                 playerRef={playerRef}
                 map={map}
                 selectedVertex={selectedVertex}
+                mode={mode}
               />
             </Suspense>
           </group>

@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export const initialState = {
-  trafficLights: true,
+  trafficLights: false,
   cameraLock: undefined,
   collisionBoxes: false,
   computerNumber: 60,

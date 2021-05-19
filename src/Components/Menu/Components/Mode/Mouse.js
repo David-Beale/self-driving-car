@@ -1,23 +1,22 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import CompareIcon from "@material-ui/icons/Compare";
+import { useDispatch } from "react-redux";
+import MouseIcon from "@material-ui/icons/Mouse";
 
 import { ModeButtonContainer, StyledIconButton } from "./ModeStyle";
-import { compareMode } from "../../../../redux/mode";
+import { mouseMode } from "../../../../redux/mode";
 import { Tooltip } from "@material-ui/core";
 
-export default function CompareButton() {
+export default function Mouse({ enabled }) {
   const dispatch = useDispatch();
-  const enabled = useSelector(({ mode }) => mode.mode === "compare");
 
   const onClick = () => {
-    dispatch(compareMode());
+    dispatch(mouseMode());
   };
   return (
     <ModeButtonContainer>
-      <Tooltip title="Compare modes">
+      <Tooltip title="Mouse">
         <StyledIconButton enabled={enabled ? 1 : 0} onClick={onClick}>
-          <CompareIcon />
+          <MouseIcon />
         </StyledIconButton>
       </Tooltip>
     </ModeButtonContainer>

@@ -7,11 +7,6 @@ import { Container } from "./MenuStyle";
 import Help from "./Components/Help/Help";
 import ToggleTrafficLights from "./Components/ToggleTrafficLights/ToggleTrafficLights";
 import ToggleCameraLock from "./Components/ToggleCameraLock/ToggleCameraLock";
-import ComputerNumber from "./Components/ComputerNumber/ComputerNumber";
-import ToggleCollisionBoxes from "./Components/ToggleCollisionBoxes/ToggleCollisionBoxes";
-import AddRoadWorks from "./Components/AddRoadWorks/AddRoadWorks";
-import RemoveRoadWorks from "./Components/RemoveRoadWorks/RemoveRoadWorks";
-import ToggleTrafficConditions from "./Components/ToggleTrafficConditions/ToggleTrafficConditions";
 import Mode from "./Components/Mode/Mode";
 
 export default function Menu() {
@@ -25,12 +20,7 @@ export default function Menu() {
           <Help />
           <Mode />
           <ToggleTrafficLights />
-          <ToggleTrafficConditions />
-          <ToggleCollisionBoxes />
           <ToggleCameraLock />
-          <AddRoadWorks />
-          <RemoveRoadWorks />
-          <ComputerNumber />
         </Container>
       </Drawer>
     </>
