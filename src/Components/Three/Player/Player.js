@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import * as d3 from "d3-ease";
 import { useEffect, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import PlayerPath from "./Path/PlayerPath";
@@ -18,8 +19,6 @@ export default function Player({ playerRef, map, selectedVertex }) {
   const [engineForce, setEngineForce] = useState(0);
   const [brakeForce, setBrakeForce] = useState(0);
   const [reset, setReset] = useState(false);
-  const prevDir = useRef(0);
-  const curDir = useRef(0);
   const slowDown = useRef(0);
 
   useManualControls(
@@ -47,31 +46,37 @@ export default function Player({ playerRef, map, selectedVertex }) {
       playerRef.current.position.x,
       playerRef.current.position.z
     );
-    let force = -parameters.maxForce;
-    if (slowDown.current && newPlayer.velocity > 7) {
-      console.log("breaking");
-      force = 2400;
-      slowDown.current = true;
-    } else if (slowDown.current && newPlayer.velocity < 7 && engineForce > 0) {
-      force = 0;
+    let force = 0;
+    let breakingForce = 0;
+    if (slowDown.current && newPlayer.velocity > slowDown.current.minSpeed) {
+      // console.log("breaking");
+      breakingForce = slowDown.current.breakingFactor * newPlayer.velocity;
+    } else if (
+      slowDown.current &&
+      newPlayer.velocity < slowDown.current.minSpeed
+    ) {
       slowDown.current = false;
-    } else if (newPlayer.velocity > 18) {
-      force = 0;
+    } else {
+      force =
+        -parameters.maxForce *
+        d3.easeCubicOut(Math.max(18 - newPlayer.velocity, 0) / 18);
     }
     const [currentDirection, approachingTurn, approachingEnd] = res;
-    curDir.current = currentDirection;
-    if (approachingTurn || approachingEnd) {
-      slowDown.current = true;
-      console.log("slowdown");
+    if (approachingTurn) {
+      slowDown.current = { minSpeed: 8, breakingFactor: 1.1 };
+      // console.log("slowdown");
+    } else if (approachingEnd) {
+      slowDown.current = { minSpeed: 8, breakingFactor: 1.1 };
     }
     if (currentDirection === "end") {
-      setEngineForce(0);
-      setBrakeForce(25);
-      prevDir.current = 0;
+      if (engineForce !== 0 || brakeForce !== 25) {
+        setEngineForce(0);
+        setBrakeForce(25);
+      }
       return;
     }
-    console.log(1.75 * currentDirection * parameters.maxSteerVal);
-    setBrakeForce(0);
+    // console.log(force, breakingForce, newPlayer.velocity);
+    setBrakeForce(breakingForce);
     setSteeringValue(1.75 * currentDirection * parameters.maxSteerVal);
     setEngineForce(force);
   });
