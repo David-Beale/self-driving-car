@@ -23,6 +23,8 @@ const getAccel = (engine, braking) => {
   if (braking) return -braking / parameters.maxBrakeForce;
   return -engine / parameters.maxForce;
 };
+const velocityVector = new THREE.Vector3();
+const positionVector = new THREE.Vector2();
 export default function Player({
   map,
   selectedVertex,
@@ -52,13 +54,12 @@ export default function Player({
   useEffect(() => {
     player.addMap(map);
     playerRef.current.api.position.subscribe((p) => {
-      player.position.x = p[0];
-      player.position.y = p[1];
-      player.position.z = p[2];
+      positionVector.set(p[0], -p[2]);
+      player.position = positionVector;
     });
     playerRef.current.api.velocity.subscribe((v) => {
-      const vector = new THREE.Vector3(...v);
-      player.velocity = vector.length();
+      velocityVector.set(...v);
+      player.velocity = velocityVector.length();
     });
     playerRef.current.api.rotation.subscribe((r) => {
       player.rotation = r[1] - Math.PI / 2;

@@ -5,9 +5,9 @@ const RADIUS = 2.5;
 
 export default class Player {
   constructor() {
-    this.position = {};
     this.stepCount = 10;
     this.arrayOfSteps = [];
+    this.target = new THREE.Vector2();
   }
   run() {
     let flag = true;
@@ -15,12 +15,11 @@ export default class Player {
       if (!this.arrayOfSteps.length) return ["end"];
       const { x: xTarget, z: zTarget } =
         this.arrayOfSteps[this.arrayOfSteps.length - 1];
-      const vec1 = new THREE.Vector2(this.position.x, -this.position.z);
-      const vec2 = new THREE.Vector2(xTarget, -zTarget);
+      this.target.set(xTarget, -zTarget);
 
-      flag = vec1.distanceTo(vec2) < 2;
+      flag = this.position.distanceTo(this.target) < 2;
 
-      const vecDiff = vec2.sub(vec1);
+      const vecDiff = this.target.sub(this.position);
       const angle = vecDiff.angle();
       let angleDiff = angle - this.rotation;
       if (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
@@ -59,7 +58,7 @@ export default class Player {
 
   findVertex() {
     const targetX = 5 * Math.ceil(this.position.x / 5);
-    const targetZ = 5 * Math.ceil(this.position.z / 5);
+    const targetZ = 5 * Math.ceil(-this.position.y / 5);
     for (let vertex of this.arrayOfVertices) {
       if (this.map[vertex].x === targetX && this.map[vertex].z === targetZ)
         return vertex;
