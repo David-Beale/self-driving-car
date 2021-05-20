@@ -9,6 +9,7 @@ export const Container = styled.div`
   display: flex;
   justify-content: center;
   margin-bottom: 30px;
+  pointer-events: none;
 `;
 
 export default function Gauge({ gauges }) {

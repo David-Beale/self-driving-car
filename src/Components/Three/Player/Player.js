@@ -40,6 +40,7 @@ export default function Player({
   const [reset, setReset] = useState(false);
   const slowDown = useRef(0);
   const modeRef = useRef();
+  const reverse = useRef();
   modeRef.current = mode;
 
   useManualControls(
@@ -70,6 +71,7 @@ export default function Player({
   useEffect(() => {
     if (!selectedVertex || modeRef.current !== "mouse") return;
     player.click(selectedVertex);
+    slowDown.current = false;
   }, [selectedVertex, player]);
 
   useFrame(() => {
@@ -79,10 +81,8 @@ export default function Player({
     let breakingForce = 0;
     if (slowDown.current && player.velocity > slowDown.current.minSpeed) {
       // console.log("breaking");
-      breakingForce = Math.min(
-        slowDown.current.breakingFactor * player.velocity,
-        parameters.maxBrakeForce
-      );
+      breakingForce =
+        parameters.maxBrakeForce * d3.easeCubicInOut(player.velocity / 18);
     } else if (
       slowDown.current &&
       player.velocity < slowDown.current.minSpeed
@@ -102,7 +102,7 @@ export default function Player({
     if (currentDirection === "end") {
       if (engineForce !== 0 || brakeForce !== parameters.maxBrakeForce) {
         setEngineForce(0);
-        setBrakeForce(parameters.maxBrakeForce);
+        setBrakeForce(25);
       }
       setGauges({
         steering: 0,
@@ -110,9 +110,17 @@ export default function Player({
       });
       return;
     }
-    // console.log(force, breakingForce, newPlayer.velocity);
     setBrakeForce(breakingForce);
-    const steering = 1.75 * currentDirection * parameters.maxSteerVal;
+    let steering = 1.75 * currentDirection * parameters.maxSteerVal;
+    if (reverse.current || Math.abs(currentDirection) > (2 * Math.PI) / 3) {
+      reverse.current = true;
+      steering = -steering / 2;
+      force = -force;
+    }
+    if (reverse.current && Math.abs(currentDirection) < Math.PI / 3) {
+      reverse.current = false;
+      force = -force;
+    }
     setSteeringValue(steering);
     setEngineForce(force);
 

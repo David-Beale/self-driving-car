@@ -30,10 +30,9 @@ export default class Player {
         this.pathGeometry.setVertices(this.arrayOfSteps);
         if (nextStep.next >= 0) {
           //new vertex reached
-          const breakingReqired = this.directions
-            .slice(nextStep.next + 1, nextStep.next + 3)
-            .some((dir) => dir !== 0);
-          const approachingEnd = nextStep.next > this.directions.length - 4;
+          const breakingReqired = this.directions[nextStep.next + 2];
+
+          const approachingEnd = nextStep.next > this.directions.length - 5;
           return [angleDiff, breakingReqired, approachingEnd];
         }
       }
