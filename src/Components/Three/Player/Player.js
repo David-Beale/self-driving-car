@@ -13,7 +13,13 @@ const parameters = {
   maxForce: 1000,
   maxBrakeForce: 20,
 };
-export default function Player({ map, selectedVertex, mode, player }) {
+export default function Player({
+  map,
+  selectedVertex,
+  mode,
+  player,
+  setSteering,
+}) {
   const playerRef = useRef();
 
   const [steeringValue, setSteeringValue] = useState(0);
@@ -91,7 +97,9 @@ export default function Player({ map, selectedVertex, mode, player }) {
     }
     // console.log(force, breakingForce, newPlayer.velocity);
     setBrakeForce(breakingForce);
-    setSteeringValue(1.75 * currentDirection * parameters.maxSteerVal);
+    const steering = 1.75 * currentDirection * parameters.maxSteerVal;
+    setSteeringValue(steering);
+    setSteering(steering);
     setEngineForce(force);
   });
 

@@ -20,7 +20,7 @@ const defaultContactMaterial = {
   friction: 1,
 };
 
-export default function Three() {
+export default function Three({ setSteering }) {
   const [selectedVertex, setSelectedVertex] = useState(null);
 
   const trafficLights = useSelector(({ settings }) => settings.trafficLights);
@@ -62,6 +62,7 @@ export default function Three() {
                 map={map}
                 selectedVertex={selectedVertex}
                 mode={mode}
+                setSteering={setSteering}
               />
             </Suspense>
           </group>
