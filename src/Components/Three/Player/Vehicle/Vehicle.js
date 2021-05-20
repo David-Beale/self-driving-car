@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { useRaycastVehicle } from "@react-three/cannon";
 
 import Chassis from "./Chassis";

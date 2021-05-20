@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import ReactSpeedometer from "react-d3-speedometer";
 import styled from "styled-components";
 
