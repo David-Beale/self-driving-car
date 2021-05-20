@@ -45,11 +45,11 @@ const findFollowTarget = (parameters, player) => {
 const findTopDownTarget = (parameters, player) => {
   parameters.position.targetX = player?.position.x - 150 || 0;
   parameters.position.targetY = 30;
-  parameters.position.targetZ = player?.position.z - 120 || 0;
+  parameters.position.targetZ = -player?.position.y - 120 || 0;
 
   parameters.target.targetX = player?.position.x - 150 || 0;
   parameters.target.targetY = 0;
-  parameters.target.targetZ = player?.position.z - 150 || 0;
+  parameters.target.targetZ = -player?.position.y - 150 || 0;
 
   parameters.up.targetX = 0;
   parameters.up.targetY = 1;
