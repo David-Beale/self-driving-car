@@ -13,12 +13,22 @@ const parameters = {
   maxForce: 1000,
   maxBrakeForce: 20,
 };
+const convertSteering = (steering) => {
+  if (!steering) return 0;
+  if (steering < -1) return 1;
+  if (steering > 1) return -1;
+  return -steering;
+};
+const getAccel = (engine, braking) => {
+  if (braking) return -braking / parameters.maxBrakeForce;
+  return -engine / parameters.maxForce;
+};
 export default function Player({
   map,
   selectedVertex,
   mode,
   player,
-  setSteering,
+  setGauges,
 }) {
   const playerRef = useRef();
 
@@ -93,14 +103,22 @@ export default function Player({
         setEngineForce(0);
         setBrakeForce(parameters.maxBrakeForce);
       }
+      setGauges({
+        steering: 0,
+        accel: 0,
+      });
       return;
     }
     // console.log(force, breakingForce, newPlayer.velocity);
     setBrakeForce(breakingForce);
     const steering = 1.75 * currentDirection * parameters.maxSteerVal;
     setSteeringValue(steering);
-    setSteering(steering);
     setEngineForce(force);
+
+    setGauges({
+      steering: convertSteering(steering),
+      accel: getAccel(force, breakingForce),
+    });
   });
 
   return (

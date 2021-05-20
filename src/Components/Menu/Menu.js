@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import Drawer from "@material-ui/core/Drawer";
 
 import MenuButton from "./Components/MenuButton/MenuButton";
@@ -9,7 +9,7 @@ import ToggleTrafficLights from "./Components/ToggleTrafficLights/ToggleTrafficL
 import ToggleCameraLock from "./Components/ToggleCameraLock/ToggleCameraLock";
 import Mode from "./Components/Mode/Mode";
 
-export default function Menu() {
+export default memo(function Menu() {
   const [menuOpen, setMenuOpen] = useState(true);
 
   return (
@@ -25,4 +25,4 @@ export default function Menu() {
       </Drawer>
     </>
   );
-}
+});

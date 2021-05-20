@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useState, memo } from "react";
 import { Canvas } from "react-three-fiber";
 import { Loader, Sky } from "@react-three/drei";
 import { Physics } from "@react-three/cannon";
@@ -20,7 +20,7 @@ const defaultContactMaterial = {
   friction: 1,
 };
 
-export default function Three({ setSteering }) {
+export default memo(function Three({ setGauges }) {
   const [selectedVertex, setSelectedVertex] = useState(null);
 
   const trafficLights = useSelector(({ settings }) => settings.trafficLights);
@@ -62,7 +62,7 @@ export default function Three({ setSteering }) {
                 map={map}
                 selectedVertex={selectedVertex}
                 mode={mode}
-                setSteering={setSteering}
+                setGauges={setGauges}
               />
             </Suspense>
           </group>
@@ -76,4 +76,4 @@ export default function Three({ setSteering }) {
       <Loader />
     </ThreeContainer>
   );
-}
+});
