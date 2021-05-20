@@ -5,16 +5,11 @@ const RADIUS = 2.5;
 
 export default class Player {
   constructor() {
-    this.angle = 0;
     this.position = {};
     this.stepCount = 10;
-    this.counter = 0;
     this.arrayOfSteps = [];
-    this.startingCoords = [];
-    this.comparePaths = {};
   }
   run() {
-    // if (!this.compare && this.pathArray) this.calculateNextStep();
     let flag = true;
     while (flag) {
       if (!this.arrayOfSteps.length) return ["end"];
@@ -35,8 +30,7 @@ export default class Player {
         const nextStep = this.arrayOfSteps.pop();
         this.pathGeometry.setVertices(this.arrayOfSteps);
         if (nextStep.next >= 0) {
-          this.vertexCheck();
-
+          //new vertex reached
           const breakingReqired = this.directions
             .slice(nextStep.next + 1, nextStep.next + 3)
             .some((dir) => dir !== 0);
@@ -51,112 +45,29 @@ export default class Player {
   addMap(map) {
     this.map = map.graphObj;
     this.arrayOfVertices = Object.keys(map.graphObj);
-    this.firstClick(this.map["156A"]);
   }
   //
   // ─── USER INTERACTIONS ──────────────────────────────────────────────────────────
   //
 
-  click(vertex) {
-    return !this.currentVertex
-      ? this.firstClick(vertex)
-      : this.secondClick(vertex);
-  }
-
-  firstClick(vertex) {
-    this.currentVertex = vertex;
-    this.currentVertex.occupied = true;
-    this.currentX = vertex.x - RADIUS;
-    this.currentY = -vertex.y + RADIUS;
-    this.current = { x: this.currentX, y: this.currentY, angle: 0 };
-  }
-  secondClick(vertex) {
-    const startVertex = this.nextVertex?.value || this.currentVertex.value;
-
-    this.runPathfinding(startVertex, vertex.value);
-
-    if (this.compare) return this.comparePaths;
+  click(target) {
+    const start = this.findVertex();
+    if (start === target.value) return;
+    this.runPathfinding(start, target.value);
     this.pathGeometry.setVertices(this.arrayOfSteps);
-    this.pathIndex = -1;
-    console.log(this.pathArray);
-    if (!this.nextVertex) {
-      this.counter = this.stepCount;
-      // this.vertexCheck();
+  }
+
+  findVertex() {
+    const targetX = 5 * Math.ceil(this.position.x / 5);
+    const targetZ = 5 * Math.ceil(this.position.z / 5);
+    for (let vertex of this.arrayOfVertices) {
+      if (this.map[vertex].x === targetX && this.map[vertex].z === targetZ)
+        return vertex;
     }
   }
-
   runPathfinding(a, b) {
     const res = dijkstra(this.map, a, b);
-    this.pathArray = res.path;
-    this.arrayOfSteps = this.buildPath(this.pathArray);
-  }
-
-  getEstimatedTime(path) {
-    let time = 0;
-    for (let i = 1; i < path.length; i++) {
-      const thisVertex = this.map[path[i]];
-      time += thisVertex.average;
-    }
-    return time;
-  }
-  //
-  // ─── AUTOMATIC FUNCTIONS ────────────────────────────────────────────────────────
-  //
-
-  calculateNextStep() {
-    if (this.stopped) {
-      this.checkExistingObstacles();
-    }
-    if (this.stopped) return;
-
-    this.takeNextStep();
-    this.vertexCheck();
-  }
-
-  checkExistingObstacles() {
-    if (
-      !this.nextVertex.occupied &&
-      this.currentVertex.light === "green" &&
-      !this.compare
-    ) {
-      this.currentVertex.occupiedFalse();
-      this.nextVertex.occupied = true;
-      this.nextVertex.speed = this.speed;
-      this.stopped = false;
-    }
-  }
-
-  takeNextStep() {
-    this.current = this.arrayOfSteps.pop(); //save this value to be used in lerp
-    this.currentX = this.current.x;
-    this.currentY = this.current.y;
-    this.angle = this.current.angle;
-  }
-
-  vertexCheck() {
-    // if (this.counter !== this.stepCount) return;
-    // this.counter = 0;
-
-    this.pathIndex++;
-    this.currentVertex = this.map[this.pathArray[this.pathIndex]];
-    this.nextVertex = this.map[this.pathArray[this.pathIndex + 1]];
-
-    // if (!this.nextVertex) {
-    // this.destinationReached();
-    // return true;
-    // }
-
-    // this.obstacleCheck();
-  }
-
-  destinationReached() {
-    this.pathArray = null;
-  }
-
-  obstacleCheck() {
-    if (this.currentVertex.light === "red") {
-      this.stopped = true;
-    }
+    this.arrayOfSteps = this.buildPath(res.path);
   }
 
   buildPath(pathArray) {
@@ -174,14 +85,8 @@ export default class Player {
 
     this.buildLastSegment(pathArray);
 
-    const reversedArray = this.pathParameters.arrayOfSteps.reverse();
-    const remainingSteps = this.stepCount - this.counter;
-    const remainingPath = this.arrayOfSteps.slice(
-      this.arrayOfSteps.length - remainingSteps,
-      this.arrayOfSteps.length
-    );
     this.directions = this.pathParameters.directions;
-    return [...reversedArray, ...remainingPath];
+    return this.pathParameters.arrayOfSteps.reverse();
   }
   buildFirstSegment(pathArray) {
     const currentVertex = this.map[pathArray[0]];

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import PlayerPath from "./Path/PlayerPath";
 
-import ClickIndicator from "./ClickIndicator";
+import ClickIndicator from "./ClickVisuals";
 import Vehicle from "./Vehicle/Vehicle";
 import { useManualControls } from "./useManualControls";
 
@@ -79,7 +79,6 @@ export default function Player({ map, selectedVertex, mode, player }) {
     const [currentDirection, approachingTurn, approachingEnd] = res;
     if (approachingTurn) {
       slowDown.current = { minSpeed: 8, breakingFactor: 1.1 };
-      // console.log("slowdown");
     } else if (approachingEnd) {
       slowDown.current = { minSpeed: 3, breakingFactor: 2 };
     }
