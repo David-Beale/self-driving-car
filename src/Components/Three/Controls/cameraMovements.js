@@ -28,11 +28,14 @@ const findFollowZ = (angle, z) => {
 const findFollowTarget = (parameters, player) => {
   parameters.position.targetX = findFollowX(player.rotation, player.position.x);
   parameters.position.targetY = 20;
-  parameters.position.targetZ = findFollowZ(player.rotation, player.position.z);
+  parameters.position.targetZ = findFollowZ(
+    player.rotation,
+    -player.position.y
+  );
 
   parameters.target.targetX = player.position.x - 150;
   parameters.target.targetY = 0;
-  parameters.target.targetZ = player.position.z - 150;
+  parameters.target.targetZ = -player.position.y - 150;
 
   parameters.up.targetX = 0;
   parameters.up.targetY = 1;
@@ -117,12 +120,12 @@ export function useAnimatedMovement({ controls, camera, cameraLock, player }) {
     camera.position.set(
       findFollowX(player.rotation, player.position.x),
       20,
-      findFollowZ(player.rotation, player.position.z)
+      findFollowZ(player.rotation, -player.position.y)
     );
     controls.current.target.set(
       player.position.x - 150,
       0,
-      player.position.z - 150
+      -player.position.y - 150
     );
     camera.up.set(0, 1, 0);
   };
