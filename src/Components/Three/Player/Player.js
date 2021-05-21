@@ -74,6 +74,11 @@ export default function Player({
     slowDown.current = false;
   }, [selectedVertex, player]);
 
+  useEffect(() => {
+    player.arrayOfSteps = [];
+    player.pathGeometry.setVertices([]);
+  }, [player, reset]);
+
   useFrame(() => {
     const res = player.run();
     if (mode !== "mouse") return;

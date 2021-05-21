@@ -41,7 +41,7 @@ export const useManualControls = (
   const left = useKeyPress("a", mode);
   const right = useKeyPress("d", mode);
   const brake = useKeyPress(" ", mode); // space bar
-  const reset = useKeyPress("r", mode);
+  const reset = useKeyPress("r", "keyboard");
 
   const { maxSteerVal, maxForce, maxBrakeForce } = parameters;
 
