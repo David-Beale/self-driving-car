@@ -50,10 +50,7 @@ export const useMouseControls = (
     if (reverse.current && Math.abs(currentDirection) < Math.PI / 3) {
       //cancel reverse
       reverse.current = false;
-    } else if (
-      reverse.current ||
-      Math.abs(currentDirection) > (2 * Math.PI) / 3
-    ) {
+    } else if (reverse.current || Math.abs(currentDirection) > Math.PI / 2) {
       reverse.current = true;
       steering = -steering / 2;
       engine = -engine;
