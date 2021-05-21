@@ -23,6 +23,12 @@ const getAccel = (engine, braking) => {
   if (braking) return -braking / parameters.maxBrakeForce;
   return -engine / parameters.maxForce;
 };
+const getGuagevals = (steering, engine, braking) => {
+  return {
+    steering: convertSteering(steering),
+    accel: getAccel(engine, braking),
+  };
+};
 const velocityVector = new THREE.Vector3();
 const positionVector = new THREE.Vector2();
 export default function Player({
@@ -48,9 +54,10 @@ export default function Player({
     setEngineForce,
     setBrakeForce,
     setReset,
-    engineForce,
     parameters,
-    mode
+    mode,
+    setGauges,
+    getGuagevals
   );
   useEffect(() => {
     player.addMap(map);
@@ -129,10 +136,7 @@ export default function Player({
     setSteeringValue(steering);
     setEngineForce(force);
 
-    setGauges({
-      steering: convertSteering(steering),
-      accel: getAccel(force, breakingForce),
-    });
+    setGauges(getGuagevals(steering, force, breakingForce));
   });
 
   return (

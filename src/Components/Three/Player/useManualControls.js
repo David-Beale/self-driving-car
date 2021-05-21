@@ -32,9 +32,10 @@ export const useManualControls = (
   setEngineForce,
   setBrakeForce,
   setReset,
-  engineForce,
   parameters,
-  mode
+  mode,
+  setGauges,
+  getGuagevals
 ) => {
   const forward = useKeyPress("w", mode);
   const backward = useKeyPress("s", mode);
@@ -50,25 +51,28 @@ export const useManualControls = (
       setReset([true]);
     }
     if (mode !== "keyboard") return;
+    let steering = 0;
+    let braking = 0;
+    let engine = 0;
     if (left && !right) {
-      setSteeringValue(maxSteerVal);
+      steering = maxSteerVal;
     } else if (right && !left) {
-      setSteeringValue(-maxSteerVal);
-    } else {
-      setSteeringValue(0);
+      steering = -maxSteerVal;
     }
+
     if (forward && !backward) {
-      setBrakeForce(0);
-      setEngineForce(-maxForce);
+      engine = -maxForce;
     } else if (backward && !forward) {
-      setBrakeForce(0);
-      setEngineForce(maxForce);
-    } else if (engineForce !== 0) {
-      setEngineForce(0);
+      engine = maxForce;
     }
+
     if (brake) {
-      setBrakeForce(maxBrakeForce);
+      braking = maxBrakeForce;
     }
-    if (!brake) setBrakeForce(0);
+
+    setSteeringValue(steering);
+    setBrakeForce(braking);
+    setEngineForce(engine);
+    setGauges(getGuagevals(steering, engine, braking));
   });
 };
