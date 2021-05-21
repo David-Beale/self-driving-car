@@ -63,18 +63,12 @@ export const useMouseControls = (
     const res = player.run();
     if (modeRef.current !== "mouse") return;
 
-    const [currentDirection, approachingTurn, approachingEnd] = res;
-
+    const [currentDirection, maxSpeed] = res;
     if (currentDirection === "end") return destinationReached();
 
-    if (approachingTurn) {
-      slowDown.current = 8;
-    } else if (approachingEnd) {
-      slowDown.current = 3;
-    }
+    if (maxSpeed && player.velocity > maxSpeed) slowDown.current = maxSpeed;
 
     let [steering, engine, braking] = getForces(currentDirection);
-
     setForces({ steering, engine, braking });
 
     setGauges(getGuagevals(steering, engine, braking));

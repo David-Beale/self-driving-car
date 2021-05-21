@@ -21,20 +21,7 @@ export const getCurve = (cx, cz, startX, startZ, endX, endZ) => {
     clockwise,
     0 // aRotation
   );
-  const points = curve.getPoints(STEP_COUNT);
-
-  return {
-    curve: points.map((point, index) => {
-      return {
-        point,
-        angle: +curve
-          .getTangent(index / STEP_COUNT)
-          .angle()
-          .toFixed(3),
-      };
-    }),
-    direction: clockwise ? -1 : 1,
-  };
+  return curve.getPoints(STEP_COUNT);
 };
 
 const getCircleParameters = (cx, cz, startX, startZ, endX, endZ) => {

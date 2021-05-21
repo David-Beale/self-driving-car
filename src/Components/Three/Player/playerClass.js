@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import dijkstra from "../graph/helpers/dijkstra";
 import { getCurve } from "./ellipseCurve";
+import { path } from "./path";
 const RADIUS = 2.5;
 
 export default class Player {
@@ -8,38 +9,45 @@ export default class Player {
     this.map = map.graphObj;
     this.arrayOfVertices = Object.keys(map.graphObj);
     this.stepCount = 10;
+    // this.arrayOfSteps = path;
     this.arrayOfSteps = [];
     this.target = new THREE.Vector2();
   }
   run() {
-    let flag = true;
-    while (flag) {
-      if (!this.arrayOfSteps.length) return ["end"];
-      const { x: xTarget, z: zTarget } =
-        this.arrayOfSteps[this.arrayOfSteps.length - 1];
-      this.target.set(xTarget, -zTarget);
+    if (!this.position) return [];
+    const targetFound = this.getNextTarget();
+    if (!targetFound) return ["end"];
 
-      flag = this.position.distanceTo(this.target) < 2;
+    const vecDiff = this.target.sub(this.position);
+    const angle = vecDiff.angle();
+    let angleDiff = angle - this.rotation;
+    if (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
+    else if (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
 
-      const vecDiff = this.target.sub(this.position);
-      const angle = vecDiff.angle();
-      let angleDiff = angle - this.rotation;
-      if (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
-      else if (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
+    this.pathGeometry.setVertices(this.arrayOfSteps);
+    const maxSpeed = this.apprachingEnd()
+      ? 3
+      : this.apprachingTurn()
+      ? 8
+      : false;
+    return [angleDiff, maxSpeed];
+  }
+  apprachingEnd() {
+    return !this.arrayOfSteps[35];
+  }
+  apprachingTurn() {
+    return this.arrayOfSteps[this.arrayOfSteps.length - 20]?.turn;
+  }
+  getNextTarget() {
+    if (!this.arrayOfSteps.length) return;
 
-      if (flag) {
-        const nextStep = this.arrayOfSteps.pop();
-        this.pathGeometry.setVertices(this.arrayOfSteps);
-        if (nextStep.next >= 0) {
-          //new vertex reached
-          const brakingReqired = this.directions[nextStep.next + 2];
+    const { x: xTarget, z: zTarget } =
+      this.arrayOfSteps[this.arrayOfSteps.length - 1];
+    this.target.set(xTarget, -zTarget);
 
-          const approachingEnd = nextStep.next > this.directions.length - 5;
-          return [angleDiff, brakingReqired, approachingEnd];
-        }
-      }
-      return [angleDiff];
-    }
+    const distanceCheck = this.position.distanceTo(this.target) < 2;
+    if (distanceCheck) this.arrayOfSteps.pop();
+    return true;
   }
 
   //
@@ -51,6 +59,7 @@ export default class Player {
     if (start === target.value) return;
     this.runPathfinding(start, target.value);
     this.pathGeometry.setVertices(this.arrayOfSteps);
+    // console.log(JSON.stringify(this.arrayOfSteps));
   }
 
   findVertex() {
@@ -71,8 +80,6 @@ export default class Player {
       arrayOfSteps: [],
       currentX: 0,
       currentZ: 0,
-      currentAngle: 0,
-      directions: [],
     };
 
     this.buildFirstSegment(pathArray);
@@ -81,7 +88,6 @@ export default class Player {
 
     this.buildLastSegment(pathArray);
 
-    this.directions = this.pathParameters.directions;
     return this.pathParameters.arrayOfSteps.reverse();
   }
   buildFirstSegment(pathArray) {
@@ -89,13 +95,6 @@ export default class Player {
     const nextVertex = this.map[pathArray[1]];
     this.pathParameters.currentX = currentVertex.x;
     this.pathParameters.currentZ = currentVertex.z;
-    this.pathParameters.currentAngle = this.getAngle(
-      this.pathParameters.currentX,
-      this.pathParameters.currentZ,
-      nextVertex.x,
-      nextVertex.z
-    );
-
     this.straight(currentVertex, nextVertex, this.stepCount / 2);
   }
   buildMiddleSegments(pathArray) {
@@ -124,7 +123,7 @@ export default class Player {
     const endZ =
       this.pathParameters.currentZ === centerZ ? nextVertex.z : centerZ;
 
-    const { curve, direction } = getCurve(
+    const curve = getCurve(
       centerX,
       centerZ,
       this.pathParameters.currentX,
@@ -133,22 +132,18 @@ export default class Player {
       endZ
     );
     for (let i = 1; i < curve.length; i++) {
-      const { angle, point } = curve[i];
+      const point = curve[i];
       const object = {
         x: point.x - RADIUS,
         y: 0.5,
         z: -point.y - RADIUS,
-        angle,
       };
-      if (i === 1) {
-        object.next = this.pathParameters.directions.length;
-        this.pathParameters.directions.push(direction);
-      }
+      if (i === 1) object.turn = true;
+
       this.pathParameters.arrayOfSteps.push(object);
       const final = curve[curve.length - 1];
-      this.pathParameters.currentX = final.point.x;
-      this.pathParameters.currentZ = -final.point.y;
-      this.pathParameters.currentAngle = final.angle;
+      this.pathParameters.currentX = final.x;
+      this.pathParameters.currentZ = -final.y;
     }
   }
   straight(currentVertex, nextVertex, length) {
@@ -162,34 +157,9 @@ export default class Player {
         x: this.pathParameters.currentX - RADIUS,
         y: 0.5,
         z: this.pathParameters.currentZ - RADIUS,
-        angle: this.pathParameters.currentAngle,
       };
-      if (i === 0) {
-        object.next = this.pathParameters.directions.length;
-        this.pathParameters.directions.push(0);
-      }
 
       this.pathParameters.arrayOfSteps.push(object);
     }
-  }
-  getAngle(startX, startZ, nextX, nextZ) {
-    let angle;
-    switch (true) {
-      case startX > nextX:
-        angle = Math.PI;
-        break;
-      case startX < nextX:
-        angle = 0;
-        break;
-      case startZ < nextZ:
-        angle = (3 * Math.PI) / 2;
-        break;
-      case startZ > nextZ:
-        angle = Math.PI / 2;
-        break;
-      default:
-        break;
-    }
-    return +angle.toFixed(3);
   }
 }

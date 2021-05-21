@@ -53,6 +53,7 @@ export const useControls = (
   );
 
   useEffect(() => {
+    if (!reset) return;
     player.arrayOfSteps = [];
     player.pathGeometry.setVertices([]);
   }, [player, reset]);
