@@ -4,16 +4,14 @@ import { useRaycastVehicle } from "@react-three/cannon";
 import Chassis from "./Chassis";
 import Wheel from "./Wheel";
 import { useWheels } from "./useWheels";
-import { useControls } from "./useControls";
+import { useForces } from "./useForces";
 
 export default function Vehicle({
   playerRef,
   position,
   rotation,
   angularVelocity,
-  steeringValue,
-  engineForce,
-  brakeForce,
+  forces,
   reset,
 }) {
   const [wheels, wheelInfos] = useWheels();
@@ -27,7 +25,7 @@ export default function Vehicle({
     indexUpAxis: 1,
   }));
 
-  useControls(api, playerRef, steeringValue, engineForce, brakeForce, reset);
+  useForces(api, playerRef, forces, reset);
 
   return (
     <group ref={vehicle}>

@@ -27,10 +27,8 @@ function useKeyPress(target, mode) {
   return keyPressed;
 }
 
-export const useManualControls = (
-  setSteeringValue,
-  setEngineForce,
-  setBrakeForce,
+export const useKeyboardControls = (
+  setForces,
   setReset,
   parameters,
   mode,
@@ -69,10 +67,7 @@ export const useManualControls = (
     if (brake) {
       braking = maxBrakeForce;
     }
-
-    setSteeringValue(steering);
-    setBrakeForce(braking);
-    setEngineForce(engine);
+    setForces({ steering, engine, braking });
     setGauges(getGuagevals(steering, engine, braking));
   });
 };
