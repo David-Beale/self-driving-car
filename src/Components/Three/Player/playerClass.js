@@ -4,7 +4,9 @@ import { getCurve } from "./ellipseCurve";
 const RADIUS = 2.5;
 
 export default class Player {
-  constructor() {
+  constructor(map) {
+    this.map = map.graphObj;
+    this.arrayOfVertices = Object.keys(map.graphObj);
     this.stepCount = 10;
     this.arrayOfSteps = [];
     this.target = new THREE.Vector2();
@@ -40,10 +42,6 @@ export default class Player {
     }
   }
 
-  addMap(map) {
-    this.map = map.graphObj;
-    this.arrayOfVertices = Object.keys(map.graphObj);
-  }
   //
   // ─── USER INTERACTIONS ──────────────────────────────────────────────────────────
   //

@@ -13,7 +13,8 @@ import { ThreeContainer } from "./ThreeStyle";
 import TrafficLights from "./TrafficLights/TrafficLights";
 import { useSelector } from "react-redux";
 import playerClass from "./Player/playerClass";
-const player = new playerClass();
+
+const player = new playerClass(map);
 
 const defaultContactMaterial = {
   contactEquationRelaxation: 0.001,
@@ -59,7 +60,6 @@ export default memo(function Three({ setGauges }) {
               />
               <Player
                 player={player}
-                map={map}
                 selectedVertex={selectedVertex}
                 mode={mode}
                 setGauges={setGauges}

@@ -1,4 +1,3 @@
-import * as THREE from "three";
 import * as d3 from "d3-ease";
 import { useEffect, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
@@ -6,7 +5,8 @@ import PlayerPath from "./Path/PlayerPath";
 
 import ClickIndicator from "./ClickVisuals";
 import Vehicle from "./Vehicle/Vehicle";
-import { useManualControls } from "./useManualControls";
+import { useManualControls } from "./Hooks/useManualControls";
+import { useSubscriptions } from "./Hooks/useSubscriptions";
 
 const parameters = {
   maxSteerVal: 0.51,
@@ -29,15 +29,8 @@ const getGuagevals = (steering, engine, braking) => {
     accel: getAccel(engine, braking),
   };
 };
-const velocityVector = new THREE.Vector3();
-const positionVector = new THREE.Vector2();
-export default function Player({
-  map,
-  selectedVertex,
-  mode,
-  player,
-  setGauges,
-}) {
+
+export default function Player({ selectedVertex, mode, player, setGauges }) {
   const playerRef = useRef();
 
   const [steeringValue, setSteeringValue] = useState(0);
@@ -59,21 +52,8 @@ export default function Player({
     setGauges,
     getGuagevals
   );
-  useEffect(() => {
-    player.addMap(map);
-    playerRef.current.api.position.subscribe((p) => {
-      positionVector.set(p[0], -p[2]);
-      player.position = positionVector;
-    });
-    playerRef.current.api.velocity.subscribe((v) => {
-      velocityVector.set(...v);
-      player.velocity = velocityVector.length();
-    });
-    playerRef.current.api.rotation.subscribe((r) => {
-      player.rotation = r[1] - Math.PI / 2;
-      if (player.rotation < 0) player.rotation += 2 * Math.PI;
-    });
-  }, [map, playerRef, player]);
+
+  useSubscriptions(player, playerRef);
 
   useEffect(() => {
     if (!selectedVertex || modeRef.current !== "mouse") return;
