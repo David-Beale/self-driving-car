@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 
 export const useMouseControls = (
@@ -8,12 +8,14 @@ export const useMouseControls = (
   setForces,
   setGauges
 ) => {
+  const prevVertex = useRef();
   useEffect(() => {
     if (mode === "keyboard") {
       player.clearPath();
       return;
     }
-    if (!selectedVertex) return;
+    if (!selectedVertex || selectedVertex === prevVertex.current) return;
+    prevVertex.current = selectedVertex;
     player.click(selectedVertex);
   }, [mode, selectedVertex, player]);
 
