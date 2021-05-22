@@ -28,12 +28,11 @@ function useKeyPress(target, mode) {
 }
 
 export const useKeyboardControls = (
+  player,
+  mode,
   setForces,
   setReset,
-  parameters,
-  mode,
-  setGauges,
-  getGuagevals
+  setGauges
 ) => {
   const forward = useKeyPress("w", mode);
   const backward = useKeyPress("s", mode);
@@ -41,8 +40,6 @@ export const useKeyboardControls = (
   const right = useKeyPress("d", mode);
   const brake = useKeyPress(" ", mode); // space bar
   const reset = useKeyPress("r", "keyboard");
-
-  const { maxSteerVal, maxForce, maxBrakeForce } = parameters;
 
   useFrame(() => {
     if (reset) {
@@ -53,21 +50,21 @@ export const useKeyboardControls = (
     let braking = 0;
     let engine = 0;
     if (left && !right) {
-      steering = maxSteerVal;
+      steering = player.maxSteerVal;
     } else if (right && !left) {
-      steering = -maxSteerVal;
+      steering = -player.maxSteerVal;
     }
 
     if (forward && !backward) {
-      engine = -maxForce;
+      engine = -player.maxForce;
     } else if (backward && !forward) {
-      engine = maxForce;
+      engine = player.maxForce;
     }
 
     if (brake) {
-      braking = maxBrakeForce;
+      braking = player.maxBrakeForce;
     }
     setForces({ steering, engine, braking });
-    setGauges(getGuagevals(steering, engine, braking));
+    setGauges(player.getGuagevals(steering, engine, braking));
   });
 };

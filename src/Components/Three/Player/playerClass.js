@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import * as d3 from "d3-ease";
 import dijkstra from "../graph/helpers/dijkstra";
 import { getCurve } from "./ellipseCurve";
 import { path } from "./path";
@@ -12,11 +13,17 @@ export default class Player {
     this.arrayOfSteps = path;
     // this.arrayOfSteps = [];
     this.target = new THREE.Vector2();
+    this.slowDown = 0;
+    this.reverse = false;
+    this.maxSteerVal = 0.51;
+    this.maxForce = 1000;
+    this.maxBrakeForce = 20;
+    this.maxSpeed = 18;
   }
   run() {
-    if (!this.position) return [];
+    if (!this.position) return;
     const targetFound = this.getNextTarget();
-    if (!targetFound) return ["end"];
+    if (!targetFound) return this.destinationReached();
 
     const vecDiff = this.target.sub(this.position);
     const angle = vecDiff.angle();
@@ -25,17 +32,25 @@ export default class Player {
     else if (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
 
     this.pathGeometry.setVertices(this.arrayOfSteps);
-    const maxSpeed = this.apprachingEnd()
+    const maxSpeed = this.approachingEnd()
       ? 3
-      : this.apprachingTurn()
+      : this.approachingTurn()
       ? 8
       : false;
-    return [angleDiff, maxSpeed];
+
+    if (maxSpeed && this.velocity > maxSpeed) this.slowDown = maxSpeed;
+
+    const [steering, engine, braking] = this.getForces(angleDiff);
+
+    return {
+      forces: { steering, engine, braking },
+      gauges: this.getGuagevals(steering, engine, braking),
+    };
   }
-  apprachingEnd() {
+  approachingEnd() {
     return !this.arrayOfSteps[35];
   }
-  apprachingTurn() {
+  approachingTurn() {
     return this.arrayOfSteps[this.arrayOfSteps.length - 20]?.turn;
   }
   getNextTarget() {
@@ -50,16 +65,76 @@ export default class Player {
     return true;
   }
 
+  destinationReached = () => {
+    return {
+      forces: { steering: 0, engine: 0, braking: 25 },
+      gauges: { steering: 0, accel: 0 },
+    };
+  };
+  getForces = (angleDiff) => {
+    let engine = 0;
+    let braking = 0;
+    let steering = 1.75 * angleDiff * this.maxSteerVal;
+
+    if (this.slowDown && this.velocity > this.slowDown) {
+      //braking
+      braking =
+        this.maxBrakeForce * d3.easeCubicInOut(this.velocity / this.maxSpeed);
+    } else if (this.slowDown && this.velocity < this.slowDown) {
+      //cancel braking
+      this.slowDown = false;
+    } else {
+      //accelerating
+      engine =
+        -this.maxForce *
+        d3.easeCubicOut(
+          Math.max(this.maxSpeed - this.velocity, 0) / this.maxSpeed
+        );
+    }
+
+    //check if reversing required
+    if (this.reverse && Math.abs(angleDiff) < Math.PI / 3) {
+      //cancel reverse
+      this.reverse = false;
+    } else if (this.reverse || Math.abs(angleDiff) > Math.PI / 2) {
+      this.reverse = true;
+      steering = -steering / 2;
+      engine = -engine;
+    }
+
+    return [steering, engine, braking];
+  };
+
+  getGuagevals(steering, engine, braking) {
+    const convertSteering = (steering) => {
+      if (!steering) return 0;
+      if (steering < -1) return 1;
+      if (steering > 1) return -1;
+      return -steering;
+    };
+    const getAccel = (engine, braking) => {
+      if (braking) return -braking / this.maxBrakeForce;
+      return -engine / this.maxForce;
+    };
+    return {
+      steering: convertSteering(steering),
+      accel: getAccel(engine, braking),
+    };
+  }
+
   //
   // ─── USER INTERACTIONS ──────────────────────────────────────────────────────────
   //
-
+  clearPath() {
+    this.arrayOfSteps = [];
+    this.pathGeometry.setVertices(this.arrayOfSteps);
+  }
   click(target) {
     const start = this.findVertex();
     if (start === target.value) return;
     this.runPathfinding(start, target.value);
     this.pathGeometry.setVertices(this.arrayOfSteps);
-    // console.log(JSON.stringify(this.arrayOfSteps));
+    this.slowDown = false;
   }
 
   findVertex() {

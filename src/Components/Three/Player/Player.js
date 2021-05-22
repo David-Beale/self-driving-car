@@ -6,24 +6,12 @@ import Vehicle from "./Vehicle/Vehicle";
 import { useSubscriptions } from "./Hooks/useSubscriptions";
 import { useControls } from "./Hooks/useControls";
 
-const parameters = {
-  maxSteerVal: 0.51,
-  maxForce: 1000,
-  maxBrakeForce: 20,
-};
-
 export default function Player({ selectedVertex, mode, player, setGauges }) {
   const playerRef = useRef();
 
   useSubscriptions(player, playerRef);
 
-  const [forces, reset] = useControls(
-    player,
-    parameters,
-    mode,
-    setGauges,
-    selectedVertex
-  );
+  const [forces, reset] = useControls(player, mode, setGauges, selectedVertex);
 
   return (
     <>
