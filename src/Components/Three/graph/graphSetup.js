@@ -1,5 +1,4 @@
 import { formattedTiles } from "../data/formattedMapData";
-import { startingRoadWorks } from "./startingRoadWorks";
 import Graph from "./helpers/graph.js";
 import Vertex from "./helpers/vertex.js";
 export const map = new Graph({ directed: true });
@@ -127,7 +126,5 @@ for (let i = 0; i < formattedTiles.length; i++) {
     }
   }
 }
-
-startingRoadWorks(map);
 
 map.array = Object.keys(map.graphObj);

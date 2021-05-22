@@ -1,11 +1,11 @@
 import * as THREE from "three";
 import * as d3 from "d3-ease";
-import dijkstra from "../graph/helpers/dijkstra";
+import pathfinding from "./pathfinding/pathfinder";
 import { getCurve } from "./ellipseCurve";
 import { path } from "./path";
 const RADIUS = 2.5;
 
-export default class Player {
+export default class Car {
   constructor(map) {
     this.map = map.graphObj;
     this.arrayOfVertices = Object.keys(map.graphObj);
@@ -146,7 +146,7 @@ export default class Player {
     }
   }
   runPathfinding(a, b) {
-    const res = dijkstra(this.map, a, b);
+    const res = pathfinding(this.map, a, b);
     this.arrayOfSteps = this.buildPath(res.path);
   }
 

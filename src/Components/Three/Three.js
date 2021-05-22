@@ -12,9 +12,9 @@ import { map, verticesMap } from "./graph/graphSetup";
 import { ThreeContainer } from "./ThreeStyle";
 import TrafficLights from "./TrafficLights/TrafficLights";
 import { useSelector } from "react-redux";
-import playerClass from "./Player/playerClass";
+import Car from "../Car/Car";
 
-const player = new playerClass(map);
+const player = new Car(map);
 
 const defaultContactMaterial = {
   contactEquationRelaxation: 0.001,
