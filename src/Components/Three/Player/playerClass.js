@@ -9,8 +9,8 @@ export default class Player {
     this.map = map.graphObj;
     this.arrayOfVertices = Object.keys(map.graphObj);
     this.stepCount = 10;
-    // this.arrayOfSteps = path;
-    this.arrayOfSteps = [];
+    this.arrayOfSteps = path;
+    // this.arrayOfSteps = [];
     this.target = new THREE.Vector2();
   }
   run() {
