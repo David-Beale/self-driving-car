@@ -23,8 +23,8 @@ export const useMouseControls = (
     if (mode !== "mouse") return;
     const res = player.run();
     if (!res) return;
-    const { forces, guages } = res;
+    const { forces, gauges } = res;
     setForces(forces);
-    setGauges(guages);
+    setGauges(gauges);
   });
 };

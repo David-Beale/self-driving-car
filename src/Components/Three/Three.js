@@ -16,11 +16,6 @@ import Car from "../Car/Car";
 
 const player = new Car(map);
 
-const defaultContactMaterial = {
-  contactEquationRelaxation: 0.001,
-  friction: 1,
-};
-
 export default memo(function Three({ setGauges }) {
   const [selectedVertex, setSelectedVertex] = useState(null);
 
@@ -36,12 +31,7 @@ export default memo(function Three({ setGauges }) {
         camera={{ far: 4000 }}
         invalidateFrameloop={true}
       >
-        <Physics
-          gravity={[0, -10, 0]}
-          broadphase="SAP"
-          {...defaultContactMaterial}
-          allowSleep
-        >
+        <Physics gravity={[0, -10, 0]} broadphase="SAP" allowSleep>
           {/* <Stats className="stats" /> */}
           <ambientLight color="#ffffff" intensity={0.3} />
           <directionalLight color="#ffffff" position={[-100, 50, 50]} />
