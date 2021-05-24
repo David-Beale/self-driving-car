@@ -4,10 +4,11 @@ importScripts("d3-ease.v2.min.js");
 importScripts("three.min.js");
 importScripts("cannon.min.js");
 importScripts("path.js");
+importScripts("roads.js");
 
 class Car {
   constructor() {
-    this.arrayOfSteps = path;
+    this.arrayOfSteps = path.slice();
     this.target = new THREE.Vector2();
     this.maxSteerVal = 0.51;
     this.maxForce = 1000;
@@ -106,35 +107,6 @@ class Car {
     return [steering, engine, braking];
   };
 }
-
-const roads = [
-  { x: 150, z: 160 },
-  { x: 150, z: 150 },
-  { x: 150, z: 140 },
-  { x: 150, z: 130 },
-  { x: 150, z: 120 },
-  { x: 150, z: 110 },
-  { x: 160, z: 110 },
-  { x: 170, z: 110 },
-  { x: 180, z: 110 },
-  { x: 190, z: 110 },
-  { x: 200, z: 110 },
-  { x: 200, z: 100 },
-  { x: 200, z: 90 },
-  { x: 200, z: 80 },
-  { x: 200, z: 70 },
-  { x: 190, z: 70 },
-  { x: 180, z: 70 },
-  { x: 170, z: 70 },
-  { x: 160, z: 70 },
-  { x: 150, z: 70 },
-  { x: 150, z: 60 },
-  { x: 150, z: 50 },
-  { x: 150, z: 40 },
-  { x: 150, z: 30 },
-  { x: 150, z: 20 },
-  { x: 150, z: 10 },
-];
 
 class Game {
   constructor() {
@@ -266,7 +238,8 @@ class Game {
     this.vehicle = vehicle;
   }
   resetCar() {
-    this.chassisBody.position.set(147.5, 10, 157.5);
+    this.car.arrayOfSteps = path.slice();
+    this.chassisBody.position.set(147.5, 4, 157.5);
     this.chassisBody.velocity.set(0, 0, 0);
     this.chassisBody.angularVelocity.set(0, 0, 0);
     this.chassisBody.quaternion.setFromEuler(0, Math.PI, 0);
@@ -285,8 +258,9 @@ class Game {
   }
 
   simulate() {
+    this.resetCar();
     this.counter = 0;
-    while (this.counter < 10) {
+    while (this.counter < 1500) {
       this.counter++;
       this.world.step(this.fixedTimeStep);
       const res = this.car.run();
@@ -294,7 +268,6 @@ class Game {
         this.applyForces(res.forces);
       }
     }
-
     return this.chassisBody.position;
   }
 }
@@ -302,6 +275,8 @@ class Game {
 const game = new Game();
 
 self.onmessage = (e) => {
-  game.resetCar();
+  for (let i = 0; i < 1000; i++) {
+    game.simulate();
+  }
   self.postMessage(game.simulate());
 };

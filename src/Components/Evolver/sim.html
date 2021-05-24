@@ -8,6 +8,7 @@
 <script>
   class Car {
     constructor() {
+      // this.counter = 0;
       this.arrayOfSteps = path;
       this.target = new THREE.Vector2();
       this.slowDown = 0;
@@ -22,6 +23,7 @@
     }
     run() {
       if (!this.position) return;
+      // this.counter++;
       const targetFound = this.getNextTarget();
       if (!targetFound) return this.destinationReached();
 
@@ -68,6 +70,7 @@
     }
 
     destinationReached = () => {
+      // console.log(this.counter, this.position);
       return {
         forces: { steering: 0, engine: 0, braking: 25 },
         gauges: { steering: 0, accel: 0 },

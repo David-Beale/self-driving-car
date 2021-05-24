@@ -8,11 +8,13 @@ const worker = new Worker("./simWorker/simWorker.js");
 export default function TrainButton() {
   const onClick = () => {
     worker.postMessage("train");
+    console.time("start");
   };
 
   useEffect(() => {
     worker.onmessage = (e) => {
       console.log(e.data);
+      console.timeEnd("start");
     };
   }, []);
 
