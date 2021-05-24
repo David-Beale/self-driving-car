@@ -70,7 +70,6 @@
     }
 
     destinationReached = () => {
-      // console.log(this.counter, this.position);
       return {
         forces: { steering: 0, engine: 0, braking: 25 },
         gauges: { steering: 0, accel: 0 },
@@ -253,7 +252,9 @@
       this.helper.addVisual(chassisBody, "car");
 
       this.followCam = new THREE.Object3D();
+      this.followCamVector = new THREE.Vector3();
       this.followCam.position.copy(this.camera.position);
+
       this.scene.add(this.followCam);
       this.followCam.parent = chassisBody.threemesh;
       this.helper.shadowTarget = chassisBody.threemesh;
@@ -323,7 +324,7 @@
       vehicle.addToWorld(world);
       const wheelBodies = [];
 
-      this.cylinderShape = vehicle.wheelInfos.forEach(function (wheel) {
+      vehicle.wheelInfos.forEach(function (wheel) {
         const cylinderShape = new CANNON.Cylinder(
           wheel.radius,
           wheel.radius,
@@ -370,10 +371,8 @@
       });
 
       this.vehicle = vehicle;
-      console.log(this.vehicle);
 
       //===================================================== model
-      console.log(Date.now());
       this.animate();
     }
 
@@ -430,9 +429,10 @@
 
     updateCamera() {
       this.camera.position.lerp(
-        this.followCam.getWorldPosition(new THREE.Vector3()),
+        this.followCam.getWorldPosition(this.followCamVector),
         0.05
       );
+
       this.camera.lookAt(this.vehicle.chassisBody.threemesh.position);
       if (this.helper.sun != undefined) {
         this.helper.sun.position.copy(this.camera.position);
@@ -863,7 +863,6 @@
 </script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    console.log(Date.now());
     const game = new Game();
     window.game = game; //For debugging only
   });

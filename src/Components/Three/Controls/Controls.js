@@ -22,8 +22,8 @@ export default function Controls({ cameraLock, player }) {
   );
 
   useEffect(() => {
-    camera.position.set(0, 20, 30);
-    controls.current.target.set(0, 0, 0);
+    camera.position.set(150, 20, 180);
+    controls.current.target.set(150, 0, 150);
   }, [camera]);
 
   // run the layout, animating on change

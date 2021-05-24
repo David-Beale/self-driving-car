@@ -8,6 +8,7 @@ import { useForces } from "./useForces";
 
 export default function Vehicle({
   playerRef,
+  followCameraRef,
   position,
   rotation,
   angularVelocity,
@@ -31,6 +32,7 @@ export default function Vehicle({
     <group ref={vehicle}>
       <Chassis
         ref={playerRef}
+        followCameraRef={followCameraRef}
         rotation={rotation}
         position={position}
         angularVelocity={angularVelocity}

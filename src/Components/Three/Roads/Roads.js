@@ -24,8 +24,8 @@ export default function Roads({ verticesMap, setSelectedVertex }) {
   }, [verticesMap]);
 
   const getVertex = (e, tile) => {
-    const x = e.point.x + 150 - tile.x;
-    const z = e.point.z + 150 - tile.z;
+    const x = e.point.x - tile.x;
+    const z = e.point.z - tile.z;
     switch (true) {
       case x <= 0 && z <= 0:
         return tile.vertices[0];

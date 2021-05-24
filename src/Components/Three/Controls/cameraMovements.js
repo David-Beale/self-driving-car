@@ -19,10 +19,10 @@ const interpolate = (parameter, progress) => {
 };
 
 const findFollowX = (angle, x) => {
-  return -30 * Math.cos(angle) + x - 150;
+  return -30 * Math.cos(angle) + x;
 };
 const findFollowZ = (angle, z) => {
-  return 30 * Math.sin(angle) + z - 150;
+  return 30 * Math.sin(angle) + z;
 };
 
 const findFollowTarget = (parameters, player) => {
@@ -33,9 +33,9 @@ const findFollowTarget = (parameters, player) => {
     -player.position.y
   );
 
-  parameters.target.targetX = player.position.x - 150;
+  parameters.target.targetX = player.position.x;
   parameters.target.targetY = 0;
-  parameters.target.targetZ = -player.position.y - 150;
+  parameters.target.targetZ = -player.position.y;
 
   parameters.up.targetX = 0;
   parameters.up.targetY = 1;
@@ -43,13 +43,13 @@ const findFollowTarget = (parameters, player) => {
 };
 
 const findTopDownTarget = (parameters, player) => {
-  parameters.position.targetX = player?.position.x - 150 || 0;
+  parameters.position.targetX = player?.position.x || 0;
   parameters.position.targetY = 30;
-  parameters.position.targetZ = -player?.position.y - 120 || 0;
+  parameters.position.targetZ = -player?.position.y + 30 || 0;
 
-  parameters.target.targetX = player?.position.x - 150 || 0;
+  parameters.target.targetX = player?.position.x || 0;
   parameters.target.targetY = 0;
-  parameters.target.targetZ = -player?.position.y - 150 || 0;
+  parameters.target.targetZ = -player?.position.y || 0;
 
   parameters.up.targetX = 0;
   parameters.up.targetY = 1;
@@ -117,16 +117,10 @@ export function useAnimatedMovement({ controls, camera, cameraLock, player }) {
     }
   };
   const follow = () => {
-    camera.position.set(
-      findFollowX(player.rotation, player.position.x),
-      20,
-      findFollowZ(player.rotation, -player.position.y)
+    camera.position.lerp(
+      player.followCam.getWorldPosition(player.followCamVector),
+      0.03
     );
-    controls.current.target.set(
-      player.position.x - 150,
-      0,
-      -player.position.y - 150
-    );
-    camera.up.set(0, 1, 0);
+    controls.current.target.set(player.position.x, 0, -player.position.y);
   };
 }

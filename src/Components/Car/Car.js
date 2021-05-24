@@ -19,6 +19,9 @@ export default class Car {
     this.maxForce = 1000;
     this.maxBrakeForce = 20;
     this.maxSpeed = 18;
+    this.velocityVector = new THREE.Vector3();
+    this.position = new THREE.Vector2();
+    this.followCamVector = new THREE.Vector3();
   }
   run() {
     if (!this.position) return;

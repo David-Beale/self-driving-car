@@ -36,7 +36,7 @@ export default memo(function Three({ setGauges }) {
           <ambientLight color="#ffffff" intensity={0.3} />
           <directionalLight color="#ffffff" position={[-100, 50, 50]} />
           <directionalLight color="#ffffff" position={[100, 50, 50]} />
-          <group position={[-150, 0, -150]}>
+          <group>
             <Controls cameraLock={cameraLock} player={player} />
 
             <Suspense fallback={null}>
