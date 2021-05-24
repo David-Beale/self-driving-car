@@ -7,6 +7,7 @@ import { Container } from "./MenuStyle";
 import Help from "./Components/Help/Help";
 import ToggleTrafficLights from "./Components/ToggleTrafficLights/ToggleTrafficLights";
 import ToggleCameraLock from "./Components/ToggleCameraLock/ToggleCameraLock";
+import TrainButton from "./Components/TrainButton/TrainButton";
 import Mode from "./Components/Mode/Mode";
 
 export default memo(function Menu() {
@@ -21,6 +22,7 @@ export default memo(function Menu() {
           <Mode />
           <ToggleTrafficLights />
           <ToggleCameraLock />
+          <TrainButton />
         </Container>
       </Drawer>
     </>

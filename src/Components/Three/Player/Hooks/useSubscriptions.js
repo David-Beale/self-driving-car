@@ -16,7 +16,6 @@ export const useSubscriptions = (player, playerRef) => {
     });
     playerRef.current.api.rotation.subscribe((r) => {
       player.rotation = r[1] - Math.PI / 2;
-      if (player.rotation < 0) player.rotation += 2 * Math.PI;
     });
   }, [playerRef, player]);
 };

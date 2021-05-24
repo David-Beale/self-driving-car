@@ -31,7 +31,7 @@ export default class Car {
     if (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
     else if (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
 
-    this.pathGeometry.setVertices(this.arrayOfSteps);
+    if (this.pathGeometry) this.pathGeometry.setVertices(this.arrayOfSteps);
     const maxSpeed = this.approachingEnd()
       ? 3
       : this.approachingTurn()

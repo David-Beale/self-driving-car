@@ -3,6 +3,111 @@
 <script src="https://threejs.org/examples/js/libs/Detector.js"></script>
 <script src="https://threejs.org/examples/js/libs/stats.min.js"></script>
 <script src="https://cdn.rawgit.com/schteppe/cannon.js/master/build/cannon.js"></script>
+<script src="https://d3js.org/d3-ease.v2.min.js"></script>
+<script src="path.js"></script>
+<script>
+  class Car {
+    constructor() {
+      this.arrayOfSteps = path;
+      this.target = new THREE.Vector2();
+      this.slowDown = 0;
+      this.reverse = false;
+      this.maxSteerVal = 0.51;
+      this.maxForce = 1000;
+      this.maxBrakeForce = 20;
+      this.maxSpeed = 18;
+      this.position2d = new THREE.Vector2();
+      this.velocity = 0;
+      this.rotationVector = new THREE.Vector3();
+    }
+    run() {
+      if (!this.position) return;
+      const targetFound = this.getNextTarget();
+      if (!targetFound) return this.destinationReached();
+
+      const vecDiff = this.target.sub(this.position2d);
+      const angle = vecDiff.angle();
+      this.quaternion.toEuler(this.rotationVector);
+      this.rotation = this.rotationVector.y - Math.PI / 2;
+      let angleDiff = angle - this.rotation;
+      if (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
+      else if (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
+
+      const maxSpeed = this.approachingEnd()
+        ? 3
+        : this.approachingTurn()
+        ? 8
+        : false;
+
+      this.velocity = this.velocityVector.length();
+      if (maxSpeed && this.velocity > maxSpeed) this.slowDown = maxSpeed;
+
+      const [steering, engine, braking] = this.getForces(angleDiff);
+
+      return {
+        forces: { steering, engine, braking },
+      };
+    }
+    approachingEnd() {
+      return !this.arrayOfSteps[35];
+    }
+    approachingTurn() {
+      return this.arrayOfSteps[this.arrayOfSteps.length - 20]?.turn;
+    }
+    getNextTarget() {
+      if (!this.arrayOfSteps.length) return;
+
+      const { x: xTarget, z: zTarget } =
+        this.arrayOfSteps[this.arrayOfSteps.length - 1];
+      this.target.set(xTarget, -zTarget);
+      this.position2d.set(this.position.x, -this.position.z);
+
+      const distanceCheck = this.position2d.distanceTo(this.target) < 2;
+      if (distanceCheck) this.arrayOfSteps.pop();
+      return true;
+    }
+
+    destinationReached = () => {
+      return {
+        forces: { steering: 0, engine: 0, braking: 25 },
+        gauges: { steering: 0, accel: 0 },
+      };
+    };
+    getForces = (angleDiff) => {
+      let engine = 0;
+      let braking = 0;
+      let steering = 1.75 * angleDiff * this.maxSteerVal;
+
+      if (this.slowDown && this.velocity > this.slowDown) {
+        //braking
+        braking =
+          this.maxBrakeForce * d3.easeCubicInOut(this.velocity / this.maxSpeed);
+      } else if (this.slowDown && this.velocity < this.slowDown) {
+        //cancel braking
+        this.slowDown = false;
+      } else {
+        //accelerating
+        engine =
+          -this.maxForce *
+          d3.easeCubicOut(
+            Math.max(this.maxSpeed - this.velocity, 0) / this.maxSpeed
+          );
+      }
+
+      //check if reversing required
+      if (this.reverse && Math.abs(angleDiff) < Math.PI / 3) {
+        //cancel reverse
+        this.reverse = false;
+      } else if (this.reverse || Math.abs(angleDiff) > Math.PI / 2) {
+        this.reverse = true;
+        steering = -steering / 2;
+        engine = -engine;
+      }
+
+      return [steering, engine, braking];
+    };
+  }
+</script>
 <script>
   const roads = [
     { x: 150, z: 160 },
@@ -36,7 +141,6 @@
   class Game {
     constructor() {
       //if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
-
       this.container;
       this.stats;
       this.camera;
@@ -45,6 +149,7 @@
       this.debug = true;
       this.debugPhysics = true;
       this.fixedTimeStep = 1.0 / 60.0;
+      this.car = new Car();
 
       this.container = document.createElement("div");
       this.container.style.height = "100%";
@@ -56,7 +161,6 @@
       this.clock = new THREE.Clock();
 
       this.init();
-
       window.onError = function (error) {
         console.error(JSON.stringify(error));
       };
@@ -142,10 +246,7 @@
       chassisBody.addShape(chassisShape);
       chassisBody.position.set(147.5, 4, 157.5);
       chassisBody.angularVelocity.set(0, 0, 0);
-      chassisBody.quaternion.setFromAxisAngle(
-        new CANNON.Vec3(0, 1, 0),
-        Math.PI
-      );
+      chassisBody.quaternion.setFromEuler(0, Math.PI, 0);
       this.helper.addVisual(chassisBody, "car");
 
       this.followCam = new THREE.Object3D();
@@ -178,6 +279,10 @@
         indexUpAxis: 1,
         indexForwardAxis: 2,
       });
+
+      this.car.position = chassisBody.position;
+      this.car.velocityVector = chassisBody.velocity;
+      this.car.quaternion = chassisBody.quaternion;
 
       const chassisWidth = 1.6;
       const chassisHeight = -0.04; // ground clearance
@@ -215,7 +320,7 @@
       vehicle.addToWorld(world);
       const wheelBodies = [];
 
-      vehicle.wheelInfos.forEach(function (wheel) {
+      this.cylinderShape = vehicle.wheelInfos.forEach(function (wheel) {
         const cylinderShape = new CANNON.Cylinder(
           wheel.radius,
           wheel.radius,
@@ -262,9 +367,10 @@
       });
 
       this.vehicle = vehicle;
+      console.log(this.vehicle);
 
       //===================================================== model
-
+      console.log(Date.now());
       this.animate();
     }
 
@@ -298,6 +404,18 @@
 
       this.vehicle.setSteeringValue(steer, 0);
       this.vehicle.setSteeringValue(steer, 1);
+    }
+    applyForces(forces) {
+      const { steering, engine, braking } = forces;
+      this.vehicle.applyEngineForce(engine, 2);
+      this.vehicle.applyEngineForce(engine, 3);
+
+      this.vehicle.setSteeringValue(steering, 0);
+      this.vehicle.setSteeringValue(steering, 1);
+
+      for (let i = 0; i < 4; i++) {
+        this.vehicle.setBrake(braking, i);
+      }
     }
 
     onWindowResize() {
@@ -337,6 +455,10 @@
 
       this.updateDrive();
       this.updateCamera();
+      const res = this.car.run();
+      if (res) {
+        this.applyForces(res.forces);
+      }
 
       this.renderer.render(this.scene, this.camera);
 
@@ -738,6 +860,7 @@
 </script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
+    console.log(Date.now());
     const game = new Game();
     window.game = game; //For debugging only
   });
