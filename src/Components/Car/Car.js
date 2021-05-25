@@ -15,7 +15,7 @@ export default class Car {
     this.target = new THREE.Vector2();
     this.slowDown = 0;
     this.reverse = false;
-    this.maxSteerVal = 0.51;
+    this.maxSteerVal = 0.5;
     this.maxForce = 1000;
     this.maxBrakeForce = 20;
     this.maxSpeed = 18;

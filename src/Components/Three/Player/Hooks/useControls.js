@@ -6,7 +6,7 @@ export const useControls = (player, mode, setGauges, selectedVertex) => {
   const [forces, setForces] = useState({ steering: 0, engine: 0, braking: 0 });
   const [reset, setReset] = useState(false);
 
-  useKeyboardControls(player, mode, setForces, setReset, setGauges);
+  useKeyboardControls(mode, setForces, setReset, setGauges);
 
   useMouseControls(selectedVertex, player, mode, setForces, setGauges);
 
