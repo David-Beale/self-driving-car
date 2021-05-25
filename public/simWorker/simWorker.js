@@ -10,15 +10,17 @@ class Car {
   constructor() {
     this.arrayOfSteps = path.slice();
     this.target = new THREE.Vector2();
-    this.steerVal = 0.875;
-    this.maxForce = 1000;
-    this.maxBrakeForce = 20;
-    this.maxSpeed = 18;
     this.position2d = new THREE.Vector2();
     this.rotationVector = new THREE.Vector3();
     this.slowDown = 0;
     this.reverse = false;
     this.velocity = 0;
+    this.steerVal = 0.875;
+    this.maxForce = 1000;
+    this.maxBrakeForce = 20;
+    this.maxSpeed = 18;
+    this.stoppingDistance = 35;
+    this.slowDistance = 20;
   }
   run() {
     if (!this.position) return;
@@ -49,10 +51,11 @@ class Car {
     };
   }
   approachingEnd() {
-    return !this.arrayOfSteps[35];
+    return !this.arrayOfSteps[this.stoppingDistance];
   }
   approachingTurn() {
-    return this.arrayOfSteps[this.arrayOfSteps.length - 20]?.turn;
+    return this.arrayOfSteps[this.arrayOfSteps.length - this.slowDistance]
+      ?.turn;
   }
   getNextTarget() {
     if (!this.arrayOfSteps.length) return;
@@ -275,8 +278,8 @@ class Game {
 const game = new Game();
 
 self.onmessage = (e) => {
-  for (let i = 0; i < 1000; i++) {
-    game.simulate();
-  }
+  // for (let i = 0; i < 1000; i++) {
+  //   game.simulate();
+  // }
   self.postMessage(game.simulate());
 };

@@ -13,15 +13,17 @@ export default class Car {
     this.arrayOfSteps = path;
     // this.arrayOfSteps = [];
     this.target = new THREE.Vector2();
+    this.velocityVector = new THREE.Vector3();
+    this.position = new THREE.Vector2();
+    this.followCamVector = new THREE.Vector3();
     this.slowDown = 0;
     this.reverse = false;
     this.steerVal = 0.875;
     this.maxForce = 1000;
     this.maxBrakeForce = 20;
     this.maxSpeed = 18;
-    this.velocityVector = new THREE.Vector3();
-    this.position = new THREE.Vector2();
-    this.followCamVector = new THREE.Vector3();
+    this.stoppingDistance = 35;
+    this.slowDistance = 20;
   }
   run() {
     if (!this.position) return;
@@ -51,10 +53,11 @@ export default class Car {
     };
   }
   approachingEnd() {
-    return !this.arrayOfSteps[35];
+    return !this.arrayOfSteps[this.stoppingDistance];
   }
   approachingTurn() {
-    return this.arrayOfSteps[this.arrayOfSteps.length - 20]?.turn;
+    return this.arrayOfSteps[this.arrayOfSteps.length - this.slowDistance]
+      ?.turn;
   }
   getNextTarget() {
     if (!this.arrayOfSteps.length) return;
