@@ -17,6 +17,7 @@ export default function TrainButton({ training }) {
     stoppingDistance: 100,
     slowDistance: 100,
   });
+  const [score, setScore] = useState(1);
   const [generation, setGeneration] = useState(1);
 
   useEffect(() => {
@@ -34,9 +35,13 @@ export default function TrainButton({ training }) {
 
   useEffect(() => {
     worker.onmessage = (e) => {
-      console.log(e.data);
-      setBestDNA(e.data[0]);
-      setGeneration((prev) => prev + 1);
+      if (e.data.log) {
+        console.log(e.data.log);
+      } else {
+        setBestDNA(e.data[0]);
+        setScore(Math.round(e.data[1] * 100));
+        setGeneration((prev) => prev + 1);
+      }
       console.timeEnd("timer");
     };
   }, []);
@@ -45,7 +50,10 @@ export default function TrainButton({ training }) {
     <>
       {training && (
         <>
-          <SubContainer>Generation {generation}</SubContainer>
+          <SubContainer>
+            <div>Generation {generation}</div>
+            <div>Score {score}%</div>
+          </SubContainer>
           <SubContainer>
             <StyledIconButton onClick={onClick}>
               <FitnessCenterIcon fontSize="large" />

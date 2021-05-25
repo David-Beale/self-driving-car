@@ -289,62 +289,77 @@ class Game {
   }
 }
 
-const randBetween = (min, max) => {
-  const dist = max - min;
-  let rand = Math.random() * dist;
-  rand += min;
-  return Math.round(rand);
-};
 const randomDNA = (num) => {
   const array = [];
   for (let i = 0; i < num; i++) {
-    const newDNA = {
-      steerVal: randBetween(-150, 150) / 100,
-      maxForce: randBetween(-3000, 3000),
-      maxBrakeForce: randBetween(0, 100),
-      maxSpeed: randBetween(1, 100),
-      stoppingDistance: randBetween(1, 100),
-      slowDistance: randBetween(1, 100),
-    };
+    const newDNA = [];
+    for (let j = 0; j < 6; j++) {
+      newDNA.push(Math.random() * 2 - 1);
+    }
     array.push(newDNA);
   }
   return array;
 };
+const translateDNA = (DNA) => {
+  return {
+    steerVal: DNA[0] * 1.5,
+    maxForce: DNA[1] * 3000,
+    maxBrakeForce: (DNA[2] + 1) * 50,
+    maxSpeed: (DNA[3] + 1) * 50,
+    stoppingDistance: Math.round((DNA[4] + 1) * 50),
+    slowDistance: Math.round((DNA[5] + 1) * 50),
+  };
+};
+const randomItem = (array) => {
+  const randIndex = Math.floor(Math.random() * array.length);
+  return array[randIndex];
+};
+const bonk = (parent1, parent2) => {
+  const child = {};
+  const parameters = Object.keys(parent1);
+  parameters.forEach((parameter) => {
+    child[parameter] =
+      Math.random() < 0.5 ? parent1[parameter] : parent2[parameter];
+  });
+  return child;
+};
+const selection = (matingPool, length) => {
+  const newArrayOfDNA = [];
+  for (let i = 0; i < length; i++) {
+    const parent1 = randomItem(matingPool);
+    const parent2 = randomItem(matingPool);
+    const child = bonk(parent1, parent2);
+    newArrayOfDNA.push(child);
+  }
+  return newArrayOfDNA;
+};
 const assessFitness = (arrayOfDNA, fitnessArray) => {
   let bestFitness = 0;
   let bestDNA = null;
-  const totalFitness = fitnessArray.reduce((a, b) => a + b);
-  //total fitness will now add up the array length. This makes it easier to choose a new population
-  const adjustedFitnessArray = fitnessArray.map((fitness, index) => {
+  fitnessArray.forEach((fitness, index) => {
     if (fitness > bestFitness) {
       bestFitness = fitness;
       bestDNA = arrayOfDNA[index];
     }
-    return (fitnessArray.length * fitness) / totalFitness;
   });
 
-  const newArrayOfDNA = [];
-  let counter = 1;
-  let sum = 0;
-  //DNA with higher fitness will get picked more often
+  const adjustedFitnessArray = fitnessArray.map((fitness) => {
+    return (100 * fitness) / bestFitness;
+  });
+
+  const matingPool = [];
   adjustedFitnessArray.forEach((fitness, index) => {
-    sum = sum + fitness;
-    while (sum >= counter) {
-      counter++;
-      const newDNA = arrayOfDNA[index];
-      newArrayOfDNA.push(newDNA);
+    for (let i = 0; i < fitness; i++) {
+      matingPool.push(arrayOfDNA[index]);
     }
   });
-  if (newArrayOfDNA.length < 10) {
-    //account for rounding error
-    const newDNA = arrayOfDNA[arrayOfDNA.length - 1];
-    newArrayOfDNA.push(newDNA);
-  }
-  return [newArrayOfDNA, bestDNA, bestFitness];
+  const newArrayOfDNA = selection(matingPool, arrayOfDNA.length);
+
+  return [newArrayOfDNA, bestDNA, bestFitness, arrayOfDNA[0], fitnessArray[0]];
 };
 
-let arrayOfDNA = randomDNA(10);
-let fitnessArray = Array(10).fill(0);
+let arrayOfDNA = randomDNA(100);
+let fitnessArray = Array(100).fill(0);
 let bestDNA = arrayOfDNA[0];
 
 const game = new Game();
@@ -352,12 +367,18 @@ const game = new Game();
 
 self.onmessage = (e) => {
   for (let i = 0; i < arrayOfDNA.length; i++) {
-    const fitness = game.simulate(arrayOfDNA[i]);
+    const fitness = game.simulate(translateDNA(arrayOfDNA[i]));
     fitnessArray[i] = fitness;
   }
-  [arrayOfDNA, bestDNA, bestFitness] = assessFitness(arrayOfDNA, fitnessArray);
+  [arrayOfDNA, bestDNA, bestFitness, firstDNA, firstFitness] = assessFitness(
+    arrayOfDNA,
+    fitnessArray
+  );
 
-  // self.postMessage([newFitnessArray, counter, sum]);
-  // self.postMessage([game.simulate(), generation]);
-  self.postMessage([bestDNA, bestFitness]);
+  self.postMessage([
+    translateDNA(bestDNA),
+    bestFitness,
+    translateDNA(firstDNA),
+    firstFitness,
+  ]);
 };
