@@ -15,7 +15,7 @@ export default class Car {
     this.target = new THREE.Vector2();
     this.slowDown = 0;
     this.reverse = false;
-    this.maxSteerVal = 0.5;
+    this.steerVal = 0.875;
     this.maxForce = 1000;
     this.maxBrakeForce = 20;
     this.maxSpeed = 18;
@@ -77,7 +77,7 @@ export default class Car {
   getForces = (angleDiff) => {
     let engine = 0;
     let braking = 0;
-    let steering = 1.75 * angleDiff * this.maxSteerVal;
+    let steering = angleDiff * this.steerVal;
 
     if (this.slowDown && this.velocity > this.slowDown) {
       //braking
