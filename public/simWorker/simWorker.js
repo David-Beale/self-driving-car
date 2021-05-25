@@ -116,6 +116,7 @@ class Game {
     this.car = new Car();
     this.fixedTimeStep = 1.0 / 60.0;
     this.initPhysics();
+    this.endPoint = new THREE.Vector3(147.5, 0.5, 7.5);
   }
 
   initPhysics() {
@@ -240,6 +241,9 @@ class Game {
 
     this.vehicle = vehicle;
   }
+  getFitness() {
+    return 1 / (1 + this.chassisBody.position.distanceTo(this.endPoint));
+  }
   resetCar() {
     this.car.arrayOfSteps = path.slice();
     this.chassisBody.position.set(147.5, 4, 157.5);
@@ -271,7 +275,8 @@ class Game {
         this.applyForces(res.forces);
       }
     }
-    return this.chassisBody.position;
+    // return this.chassisBody.position;
+    return this.getFitness();
   }
 }
 
