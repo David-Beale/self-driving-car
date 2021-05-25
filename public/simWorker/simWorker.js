@@ -288,13 +288,13 @@ class Game {
     return this.getFitness();
   }
 }
-
-const randomDNA = (num) => {
+randomDNA = () => Math.random() * 2 - 1;
+const randomiseDNA = (num) => {
   const array = [];
   for (let i = 0; i < num; i++) {
     const newDNA = [];
     for (let j = 0; j < 6; j++) {
-      newDNA.push(Math.random() * 2 - 1);
+      newDNA.push(randomDNA());
     }
     array.push(newDNA);
   }
@@ -318,8 +318,16 @@ const bonk = (parent1, parent2) => {
   const child = {};
   const parameters = Object.keys(parent1);
   parameters.forEach((parameter) => {
-    child[parameter] =
-      Math.random() < 0.5 ? parent1[parameter] : parent2[parameter];
+    //10% chance of mutation
+    if (Math.random() < 0.1) {
+      child[parameter] = randomDNA();
+      // log("mutation");
+    }
+    //otherwise 50% chance of inheriting from each parent
+    else {
+      child[parameter] =
+        Math.random() < 0.5 ? parent1[parameter] : parent2[parameter];
+    }
   });
   return child;
 };
@@ -358,13 +366,16 @@ const assessFitness = (arrayOfDNA, fitnessArray) => {
   return [newArrayOfDNA, bestDNA, bestFitness, arrayOfDNA[0], fitnessArray[0]];
 };
 
-let arrayOfDNA = randomDNA(100);
+let arrayOfDNA = randomiseDNA(100);
 let fitnessArray = Array(100).fill(0);
 let bestDNA = arrayOfDNA[0];
 
 const game = new Game();
 // self.postMessage([arrayOfDNA[0], arrayOfDNA]);
 
+const log = (message) => {
+  self.postMessage({ log: message });
+};
 self.onmessage = (e) => {
   for (let i = 0; i < arrayOfDNA.length; i++) {
     const fitness = game.simulate(translateDNA(arrayOfDNA[i]));
@@ -374,7 +385,7 @@ self.onmessage = (e) => {
     arrayOfDNA,
     fitnessArray
   );
-
+  log(arrayOfDNA);
   self.postMessage([
     translateDNA(bestDNA),
     bestFitness,
