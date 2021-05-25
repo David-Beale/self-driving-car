@@ -23,6 +23,7 @@ export default memo(function Three({ setGauges }) {
 
   const cameraLock = useSelector(({ settings }) => settings.cameraLock);
   const mode = useSelector(({ mode }) => mode.mode);
+  const currentDNA = useSelector(({ training }) => training.currentDNA);
 
   return (
     <ThreeContainer>
@@ -52,6 +53,7 @@ export default memo(function Three({ setGauges }) {
                 player={player}
                 selectedVertex={selectedVertex}
                 mode={mode}
+                currentDNA={currentDNA}
                 setGauges={setGauges}
               />
             </Suspense>

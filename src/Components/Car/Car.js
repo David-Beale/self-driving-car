@@ -10,8 +10,7 @@ export default class Car {
     this.map = map.graphObj;
     this.arrayOfVertices = Object.keys(map.graphObj);
     this.stepCount = 10;
-    this.arrayOfSteps = path;
-    // this.arrayOfSteps = [];
+    this.arrayOfSteps = path.slice();
     this.target = new THREE.Vector2();
     this.velocityVector = new THREE.Vector3();
     this.position = new THREE.Vector2();
@@ -119,8 +118,8 @@ export default class Car {
       return -steering;
     };
     const getAccel = (engine, braking) => {
-      if (braking) return -braking / this.maxBrakeForce;
-      return -engine / this.maxForce;
+      if (braking) return -braking / 25;
+      return -engine / 1500;
     };
     return {
       steering: convertSteering(steering),
@@ -242,5 +241,14 @@ export default class Car {
 
       this.pathParameters.arrayOfSteps.push(object);
     }
+  }
+  updateDNA(DNA) {
+    this.steerVal = DNA.steerVal;
+    this.maxForce = DNA.maxForce;
+    this.maxBrakeForce = DNA.maxBrakeForce;
+    this.maxSpeed = DNA.maxSpeed;
+    this.stoppingDistance = DNA.stoppingDistance;
+    this.slowDistance = DNA.slowDistance;
+    this.arrayOfSteps = path.slice();
   }
 }

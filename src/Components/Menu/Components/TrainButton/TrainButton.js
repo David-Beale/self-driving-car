@@ -1,29 +1,59 @@
-import React, { useEffect } from "react";
-import SchoolIcon from "@material-ui/icons/School";
+import React, { useEffect, useState } from "react";
+import FitnessCenterIcon from "@material-ui/icons/FitnessCenter";
 
 import { SubContainer } from "../../MenuStyle";
 import { StyledIconButton } from "../ToggleButtonStyle";
+import { useDispatch } from "react-redux";
+import { setCurrentDNA } from "../../../../redux/training";
 const worker = new Worker("./simWorker/simWorker.js");
 
-export default function TrainButton() {
+export default function TrainButton({ training }) {
+  const dispatch = useDispatch();
+  const [bestDNA, setBestDNA] = useState({
+    steerVal: -15,
+    maxForce: 3000,
+    maxBrakeForce: 5,
+    maxSpeed: 100,
+    stoppingDistance: 100,
+    slowDistance: 100,
+  });
+  const [generation, setGeneration] = useState(1);
+
+  useEffect(() => {
+    if (training) {
+      dispatch(setCurrentDNA(bestDNA));
+    } else {
+      dispatch(setCurrentDNA(null));
+    }
+  }, [dispatch, bestDNA, training]);
+
   const onClick = () => {
     worker.postMessage("train");
-    console.time("start");
+    console.time("timer");
   };
 
   useEffect(() => {
     worker.onmessage = (e) => {
       console.log(e.data);
-      console.timeEnd("start");
+      setBestDNA(e.data[0]);
+      setGeneration((prev) => prev + 1);
+      console.timeEnd("timer");
     };
   }, []);
 
   return (
-    <SubContainer>
-      <StyledIconButton onClick={onClick}>
-        <SchoolIcon fontSize="large" />
-      </StyledIconButton>
-      Train new generation
-    </SubContainer>
+    <>
+      {training && (
+        <>
+          <SubContainer>Generation {generation}</SubContainer>
+          <SubContainer>
+            <StyledIconButton onClick={onClick}>
+              <FitnessCenterIcon fontSize="large" />
+            </StyledIconButton>
+            Next generation
+          </SubContainer>
+        </>
+      )}
+    </>
   );
 }

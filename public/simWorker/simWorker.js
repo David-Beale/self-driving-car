@@ -109,6 +109,14 @@ class Car {
 
     return [steering, engine, braking];
   };
+  updateDNA(DNA) {
+    this.steerVal = DNA.steerVal;
+    this.maxForce = DNA.maxForce;
+    this.maxBrakeForce = DNA.maxBrakeForce;
+    this.maxSpeed = DNA.maxSpeed;
+    this.stoppingDistance = DNA.stoppingDistance;
+    this.slowDistance = DNA.slowDistance;
+  }
 }
 
 class Game {
@@ -264,7 +272,8 @@ class Game {
     }
   }
 
-  simulate() {
+  simulate(DNA) {
+    this.car.updateDNA(DNA);
     this.resetCar();
     this.counter = 0;
     while (this.counter < 1500) {
@@ -280,11 +289,75 @@ class Game {
   }
 }
 
+const randBetween = (min, max) => {
+  const dist = max - min;
+  let rand = Math.random() * dist;
+  rand += min;
+  return Math.round(rand);
+};
+const randomDNA = (num) => {
+  const array = [];
+  for (let i = 0; i < num; i++) {
+    const newDNA = {
+      steerVal: randBetween(-150, 150) / 100,
+      maxForce: randBetween(-3000, 3000),
+      maxBrakeForce: randBetween(0, 100),
+      maxSpeed: randBetween(1, 100),
+      stoppingDistance: randBetween(1, 100),
+      slowDistance: randBetween(1, 100),
+    };
+    array.push(newDNA);
+  }
+  return array;
+};
+const assessFitness = (arrayOfDNA, fitnessArray) => {
+  let bestFitness = 0;
+  let bestDNA = null;
+  const totalFitness = fitnessArray.reduce((a, b) => a + b);
+  //total fitness will now add up the array length. This makes it easier to choose a new population
+  const adjustedFitnessArray = fitnessArray.map((fitness, index) => {
+    if (fitness > bestFitness) {
+      bestFitness = fitness;
+      bestDNA = arrayOfDNA[index];
+    }
+    return (fitnessArray.length * fitness) / totalFitness;
+  });
+
+  const newArrayOfDNA = [];
+  let counter = 1;
+  let sum = 0;
+  //DNA with higher fitness will get picked more often
+  adjustedFitnessArray.forEach((fitness, index) => {
+    sum = sum + fitness;
+    while (sum >= counter) {
+      counter++;
+      const newDNA = arrayOfDNA[index];
+      newArrayOfDNA.push(newDNA);
+    }
+  });
+  if (newArrayOfDNA.length < 10) {
+    //account for rounding error
+    const newDNA = arrayOfDNA[arrayOfDNA.length - 1];
+    newArrayOfDNA.push(newDNA);
+  }
+  return [newArrayOfDNA, bestDNA, bestFitness];
+};
+
+let arrayOfDNA = randomDNA(10);
+let fitnessArray = Array(10).fill(0);
+let bestDNA = arrayOfDNA[0];
+
 const game = new Game();
+// self.postMessage([arrayOfDNA[0], arrayOfDNA]);
 
 self.onmessage = (e) => {
-  // for (let i = 0; i < 1000; i++) {
-  //   game.simulate();
-  // }
-  self.postMessage(game.simulate());
+  for (let i = 0; i < arrayOfDNA.length; i++) {
+    const fitness = game.simulate(arrayOfDNA[i]);
+    fitnessArray[i] = fitness;
+  }
+  [arrayOfDNA, bestDNA, bestFitness] = assessFitness(arrayOfDNA, fitnessArray);
+
+  // self.postMessage([newFitnessArray, counter, sum]);
+  // self.postMessage([game.simulate(), generation]);
+  self.postMessage([bestDNA, bestFitness]);
 };

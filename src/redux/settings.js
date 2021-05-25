@@ -17,6 +17,9 @@ const settings = createSlice({
     toggleCameraLock(state) {
       state.cameraLock = !state.cameraLock;
     },
+    enableCameraLock(state) {
+      state.cameraLock = true;
+    },
     toggleCollisionBoxes(state) {
       state.collisionBoxes = !state.collisionBoxes;
     },
@@ -32,6 +35,7 @@ const settings = createSlice({
 export const {
   toggleTrafficLights,
   toggleCameraLock,
+  enableCameraLock,
   toggleCollisionBoxes,
   toggleTrafficConditions,
   changeComputerNumber,

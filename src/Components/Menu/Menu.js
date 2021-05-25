@@ -1,17 +1,20 @@
 import React, { useState, memo } from "react";
+import { useSelector } from "react-redux";
 import Drawer from "@material-ui/core/Drawer";
 
 import MenuButton from "./Components/MenuButton/MenuButton";
-
-import { Container } from "./MenuStyle";
 import Help from "./Components/Help/Help";
-import ToggleTrafficLights from "./Components/ToggleTrafficLights/ToggleTrafficLights";
+// import ToggleTrafficLights from "./Components/ToggleTrafficLights/ToggleTrafficLights";
 import ToggleCameraLock from "./Components/ToggleCameraLock/ToggleCameraLock";
 import TrainButton from "./Components/TrainButton/TrainButton";
 import Mode from "./Components/Mode/Mode";
+import ToggleTraining from "./Components/ToggleTraining/ToggleTraining";
+
+import { Container } from "./MenuStyle";
 
 export default memo(function Menu() {
   const [menuOpen, setMenuOpen] = useState(true);
+  const training = useSelector(({ training }) => training.training);
 
   return (
     <>
@@ -19,10 +22,15 @@ export default memo(function Menu() {
       <Drawer variant="persistent" anchor="left" open={menuOpen}>
         <Container>
           <Help />
-          <Mode />
-          <ToggleTrafficLights />
-          <ToggleCameraLock />
-          <TrainButton />
+          {!training && (
+            <>
+              <Mode />
+              <ToggleCameraLock />
+            </>
+          )}
+          {/* <ToggleTrafficLights /> */}
+          <ToggleTraining training={training} />
+          <TrainButton training={training} />
         </Container>
       </Drawer>
     </>
