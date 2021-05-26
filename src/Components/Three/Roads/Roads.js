@@ -71,7 +71,7 @@ export default function Roads({ verticesMap, setSelectedVertex }) {
       <mesh
         ref={ref}
         frustumCulled={false}
-        renderOrder={2}
+        renderOrder={1}
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
         matrixAutoUpdate={false}

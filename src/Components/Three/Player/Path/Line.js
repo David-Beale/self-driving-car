@@ -7,13 +7,7 @@ export default function Line({ pathRef, vertices, color, width }) {
   return (
     <mesh ref={pathRef}>
       <meshLine attach="geometry" vertices={vertices} color={color} />
-      <meshLineMaterial
-        attach="material"
-        transparent
-        depthTest={false}
-        lineWidth={width}
-        color={color}
-      />
+      <meshLineMaterial attach="material" lineWidth={width} color={color} />
     </mesh>
   );
 }
