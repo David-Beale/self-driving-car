@@ -39,7 +39,7 @@ export default function TrainButton({ training }) {
         console.log(e.data.log);
       } else {
         setBestDNA(e.data[0]);
-        setScore(Math.round(e.data[1].toFixed(2)));
+        setScore(e.data[1].toFixed(2));
         setGeneration((prev) => prev + 1);
       }
       console.timeEnd("timer");

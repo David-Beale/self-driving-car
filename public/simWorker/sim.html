@@ -14,13 +14,15 @@
       this.target = new THREE.Vector2();
       this.slowDown = 0;
       this.reverse = false;
+      this.position2d = new THREE.Vector2();
+      this.velocity = 0;
+      this.rotationVector = new THREE.Vector3();
       this.steerVal = 0.875;
       this.maxForce = 1000;
       this.maxBrakeForce = 20;
       this.maxSpeed = 18;
-      this.position2d = new THREE.Vector2();
-      this.velocity = 0;
-      this.rotationVector = new THREE.Vector3();
+      this.stoppingDistance = 35;
+      this.slowDistance = 20;
     }
     run() {
       if (!this.position) return;
@@ -52,22 +54,28 @@
       };
     }
     approachingEnd() {
-      return !this.arrayOfSteps[35];
+      return !this.arrayOfSteps[this.stoppingDistance];
     }
     approachingTurn() {
-      return this.arrayOfSteps[this.arrayOfSteps.length - 20]?.turn;
+      return this.arrayOfSteps[this.arrayOfSteps.length - this.slowDistance]
+        ?.turn;
     }
     getNextTarget() {
-      if (!this.arrayOfSteps.length) return;
+      while (true) {
+        if (!this.arrayOfSteps.length) return;
 
-      const { x: xTarget, z: zTarget } =
-        this.arrayOfSteps[this.arrayOfSteps.length - 1];
-      this.target.set(xTarget, -zTarget);
-      this.position2d.set(this.position.x, -this.position.z);
+        const { x: xTarget, z: zTarget } =
+          this.arrayOfSteps[this.arrayOfSteps.length - 1];
+        this.target.set(xTarget, -zTarget);
+        this.position2d.set(this.position.x, -this.position.z);
 
-      const distanceCheck = this.position2d.distanceTo(this.target) < 2;
-      if (distanceCheck) this.arrayOfSteps.pop();
-      return true;
+        const distanceCheck = this.position2d.distanceTo(this.target) < 2;
+        if (distanceCheck) {
+          this.arrayOfSteps.pop();
+        } else {
+          return true;
+        }
+      }
     }
 
     destinationReached = () => {
@@ -198,7 +206,7 @@
       world.defaultContactMaterial.contactEquationStiffness = 1e6;
 
       roads.forEach((road) => {
-        var groundShape = new CANNON.Box(new CANNON.Vec3(5, 5, 0.01));
+        var groundShape = new CANNON.Box(new CANNON.Vec3(road.w, road.h, 0.01));
         var groundBody = new CANNON.Body({
           mass: 0,
         });

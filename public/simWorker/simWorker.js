@@ -58,16 +58,21 @@ class Car {
       ?.turn;
   }
   getNextTarget() {
-    if (!this.arrayOfSteps.length) return;
+    while (true) {
+      if (!this.arrayOfSteps.length) return;
 
-    const { x: xTarget, z: zTarget } =
-      this.arrayOfSteps[this.arrayOfSteps.length - 1];
-    this.target.set(xTarget, -zTarget);
-    this.position2d.set(this.position.x, -this.position.z);
+      const { x: xTarget, z: zTarget } =
+        this.arrayOfSteps[this.arrayOfSteps.length - 1];
+      this.target.set(xTarget, -zTarget);
+      this.position2d.set(this.position.x, -this.position.z);
 
-    const distanceCheck = this.position2d.distanceTo(this.target) < 2;
-    if (distanceCheck) this.arrayOfSteps.pop();
-    return true;
+      const distanceCheck = this.position2d.distanceTo(this.target) < 2;
+      if (distanceCheck) {
+        this.arrayOfSteps.pop();
+      } else {
+        return true;
+      }
+    }
   }
 
   destinationReached = () => {
@@ -141,7 +146,7 @@ class Game {
     world.defaultContactMaterial.contactEquationStiffness = 1e6;
 
     roads.forEach((road) => {
-      var groundShape = new CANNON.Box(new CANNON.Vec3(5, 5, 0.01));
+      var groundShape = new CANNON.Box(new CANNON.Vec3(road.w, road.h, 0.01));
       var groundBody = new CANNON.Body({
         mass: 0,
       });
@@ -250,9 +255,13 @@ class Game {
     this.vehicle = vehicle;
   }
   getFitness() {
+    //0% for 0 distance travelled, 100% for arriving perfectly
     const distanceScore =
-      (150 - this.chassisBody.position.distanceTo(this.endPoint)) * (50 / 150);
-    const timeScore = !this.finish ? 0 : 1496 - this.finish;
+      (185 - this.chassisBody.position.distanceTo(this.endPoint)) * (50 / 185);
+    //lose 0.5% per frame over best time
+    let timeScore =
+      !this.finish || distanceScore < 45 ? 0 : (2224 - this.finish) / 2;
+    // console.log(distanceScore, timeScore);
     return distanceScore + timeScore;
   }
   resetCar() {
@@ -280,7 +289,8 @@ class Game {
     this.resetCar();
     this.counter = 0;
     this.finish = null;
-    while (this.counter < 1496) {
+    while (this.counter < 2224) {
+      //2128 is best time
       this.counter++;
       this.world.step(this.fixedTimeStep);
       const res = this.car.run();
@@ -302,6 +312,14 @@ const randomiseDNA = (num) => {
     for (let j = 0; j < 6; j++) {
       newDNA.push(randomDNA());
     }
+    // const newDNA = {
+    //   steerVal: 0.875,
+    //   maxForce: 1000,
+    //   maxBrakeForce: 20,
+    //   maxSpeed: 18,
+    //   stoppingDistance: 35,
+    //   slowDistance: 20,
+    // };
     array.push(newDNA);
   }
   return array;
@@ -309,11 +327,11 @@ const randomiseDNA = (num) => {
 const translateDNA = (DNA) => {
   return {
     steerVal: DNA[0] * 1.5,
-    maxForce: DNA[1] * 3000,
-    maxBrakeForce: (DNA[2] + 1) * 50,
-    maxSpeed: (DNA[3] + 1) * 50,
-    stoppingDistance: Math.round((DNA[4] + 1) * 50),
-    slowDistance: Math.round((DNA[5] + 1) * 50),
+    maxForce: DNA[1] * 2000,
+    maxBrakeForce: (DNA[2] + 1) * 30,
+    maxSpeed: (DNA[3] + 1) * 40,
+    stoppingDistance: Math.round((DNA[4] + 1) * 30),
+    slowDistance: Math.round((DNA[5] + 1) * 30),
   };
 };
 const randomItem = (array) => {
@@ -324,10 +342,9 @@ const bonk = (parent1, parent2) => {
   const child = {};
   const parameters = Object.keys(parent1);
   parameters.forEach((parameter) => {
-    //10% chance of mutation
-    if (Math.random() < 0.1) {
+    //1% chance of mutation
+    if (Math.random() < this.mutationRate) {
       child[parameter] = randomDNA();
-      // log("mutation");
     }
     //otherwise 50% chance of inheriting from each parent
     else {
@@ -372,12 +389,13 @@ const assessFitness = (arrayOfDNA, fitnessArray) => {
   return [newArrayOfDNA, bestDNA, bestFitness, arrayOfDNA[0], fitnessArray[0]];
 };
 
-let arrayOfDNA = randomiseDNA(100);
-let fitnessArray = Array(100).fill(0);
-let bestDNA = arrayOfDNA[0];
-
 const game = new Game();
-// self.postMessage([arrayOfDNA[0], arrayOfDNA]);
+
+game.mutationRate = 0.01;
+let popSize = 100;
+let arrayOfDNA = randomiseDNA(popSize);
+let fitnessArray = Array(popSize).fill(0);
+let bestDNA = arrayOfDNA[0];
 
 const log = (message) => {
   self.postMessage({ log: message });
@@ -385,6 +403,7 @@ const log = (message) => {
 self.onmessage = (e) => {
   for (let i = 0; i < arrayOfDNA.length; i++) {
     const fitness = game.simulate(translateDNA(arrayOfDNA[i]));
+    // const fitness = game.simulate(arrayOfDNA[i]);
     fitnessArray[i] = fitness;
   }
   [arrayOfDNA, bestDNA, bestFitness, firstDNA, firstFitness] = assessFitness(
@@ -394,6 +413,7 @@ self.onmessage = (e) => {
   log(arrayOfDNA);
   self.postMessage([
     translateDNA(bestDNA),
+    // bestDNA,
     bestFitness,
     translateDNA(firstDNA),
     firstFitness,

@@ -59,15 +59,20 @@ export default class Car {
       ?.turn;
   }
   getNextTarget() {
-    if (!this.arrayOfSteps.length) return;
+    while (true) {
+      if (!this.arrayOfSteps.length) return;
 
-    const { x: xTarget, z: zTarget } =
-      this.arrayOfSteps[this.arrayOfSteps.length - 1];
-    this.target.set(xTarget, -zTarget);
+      const { x: xTarget, z: zTarget } =
+        this.arrayOfSteps[this.arrayOfSteps.length - 1];
+      this.target.set(xTarget, -zTarget);
 
-    const distanceCheck = this.position.distanceTo(this.target) < 2;
-    if (distanceCheck) this.arrayOfSteps.pop();
-    return true;
+      const distanceCheck = this.position.distanceTo(this.target) < 2;
+      if (distanceCheck) {
+        this.arrayOfSteps.pop();
+      } else {
+        return true;
+      }
+    }
   }
 
   destinationReached = () => {
