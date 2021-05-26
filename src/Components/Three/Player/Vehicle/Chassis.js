@@ -27,7 +27,7 @@ const Chassis = forwardRef(
     return (
       <mesh ref={ref} api={api}>
         <Aston position={[0, -0.6, 0]} scale={0.01} />
-        <object3D ref={followCameraRef} position={[0, 20, -30]} />
+        <object3D ref={followCameraRef} position={[0, 5, -8]} />
       </mesh>
     );
   }

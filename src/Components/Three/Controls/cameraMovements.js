@@ -83,7 +83,7 @@ export function useAnimatedMovement({ controls, camera, cameraLock, player }) {
       updateSource(parameter)
     );
     if (cameraLock) {
-      movement.current = "move";
+      movement.current = "follow";
     } else {
       movement.current = "reset";
     }
