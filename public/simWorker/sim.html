@@ -5,6 +5,7 @@
 <script src="https://cdn.rawgit.com/schteppe/cannon.js/master/build/cannon.js"></script>
 <script src="https://d3js.org/d3-ease.v2.min.js"></script>
 <script src="path.js"></script>
+<script src="roads.js"></script>
 <script>
   class Car {
     constructor() {
@@ -111,35 +112,6 @@
   }
 </script>
 <script>
-  const roads = [
-    { x: 150, z: 160 },
-    { x: 150, z: 150 },
-    { x: 150, z: 140 },
-    { x: 150, z: 130 },
-    { x: 150, z: 120 },
-    { x: 150, z: 110 },
-    { x: 160, z: 110 },
-    { x: 170, z: 110 },
-    { x: 180, z: 110 },
-    { x: 190, z: 110 },
-    { x: 200, z: 110 },
-    { x: 200, z: 100 },
-    { x: 200, z: 90 },
-    { x: 200, z: 80 },
-    { x: 200, z: 70 },
-    { x: 190, z: 70 },
-    { x: 180, z: 70 },
-    { x: 170, z: 70 },
-    { x: 160, z: 70 },
-    { x: 150, z: 70 },
-    { x: 150, z: 60 },
-    { x: 150, z: 50 },
-    { x: 150, z: 40 },
-    { x: 150, z: 30 },
-    { x: 150, z: 20 },
-    { x: 150, z: 10 },
-  ];
-
   class Game {
     constructor() {
       //if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
@@ -246,7 +218,7 @@
         mass: 500,
       });
       chassisBody.addShape(chassisShape);
-      chassisBody.position.set(147.5, 4, 157.5);
+      chassisBody.position.set(147.5, 4, 192.5);
       chassisBody.angularVelocity.set(0, 0, 0);
       chassisBody.quaternion.setFromEuler(0, Math.PI, 0);
       this.helper.addVisual(chassisBody, "car");

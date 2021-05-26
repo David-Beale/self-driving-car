@@ -160,7 +160,7 @@ class Game {
       mass: 500,
     });
     chassisBody.addShape(chassisShape);
-    chassisBody.position.set(147.5, 4, 157.5);
+    chassisBody.position.set(147.5, 4, 192.5);
     chassisBody.angularVelocity.set(0, 0, 0);
     chassisBody.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), Math.PI);
     this.chassisBody = chassisBody;
@@ -257,7 +257,7 @@ class Game {
   }
   resetCar() {
     this.car.arrayOfSteps = path.slice();
-    this.chassisBody.position.set(147.5, 4, 157.5);
+    this.chassisBody.position.set(147.5, 4, 192.5);
     this.chassisBody.velocity.set(0, 0, 0);
     this.chassisBody.angularVelocity.set(0, 0, 0);
     this.chassisBody.quaternion.setFromEuler(0, Math.PI, 0);

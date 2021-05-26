@@ -44,7 +44,7 @@ const findFollowTarget = (parameters, player) => {
 
 const findTopDownTarget = (parameters, player) => {
   parameters.position.targetX = player?.position.x || 0;
-  parameters.position.targetY = 30;
+  parameters.position.targetY = 20;
   parameters.position.targetZ = -player?.position.y + 30 || 0;
 
   parameters.target.targetX = player?.position.x || 0;

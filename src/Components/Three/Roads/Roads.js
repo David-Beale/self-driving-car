@@ -52,6 +52,7 @@ export default function Roads({ verticesMap, setSelectedVertex }) {
         Math.abs(prevMouse.current.y - e.clientY);
       if (dist > 10) return;
       const vertex = getVertex(e, tile);
+      console.log(vertex);
       setSelectedVertex(vertex);
     },
     [setSelectedVertex]

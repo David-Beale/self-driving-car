@@ -35,7 +35,7 @@ export default function Player({
       <Vehicle
         playerRef={playerRef}
         followCameraRef={followCameraRef}
-        position={[147.5, 4, 157.5]}
+        position={[147.5, 4, 192.5]}
         angularVelocity={[0, 0, 0]}
         rotation={[0, Math.PI, 0]}
         forces={forces}
