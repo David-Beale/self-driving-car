@@ -1,6 +1,6 @@
-import { useCallback, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { formattedTiles } from "../data/formattedMapData";
-import { textures } from "./RoadTextures";
+import { roadsTexture } from "./RoadTextures";
 import Road from "./Road";
 
 export default function Roads({ verticesMap, setSelectedVertex }) {
@@ -13,56 +13,78 @@ export default function Roads({ verticesMap, setSelectedVertex }) {
         let type = formattedTiles[i][j];
         if (!type) continue;
         array.push({
-          type: textures[type],
           x: j * 10,
           z: i * 10,
-          vertices: verticesMap[i][j],
         });
       }
     }
     return array;
-  }, [verticesMap]);
+  }, []);
 
-  const getVertex = (e, tile) => {
-    const x = e.point.x - tile.x;
-    const z = e.point.z - tile.z;
+  const getVertex = (e) => {
+    const x = (e.point.x - 5) / 10;
+    const z = (e.point.z - 5) / 10;
+    const i = Math.ceil(z);
+    const j = Math.ceil(x);
+    const vertices = verticesMap[i][j];
+
+    const remainderX = x % 1;
+    const remainderZ = z % 1;
     switch (true) {
-      case x <= 0 && z <= 0:
-        return tile.vertices[0];
-      case x > 0 && z <= 0:
-        return tile.vertices[1];
-      case x <= 0 && z > 0:
-        return tile.vertices[2];
-      case x > 0 && z > 0:
-        return tile.vertices[3];
+      case remainderX <= 0.5 && remainderZ <= 0.5:
+        return vertices[0];
+      case remainderX > 0.5 && remainderZ <= 0.5:
+        return vertices[1];
+      case remainderX <= 0.5 && remainderZ > 0.5:
+        return vertices[2];
+      case remainderX > 0.5 && remainderZ > 0.5:
+        return vertices[3];
       default:
         break;
     }
   };
 
-  const mouseDown = useCallback((e) => {
+  const onPointerDown = (e) => {
     prevMouse.current = { x: e.clientX, y: e.clientY };
-  }, []);
+  };
 
-  const mouseUp = useCallback(
-    (e, tile) => {
-      if (!prevMouse.current) return;
-      const dist =
-        Math.abs(prevMouse.current.x - e.clientX) +
-        Math.abs(prevMouse.current.y - e.clientY);
-      if (dist > 10) return;
-      const vertex = getVertex(e, tile);
-      console.log(vertex);
-      setSelectedVertex(vertex);
-    },
-    [setSelectedVertex]
-  );
+  const onPointerUp = (e) => {
+    if (!prevMouse.current) return;
+    const dist =
+      Math.abs(prevMouse.current.x - e.clientX) +
+      Math.abs(prevMouse.current.y - e.clientY);
+    if (dist > 10) return;
+    const vertex = getVertex(e);
+    setSelectedVertex(vertex);
+  };
+
+  const ref = useRef();
+  useEffect(() => {
+    ref.current.updateMatrix();
+  }, [ref]);
 
   return (
     <>
       {roadTiles.map((tile, index) => (
-        <Road key={index} tile={tile} mouseDown={mouseDown} mouseUp={mouseUp} />
+        <Road key={index} tile={tile} />
       ))}
+      <mesh
+        ref={ref}
+        frustumCulled={false}
+        renderOrder={2}
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+        matrixAutoUpdate={false}
+        position={[145, 0, 145]}
+        rotation={[-Math.PI / 2, 0, 0]}
+      >
+        <planeBufferGeometry attach="geometry" args={[300, 300]} />
+        <meshBasicMaterial
+          map={roadsTexture}
+          attach="material"
+          transparent={true}
+        />
+      </mesh>
     </>
   );
 }

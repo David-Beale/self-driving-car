@@ -1,23 +1,12 @@
 import * as THREE from "three";
+import { formattedTiles } from "../data/formattedMapData";
 const ROAD_COLOR = "rgb(73, 73, 73)";
 
-function generateTexture(func) {
-  const canvas = document.createElement("canvas");
-  canvas.width = 100;
-  canvas.height = 100;
-
-  const context = canvas.getContext("2d");
-  func(context);
-  return canvas;
-}
-
-export const mapDrawings = {
+const mapDrawings = {
   XR: function (c, x = 0, y = 0) {
-    c.fillStyle = ROAD_COLOR;
     c.fillRect(x, y, 100, 100);
   },
   HR: function (c, x = 0, y = 0) {
-    c.fillStyle = ROAD_COLOR;
     c.fillRect(x, y, 100, 100);
     c.strokeStyle = "yellow";
     for (let i = 1; i < 100; i += 98) {
@@ -35,7 +24,6 @@ export const mapDrawings = {
     }
   },
   TB: function (c, x = 0, y = 0) {
-    c.fillStyle = ROAD_COLOR;
     c.fillRect(x, y, 100, 100);
     c.strokeStyle = "yellow";
     c.beginPath();
@@ -55,7 +43,6 @@ export const mapDrawings = {
     c.stroke();
   },
   TT: function (c, x = 0, y = 0) {
-    c.fillStyle = ROAD_COLOR;
     c.fillRect(x, y, 100, 100);
     c.strokeStyle = "yellow";
     c.beginPath();
@@ -75,7 +62,6 @@ export const mapDrawings = {
     c.stroke();
   },
   VR: function (c, x = 0, y = 0) {
-    c.fillStyle = ROAD_COLOR;
     c.fillRect(x, y, 100, 100);
     c.strokeStyle = "yellow";
     for (let i = 1; i < 100; i += 98) {
@@ -93,7 +79,6 @@ export const mapDrawings = {
     }
   },
   TR: function (c, x = 0, y = 0) {
-    c.fillStyle = ROAD_COLOR;
     c.fillRect(x, y, 100, 100);
     c.strokeStyle = "yellow";
     c.beginPath();
@@ -113,7 +98,6 @@ export const mapDrawings = {
     c.stroke();
   },
   TL: function (c, x = 0, y = 0) {
-    c.fillStyle = ROAD_COLOR;
     c.fillRect(x, y, 100, 100);
     c.strokeStyle = "yellow";
     c.beginPath();
@@ -133,7 +117,6 @@ export const mapDrawings = {
     c.stroke();
   },
   TLC: function (c, x = 0, y = 0) {
-    c.fillStyle = ROAD_COLOR;
     c.fillRect(x, y, 100, 100);
     c.strokeStyle = "yellow";
     c.beginPath();
@@ -165,7 +148,6 @@ export const mapDrawings = {
     c.stroke();
   },
   TRC: function (c, x = 0, y = 0) {
-    c.fillStyle = ROAD_COLOR;
     c.fillRect(x, y, 100, 100);
     c.strokeStyle = "yellow";
     c.beginPath();
@@ -197,7 +179,6 @@ export const mapDrawings = {
     c.stroke();
   },
   BRC: function (c, x = 0, y = 0) {
-    c.fillStyle = ROAD_COLOR;
     c.fillRect(x, y, 100, 100);
     c.strokeStyle = "yellow";
     c.beginPath();
@@ -229,7 +210,6 @@ export const mapDrawings = {
     c.stroke();
   },
   BLC: function (c, x = 0, y = 0) {
-    c.fillStyle = ROAD_COLOR;
     c.fillRect(x, y, 100, 100);
     c.strokeStyle = "yellow";
     c.beginPath();
@@ -262,16 +242,20 @@ export const mapDrawings = {
   },
 };
 
-const XR = new THREE.CanvasTexture(generateTexture(mapDrawings.XR));
-const HR = new THREE.CanvasTexture(generateTexture(mapDrawings.HR));
-const TB = new THREE.CanvasTexture(generateTexture(mapDrawings.TB));
-const TT = new THREE.CanvasTexture(generateTexture(mapDrawings.TT));
-const VR = new THREE.CanvasTexture(generateTexture(mapDrawings.VR));
-const TR = new THREE.CanvasTexture(generateTexture(mapDrawings.TR));
-const TL = new THREE.CanvasTexture(generateTexture(mapDrawings.TL));
-const TLC = new THREE.CanvasTexture(generateTexture(mapDrawings.TLC));
-const TRC = new THREE.CanvasTexture(generateTexture(mapDrawings.TRC));
-const BRC = new THREE.CanvasTexture(generateTexture(mapDrawings.BRC));
-const BLC = new THREE.CanvasTexture(generateTexture(mapDrawings.BLC));
+function generateRoads() {
+  const canvas = document.createElement("canvas");
+  canvas.width = 3000;
+  canvas.height = 3000;
 
-export const textures = { XR, HR, TB, TT, VR, TR, TL, TLC, TRC, BRC, BLC };
+  const context = canvas.getContext("2d");
+  context.fillStyle = ROAD_COLOR;
+  for (let i = 0; i < formattedTiles.length; i++) {
+    for (let j = 0; j < formattedTiles[0].length; j++) {
+      let type = formattedTiles[i][j];
+      if (!type) continue;
+      mapDrawings[type](context, j * 100, i * 100);
+    }
+  }
+  return canvas;
+}
+export const roadsTexture = new THREE.CanvasTexture(generateRoads());
