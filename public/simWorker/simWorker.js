@@ -250,7 +250,10 @@ class Game {
     this.vehicle = vehicle;
   }
   getFitness() {
-    return 1 / (1 + this.chassisBody.position.distanceTo(this.endPoint));
+    const distanceScore =
+      (150 - this.chassisBody.position.distanceTo(this.endPoint)) * (50 / 150);
+    const timeScore = !this.finish ? 0 : 1496 - this.finish;
+    return distanceScore + timeScore;
   }
   resetCar() {
     this.car.arrayOfSteps = path.slice();
@@ -276,13 +279,16 @@ class Game {
     this.car.updateDNA(DNA);
     this.resetCar();
     this.counter = 0;
-    while (this.counter < 1500) {
+    this.finish = null;
+    while (this.counter < 1496) {
       this.counter++;
       this.world.step(this.fixedTimeStep);
       const res = this.car.run();
       if (res) {
         this.applyForces(res.forces);
       }
+      if (!this.car.arrayOfSteps.length && !this.finish)
+        this.finish = this.counter;
     }
     // return this.chassisBody.position;
     return this.getFitness();
