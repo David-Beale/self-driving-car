@@ -36,7 +36,7 @@ export default function ClickIndicator({ selectedVertex }) {
       {enabled && (
         <mesh
           frustumCulled={false}
-          position={[selectedVertex.x - 2.5, 0.1, selectedVertex.z - 2.5]}
+          position={[selectedVertex.x, 0.1, selectedVertex.z]}
           scale={0}
           renderOrder={10}
           ref={circleRef}

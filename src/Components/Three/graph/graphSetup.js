@@ -100,7 +100,7 @@ const connectDownTile = (d, downB, downA, c) => {
   map.addEdge(downA, c);
 };
 
-export const verticesMap = [];
+const verticesMap = [];
 let idCounter = 1;
 //setup vertices. We will split each tile into 4 vertices.
 //This allows us to have two lanes of traffic and crossroads etc.
@@ -127,4 +127,4 @@ for (let i = 0; i < formattedTiles.length; i++) {
   }
 }
 
-map.array = Object.keys(map.graphObj);
+map.lookup = verticesMap;

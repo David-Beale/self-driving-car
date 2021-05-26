@@ -21,29 +21,6 @@ export default function Roads({ verticesMap, setSelectedVertex }) {
     return array;
   }, []);
 
-  const getVertex = (e) => {
-    const x = (e.point.x - 5) / 10;
-    const z = (e.point.z - 5) / 10;
-    const i = Math.ceil(z);
-    const j = Math.ceil(x);
-    const vertices = verticesMap[i][j];
-
-    const remainderX = x % 1;
-    const remainderZ = z % 1;
-    switch (true) {
-      case remainderX <= 0.5 && remainderZ <= 0.5:
-        return vertices[0];
-      case remainderX > 0.5 && remainderZ <= 0.5:
-        return vertices[1];
-      case remainderX <= 0.5 && remainderZ > 0.5:
-        return vertices[2];
-      case remainderX > 0.5 && remainderZ > 0.5:
-        return vertices[3];
-      default:
-        break;
-    }
-  };
-
   const onPointerDown = (e) => {
     prevMouse.current = { x: e.clientX, y: e.clientY };
   };
@@ -54,8 +31,7 @@ export default function Roads({ verticesMap, setSelectedVertex }) {
       Math.abs(prevMouse.current.x - e.clientX) +
       Math.abs(prevMouse.current.y - e.clientY);
     if (dist > 10) return;
-    const vertex = getVertex(e);
-    setSelectedVertex(vertex);
+    setSelectedVertex({ x: e.point.x, z: e.point.z });
   };
 
   const ref = useRef();

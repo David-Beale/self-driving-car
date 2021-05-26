@@ -7,7 +7,7 @@ import Controls from "./Controls/Controls";
 import Roads from "./Roads/Roads";
 import Player from "./Player/Player";
 
-import { map, verticesMap } from "./graph/graphSetup";
+import { map } from "./graph/graphSetup";
 
 import { ThreeContainer } from "./ThreeStyle";
 import TrafficLights from "./TrafficLights/TrafficLights";
@@ -42,13 +42,10 @@ export default memo(function Three({ setGauges }) {
 
             <Suspense fallback={null}>
               <Roads
-                verticesMap={verticesMap}
+                verticesMap={map.lookup}
                 setSelectedVertex={setSelectedVertex}
               />
-              <TrafficLights
-                verticesMap={verticesMap}
-                enabled={trafficLights}
-              />
+              <TrafficLights verticesMap={map.lookup} enabled={trafficLights} />
               <Player
                 player={player}
                 selectedVertex={selectedVertex}

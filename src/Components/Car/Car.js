@@ -8,7 +8,7 @@ const RADIUS = 2.5;
 export default class Car {
   constructor(map) {
     this.map = map.graphObj;
-    this.arrayOfVertices = Object.keys(map.graphObj);
+    this.verticesLookup = map.lookup;
     this.stepCount = 10;
     this.arrayOfSteps = path.slice();
     this.target = new THREE.Vector2();
@@ -140,19 +140,35 @@ export default class Car {
     this.pathGeometry.setVertices(this.arrayOfSteps);
   }
   click(target) {
-    const start = this.findVertex();
-    if (start === target.value) return;
-    this.runPathfinding(start, target.value);
+    const start = this.findVertex(this.position.x, -this.position.y);
+    const end = this.findVertex(target.x, target.z);
+    if (!start || !end || start === end) return;
+    this.runPathfinding(start, end);
     this.pathGeometry.setVertices(this.arrayOfSteps);
     this.slowDown = false;
   }
 
-  findVertex() {
-    const targetX = 5 * Math.ceil(this.position.x / 5);
-    const targetZ = 5 * Math.ceil(-this.position.y / 5);
-    for (let vertex of this.arrayOfVertices) {
-      if (this.map[vertex].x === targetX && this.map[vertex].z === targetZ)
-        return vertex;
+  findVertex(mapX, mapZ) {
+    const x = (mapX - 5) / 10;
+    const z = (mapZ - 5) / 10;
+    const i = Math.ceil(z);
+    const j = Math.ceil(x);
+    const vertices = this.verticesLookup[i][j];
+    if (!vertices) return;
+
+    const remainderX = x % 1;
+    const remainderZ = z % 1;
+    switch (true) {
+      case remainderX <= 0.5 && remainderZ <= 0.5:
+        return vertices[0].value;
+      case remainderX > 0.5 && remainderZ <= 0.5:
+        return vertices[1].value;
+      case remainderX <= 0.5 && remainderZ > 0.5:
+        return vertices[2].value;
+      case remainderX > 0.5 && remainderZ > 0.5:
+        return vertices[3].value;
+      default:
+        break;
     }
   }
   runPathfinding(a, b) {
