@@ -254,16 +254,7 @@ class Game {
 
     this.vehicle = vehicle;
   }
-  getFitness() {
-    //0% for 0 distance travelled, 100% for arriving perfectly
-    const distanceScore =
-      (185 - this.chassisBody.position.distanceTo(this.endPoint)) * (50 / 185);
-    //lose 0.5% per frame over best time
-    let timeScore =
-      !this.finish || distanceScore < 45 ? 0 : (2224 - this.finish) / 2;
-    // console.log(distanceScore, timeScore);
-    return distanceScore + timeScore;
-  }
+
   resetCar() {
     this.car.arrayOfSteps = path.slice();
     this.chassisBody.position.set(147.5, 4, 192.5);
@@ -284,13 +275,42 @@ class Game {
     }
   }
 
+  getFitness(DNA) {
+    //0% for 0 distance travelled, 100% for arriving perfectly
+    const distanceScore =
+      (185 - this.chassisBody.position.distanceTo(this.endPoint)) * (50 / 185);
+    //lose 0.5% per frame over best time
+    let timeScore =
+      !this.finish || distanceScore < 45 ? 0 : (2224 - this.finish) / 2;
+    let totalScore = distanceScore + timeScore;
+    if (totalScore <= 0) totalScore = 1;
+    this.totalScores += totalScore;
+    if (totalScore > this.bestScore) {
+      this.bestScore = totalScore;
+      this.bestDNA = DNA;
+    }
+    return totalScore;
+  }
+
+  translateDNA(DNA) {
+    if (DNA.testingData) return DNA;
+    return {
+      steerVal: DNA[0] * 1.5,
+      maxForce: DNA[1] * 2000,
+      maxBrakeForce: (DNA[2] + 1) * 30,
+      maxSpeed: (DNA[3] + 1) * 40,
+      stoppingDistance: Math.round((DNA[4] + 1) * 30),
+      slowDistance: Math.round((DNA[5] + 1) * 30),
+    };
+  }
+
   simulate(DNA) {
-    this.car.updateDNA(DNA);
+    const translatedDNA = this.translateDNA(DNA);
+    this.car.updateDNA(translatedDNA);
     this.resetCar();
     this.counter = 0;
     this.finish = null;
     while (this.counter < 2224) {
-      //2128 is best time
       this.counter++;
       this.world.step(this.fixedTimeStep);
       const res = this.car.run();
@@ -301,18 +321,20 @@ class Game {
         this.finish = this.counter;
     }
     // return this.chassisBody.position;
-    return this.getFitness();
+    return this.getFitness(DNA);
   }
 }
-randomDNA = () => Math.random() * 2 - 1;
+
+randomNumber = () => Math.random() * 2 - 1;
 const randomiseDNA = (num) => {
-  const array = [];
+  const arrayOfDNA = [];
   for (let i = 0; i < num; i++) {
     const newDNA = [];
     for (let j = 0; j < 6; j++) {
-      newDNA.push(randomDNA());
+      newDNA.push(randomNumber());
     }
     // const newDNA = {
+    //   testingData: true
     //   steerVal: 0.875,
     //   maxForce: 1000,
     //   maxBrakeForce: 20,
@@ -320,102 +342,60 @@ const randomiseDNA = (num) => {
     //   stoppingDistance: 35,
     //   slowDistance: 20,
     // };
-    array.push(newDNA);
+    arrayOfDNA.push(newDNA);
   }
-  return array;
+  return arrayOfDNA;
 };
-const translateDNA = (DNA) => {
-  return {
-    steerVal: DNA[0] * 1.5,
-    maxForce: DNA[1] * 2000,
-    maxBrakeForce: (DNA[2] + 1) * 30,
-    maxSpeed: (DNA[3] + 1) * 40,
-    stoppingDistance: Math.round((DNA[4] + 1) * 30),
-    slowDistance: Math.round((DNA[5] + 1) * 30),
-  };
-};
-const randomItem = (array) => {
-  const randIndex = Math.floor(Math.random() * array.length);
-  return array[randIndex];
-};
+
 const bonk = (parent1, parent2) => {
-  const child = {};
-  const parameters = Object.keys(parent1);
-  parameters.forEach((parameter) => {
+  const child = [];
+  parent1.forEach((index) => {
     //1% chance of mutation
-    if (Math.random() < this.mutationRate) {
-      child[parameter] = randomDNA();
+    if (Math.random() < mutationRate) {
+      child[index] = randomNumber();
     }
     //otherwise 50% chance of inheriting from each parent
     else {
-      child[parameter] =
-        Math.random() < 0.5 ? parent1[parameter] : parent2[parameter];
+      child[index] = Math.random() < 0.5 ? parent1[index] : parent2[index];
     }
   });
   return child;
 };
-const selection = (matingPool, length) => {
+const pickRandom = (array) => {
+  let index = 0;
+  let rand = Math.random() * game.totalScores;
+  while (rand > 0) {
+    rand -= array[index].fitness;
+    index++;
+  }
+  return array[index - 1];
+};
+
+const createNewDNA = (arrayOfDNA) => {
   const newArrayOfDNA = [];
-  for (let i = 0; i < length; i++) {
-    const parent1 = randomItem(matingPool);
-    const parent2 = randomItem(matingPool);
+  for (let i = 0; i < arrayOfDNA.length; i++) {
+    const parent1 = pickRandom(arrayOfDNA);
+    const parent2 = pickRandom(arrayOfDNA);
     const child = bonk(parent1, parent2);
     newArrayOfDNA.push(child);
   }
   return newArrayOfDNA;
 };
-const assessFitness = (arrayOfDNA, fitnessArray) => {
-  let bestFitness = 0;
-  let bestDNA = null;
-  fitnessArray.forEach((fitness, index) => {
-    if (fitness > bestFitness) {
-      bestFitness = fitness;
-      bestDNA = arrayOfDNA[index];
-    }
-  });
-
-  const adjustedFitnessArray = fitnessArray.map((fitness) => {
-    return (100 * fitness) / bestFitness;
-  });
-
-  const matingPool = [];
-  adjustedFitnessArray.forEach((fitness, index) => {
-    for (let i = 0; i < fitness; i++) {
-      matingPool.push(arrayOfDNA[index]);
-    }
-  });
-  const newArrayOfDNA = selection(matingPool, arrayOfDNA.length);
-
-  return [newArrayOfDNA, bestDNA, bestFitness, arrayOfDNA[0], fitnessArray[0]];
-};
 
 const game = new Game();
 
-game.mutationRate = 0.01;
-let popSize = 100;
+let mutationRate = 0.01;
+let popSize = 10;
 let arrayOfDNA = randomiseDNA(popSize);
-let fitnessArray = Array(popSize).fill(0);
-let bestDNA = arrayOfDNA[0];
 
-const log = (message) => {
-  self.postMessage({ log: message });
-};
-self.onmessage = (e) => {
-  for (let i = 0; i < arrayOfDNA.length; i++) {
-    const fitness = game.simulate(translateDNA(arrayOfDNA[i]));
-    // const fitness = game.simulate(arrayOfDNA[i]);
-    fitnessArray[i] = fitness;
-  }
-  [arrayOfDNA, bestDNA, bestFitness, firstDNA, firstFitness] = assessFitness(
-    arrayOfDNA,
-    fitnessArray
-  );
-  log(arrayOfDNA);
-  self.postMessage([
-    translateDNA(bestDNA),
-    // bestDNA,
-    bestFitness,
-    translateDNA(firstDNA),
-    firstFitness,
-  ]);
+self.onmessage = () => {
+  game.bestScore = 0;
+  game.totalScores = 0;
+  arrayOfDNA.forEach((DNA) => {
+    DNA.fitness = game.simulate(DNA);
+  });
+
+  arrayOfDNA = createNewDNA(arrayOfDNA);
+
+  self.postMessage([game.translateDNA(game.bestDNA), game.bestScore]);
 };
