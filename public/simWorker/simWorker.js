@@ -23,10 +23,10 @@ self.onmessage = (e) => {
   let bestDNA;
   let bestScore = 0;
   let progress = 10;
-  genetics.totalScores = 0;
 
-  if (genetics.newPopulationSize) genetics.updatePopulationSize();
-  if (genetics.reset) genetics.resetPopulation();
+  genetics.createNewGeneration();
+
+  genetics.totalScores = 0;
   genetics.arrayOfDNA.forEach((DNA, index) => {
     DNA.fitness = sim.simulate(DNA);
 
@@ -41,8 +41,6 @@ self.onmessage = (e) => {
       progress += 10;
     }
   });
-
-  genetics.createNewGeneration();
 
   self.postMessage({
     bestDNA: sim.translateDNA(bestDNA),

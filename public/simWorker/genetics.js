@@ -31,6 +31,10 @@ class Genetics {
   }
 
   createNewGeneration() {
+    if (this.newPopulationSize) this.updatePopulationSize();
+    if (this.reset) this.resetPopulation();
+    if (!this.arrayOfDNA[0].fitness) return; //array is random
+
     const newArrayOfDNA = [];
     for (let i = 0; i < this.arrayOfDNA.length; i++) {
       const parent1 = this.pickRandom();
