@@ -16,12 +16,17 @@ self.onmessage = (e) => {
     genetics.newPopulationSize = e.data.populationSize;
     return;
   }
+  if (e.data.reset) {
+    genetics.reset = true;
+    return;
+  }
   let bestDNA;
   let bestScore = 0;
   let progress = 10;
   genetics.totalScores = 0;
 
   if (genetics.newPopulationSize) genetics.updatePopulationSize();
+  if (genetics.reset) genetics.resetPopulation();
   genetics.arrayOfDNA.forEach((DNA, index) => {
     DNA.fitness = sim.simulate(DNA);
 

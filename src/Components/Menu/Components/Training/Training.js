@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
+import RefreshIcon from "@material-ui/icons/Refresh";
 
 import { setCurrentDNA } from "../../../../redux/training";
 
@@ -16,6 +17,15 @@ import { StyledIconButton } from "../ToggleButtonStyle";
 import { useInitalise } from "./useInitalise";
 import PopulationSizeSlider from "./Components/PopulationSizeSlider";
 const worker = new Worker("./simWorker/simWorker.js");
+
+const initialDNA = {
+  steerVal: -15,
+  maxForce: 3000,
+  maxBrakeForce: 5,
+  maxSpeed: 100,
+  stoppingDistance: 100,
+  slowDistance: 100,
+};
 
 export default function TrainButton({ training }) {
   const dispatch = useDispatch();
@@ -35,7 +45,7 @@ export default function TrainButton({ training }) {
     console.time("timer");
   }, []);
 
-  useInitalise(training, onTrain);
+  useInitalise(initialDNA, training, onTrain);
 
   const onNext = () => {
     setScore(newScore);
@@ -68,6 +78,14 @@ export default function TrainButton({ training }) {
   const onChangePopulationSize = (e, value) => {
     worker.postMessage({ populationSize: value });
   };
+  const onReset = () => {
+    worker.postMessage({ reset: true });
+    dispatch(setCurrentDNA(initialDNA));
+    setGeneration(1);
+    setScore(1);
+    setAvgScore(1);
+    onTrain();
+  };
   return (
     <>
       {training && (
@@ -96,6 +114,13 @@ export default function TrainButton({ training }) {
 
           <MutationRateSlider onChange={onChangeMutationRate} />
           <PopulationSizeSlider onChange={onChangePopulationSize} />
+
+          <SubContainer>
+            <StyledIconButton disabled={progress < 100} onClick={onReset}>
+              <RefreshIcon fontSize="large" />
+            </StyledIconButton>
+            Reset training
+          </SubContainer>
         </>
       )}
     </>

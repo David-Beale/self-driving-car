@@ -75,4 +75,8 @@ class Genetics {
     }
     this.newPopulationSize = false;
   }
+  resetPopulation() {
+    this.arrayOfDNA = this.randomiseDNA(this.arrayOfDNA.length);
+    this.reset = false;
+  }
 }
