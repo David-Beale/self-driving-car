@@ -1,22 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
 
-import { SubContainer, Row, ProgressBar } from "../../MenuStyle";
+import {
+  SubContainer,
+  Row,
+  ProgressBar,
+  ProgressContainer,
+} from "../../MenuStyle";
 import { StyledIconButton } from "../ToggleButtonStyle";
 import { useDispatch } from "react-redux";
 import { setCurrentDNA } from "../../../../redux/training";
+import { useInitalise } from "./useInitalise";
 const worker = new Worker("./simWorker/simWorker.js");
 
 export default function TrainButton({ training }) {
   const dispatch = useDispatch();
-  const [bestDNA, setBestDNA] = useState({
-    steerVal: -15,
-    maxForce: 3000,
-    maxBrakeForce: 5,
-    maxSpeed: 100,
-    stoppingDistance: 100,
-    slowDistance: 100,
-  });
   const [score, setScore] = useState(1);
   const [avgScore, setAvgScore] = useState(1);
 
@@ -27,18 +25,20 @@ export default function TrainButton({ training }) {
   const [generation, setGeneration] = useState(1);
   const [progress, setProgress] = useState(100);
 
-  useEffect(() => {
-    if (training) {
-      dispatch(setCurrentDNA(bestDNA));
-    } else {
-      dispatch(setCurrentDNA(null));
-    }
-  }, [dispatch, bestDNA, training]);
-
-  const onClick = () => {
+  const onTrain = useCallback(() => {
     worker.postMessage("train");
     setProgress(0);
     console.time("timer");
+  }, []);
+
+  useInitalise(training, onTrain);
+
+  const onNext = () => {
+    setScore(newScore);
+    setAvgScore(newAvgScore);
+    setGeneration((prev) => prev + 1);
+    dispatch(setCurrentDNA(newBestDNA));
+    onTrain();
   };
 
   useEffect(() => {
@@ -49,10 +49,9 @@ export default function TrainButton({ training }) {
         setProgress(e.data.progress);
       } else {
         const { bestDNA, bestScore, avgScore } = e.data;
-        setBestDNA(bestDNA);
-        setScore(Math.round(bestScore));
-        setAvgScore(Math.round(avgScore));
-        setGeneration((prev) => prev + 1);
+        setNewBestDNA(bestDNA);
+        setNewScore(Math.round(bestScore));
+        setNewAvgScore(Math.round(avgScore));
         setProgress(100);
         console.timeEnd("timer");
       }
@@ -70,12 +69,16 @@ export default function TrainButton({ training }) {
               <div>Average Score: {avgScore}%</div>
             </Row>
           </SubContainer>
+
           <SubContainer>
-            {progress < 100 ? "Training in progress" : "Training complete"}
-            <ProgressBar progress={progress} />
+            <ProgressContainer>
+              {progress < 100 ? "Training in progress" : "Training complete"}
+              <ProgressBar progress={progress} />
+            </ProgressContainer>
           </SubContainer>
+
           <SubContainer>
-            <StyledIconButton disabled={progress < 100} onClick={onClick}>
+            <StyledIconButton disabled={progress < 100} onClick={onNext}>
               <SkipNextIcon fontSize="large" />
             </StyledIconButton>
             Next generation

@@ -44,3 +44,11 @@ export const ProgressBar = styled.div`
   border-radius: 5px;
   transition: ${(props) => (props.progress ? "0.5" : "0")}s ease-in-out;
 `;
+export const ProgressContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+`;
