@@ -7,7 +7,7 @@ export default function PopulationSizeSlider({ onChange }) {
 
   return (
     <SubContainer>
-      Population Size
+      Population size
       <CustomSlider
         value={localSliderValue}
         min={1}

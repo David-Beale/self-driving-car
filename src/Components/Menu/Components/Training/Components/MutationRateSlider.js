@@ -7,7 +7,7 @@ export default function MutationRateSlider({ onChange }) {
 
   return (
     <SubContainer>
-      Mutation Rate
+      Mutation rate
       <CustomSlider
         value={localSliderValue}
         min={0}
