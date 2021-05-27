@@ -22,10 +22,10 @@ export default memo(function Menu() {
       <Drawer variant="persistent" anchor="left" open={menuOpen}>
         <Container>
           <Help />
+          <ToggleCameraLock />
           {!training && (
             <>
               <Mode />
-              <ToggleCameraLock />
             </>
           )}
           {/* <ToggleTrafficLights /> */}

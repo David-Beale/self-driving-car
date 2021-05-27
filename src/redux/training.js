@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { enableCameraLock } from "./settings";
 
 export const initialState = {
   currentDNA: null,
@@ -18,5 +19,11 @@ const training = createSlice({
 });
 
 export const { setCurrentDNA, toggleTraining } = training.actions;
+
+export const onTrainingMode = () => async (dispatch, getState) => {
+  const trainingMode = getState().training.training;
+  if (!trainingMode) dispatch(enableCameraLock());
+  dispatch(toggleTraining());
+};
 
 export default training.reducer;
