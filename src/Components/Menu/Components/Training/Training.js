@@ -1,5 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
+
+import { setCurrentDNA } from "../../../../redux/training";
+
+import MutationRateSlider from "./Components/MutationRateSlider";
 
 import {
   SubContainer,
@@ -8,9 +13,8 @@ import {
   ProgressContainer,
 } from "../../MenuStyle";
 import { StyledIconButton } from "../ToggleButtonStyle";
-import { useDispatch } from "react-redux";
-import { setCurrentDNA } from "../../../../redux/training";
 import { useInitalise } from "./useInitalise";
+import PopulationSizeSlider from "./Components/PopulationSizeSlider";
 const worker = new Worker("./simWorker/simWorker.js");
 
 export default function TrainButton({ training }) {
@@ -58,6 +62,12 @@ export default function TrainButton({ training }) {
     };
   }, []);
 
+  const onChangeMutationRate = (e, value) => {
+    worker.postMessage({ mutationRate: value });
+  };
+  const onChangePopulationSize = (e, value) => {
+    worker.postMessage({ populationSize: value });
+  };
   return (
     <>
       {training && (
@@ -83,6 +93,9 @@ export default function TrainButton({ training }) {
             </StyledIconButton>
             Next generation
           </SubContainer>
+
+          <MutationRateSlider onChange={onChangeMutationRate} />
+          <PopulationSizeSlider onChange={onChangePopulationSize} />
         </>
       )}
     </>

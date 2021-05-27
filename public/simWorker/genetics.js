@@ -65,4 +65,14 @@ class Genetics {
     });
     return child;
   }
+  updatePopulationSize() {
+    if (this.newPopulationSize < this.arrayOfDNA.length) {
+      this.arrayOfDNA = this.arrayOfDNA.slice(0, this.newPopulationSize);
+    } else {
+      const diff = this.newPopulationSize - this.arrayOfDNA.length;
+      const newPopualtion = this.randomiseDNA(diff);
+      this.arrayOfDNA = [...this.arrayOfDNA, ...newPopualtion];
+    }
+    this.newPopulationSize = false;
+  }
 }

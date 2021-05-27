@@ -7,12 +7,21 @@ const sim = new Sim();
 
 const genetics = new Genetics();
 
-self.onmessage = () => {
+self.onmessage = (e) => {
+  if (e.data.mutationRate) {
+    genetics.mutationRate = e.data.mutationRate;
+    return;
+  }
+  if (e.data.populationSize) {
+    genetics.newPopulationSize = e.data.populationSize;
+    return;
+  }
   let bestDNA;
   let bestScore = 0;
   let progress = 10;
   genetics.totalScores = 0;
 
+  if (genetics.newPopulationSize) genetics.updatePopulationSize();
   genetics.arrayOfDNA.forEach((DNA, index) => {
     DNA.fitness = sim.simulate(DNA);
 
