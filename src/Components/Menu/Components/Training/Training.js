@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import FitnessCenterIcon from "@material-ui/icons/FitnessCenter";
 
-import { SubContainer } from "../../MenuStyle";
+import { SubContainer, Row } from "../../MenuStyle";
 import { StyledIconButton } from "../ToggleButtonStyle";
 import { useDispatch } from "react-redux";
 import { setCurrentDNA } from "../../../../redux/training";
@@ -18,6 +18,7 @@ export default function TrainButton({ training }) {
     slowDistance: 100,
   });
   const [score, setScore] = useState(1);
+  const [avgScore, setAvgScore] = useState(1);
   const [generation, setGeneration] = useState(1);
 
   useEffect(() => {
@@ -38,8 +39,10 @@ export default function TrainButton({ training }) {
       if (e.data.log) {
         console.log(e.data.log);
       } else {
-        setBestDNA(e.data[0]);
-        setScore(e.data[1].toFixed(2));
+        const { bestDNA, bestScore, avgScore } = e.data;
+        setBestDNA(bestDNA);
+        setScore(Math.round(bestScore));
+        setAvgScore(Math.round(avgScore));
         setGeneration((prev) => prev + 1);
       }
       console.timeEnd("timer");
@@ -52,7 +55,10 @@ export default function TrainButton({ training }) {
         <>
           <SubContainer>
             <div>Generation {generation}</div>
-            <div>Score {score}%</div>
+            <Row>
+              <div>Best Score: {score}%</div>
+              <div>Average Score: {avgScore}%</div>
+            </Row>
           </SubContainer>
           <SubContainer>
             <StyledIconButton onClick={onClick}>

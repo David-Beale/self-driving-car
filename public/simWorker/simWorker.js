@@ -25,5 +25,9 @@ self.onmessage = () => {
 
   genetics.createNewGeneration();
 
-  self.postMessage([sim.translateDNA(bestDNA), bestScore]);
+  self.postMessage({
+    bestDNA: sim.translateDNA(bestDNA),
+    bestScore,
+    avgScore: genetics.totalScores / genetics.arrayOfDNA.length,
+  });
 };
