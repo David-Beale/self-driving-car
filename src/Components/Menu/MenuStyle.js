@@ -31,3 +31,16 @@ export const Row = styled.div`
   display: flex;
   justify-content: space-between;
 `;
+export const ProgressBar = styled.div`
+  height: 10px;
+  width: ${(props) => props.progress}%;
+  align-self: flex-start;
+  background: rgb(9, 90, 121);
+  background: linear-gradient(
+    90deg,
+    rgba(9, 90, 121, 1) 35%,
+    rgba(0, 189, 255, 1) 100%
+  );
+  border-radius: 5px;
+  transition: ${(props) => (props.progress ? "0.5" : "0")}s ease-in-out;
+`;

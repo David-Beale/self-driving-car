@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import FitnessCenterIcon from "@material-ui/icons/FitnessCenter";
+import SkipNextIcon from "@material-ui/icons/SkipNext";
 
-import { SubContainer, Row } from "../../MenuStyle";
+import { SubContainer, Row, ProgressBar } from "../../MenuStyle";
 import { StyledIconButton } from "../ToggleButtonStyle";
 import { useDispatch } from "react-redux";
 import { setCurrentDNA } from "../../../../redux/training";
@@ -19,7 +19,13 @@ export default function TrainButton({ training }) {
   });
   const [score, setScore] = useState(1);
   const [avgScore, setAvgScore] = useState(1);
+
+  const [newBestDNA, setNewBestDNA] = useState(null);
+  const [newScore, setNewScore] = useState(0);
+  const [newAvgScore, setNewAvgScore] = useState(0);
+
   const [generation, setGeneration] = useState(1);
+  const [progress, setProgress] = useState(100);
 
   useEffect(() => {
     if (training) {
@@ -31,6 +37,7 @@ export default function TrainButton({ training }) {
 
   const onClick = () => {
     worker.postMessage("train");
+    setProgress(0);
     console.time("timer");
   };
 
@@ -38,14 +45,17 @@ export default function TrainButton({ training }) {
     worker.onmessage = (e) => {
       if (e.data.log) {
         console.log(e.data.log);
+      } else if (e.data.progress) {
+        setProgress(e.data.progress);
       } else {
         const { bestDNA, bestScore, avgScore } = e.data;
         setBestDNA(bestDNA);
         setScore(Math.round(bestScore));
         setAvgScore(Math.round(avgScore));
         setGeneration((prev) => prev + 1);
+        setProgress(100);
+        console.timeEnd("timer");
       }
-      console.timeEnd("timer");
     };
   }, []);
 
@@ -61,8 +71,12 @@ export default function TrainButton({ training }) {
             </Row>
           </SubContainer>
           <SubContainer>
-            <StyledIconButton onClick={onClick}>
-              <FitnessCenterIcon fontSize="large" />
+            {progress < 100 ? "Training in progress" : "Training complete"}
+            <ProgressBar progress={progress} />
+          </SubContainer>
+          <SubContainer>
+            <StyledIconButton disabled={progress < 100} onClick={onClick}>
+              <SkipNextIcon fontSize="large" />
             </StyledIconButton>
             Next generation
           </SubContainer>
