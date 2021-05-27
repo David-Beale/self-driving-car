@@ -6,7 +6,7 @@ import MenuButton from "./Components/MenuButton/MenuButton";
 import Help from "./Components/Help/Help";
 // import ToggleTrafficLights from "./Components/ToggleTrafficLights/ToggleTrafficLights";
 import ToggleCameraLock from "./Components/ToggleCameraLock/ToggleCameraLock";
-import TrainButton from "./Components/TrainButton/TrainButton";
+import Training from "./Components/Training/Training";
 import Mode from "./Components/Mode/Mode";
 import ToggleTraining from "./Components/ToggleTraining/ToggleTraining";
 
@@ -29,8 +29,8 @@ export default memo(function Menu() {
             </>
           )}
           {/* <ToggleTrafficLights /> */}
+          <Training training={training} />
           <ToggleTraining training={training} />
-          <TrainButton training={training} />
         </Container>
       </Drawer>
     </>
