@@ -1,21 +1,17 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import SkipNextIcon from "@material-ui/icons/SkipNext";
-import RefreshIcon from "@material-ui/icons/Refresh";
 
 import { setCurrentDNA } from "../../../../redux/training";
 
+import Stats from "./Components/Stats";
+import Progress from "./Components/Progress";
+import NextGenButton from "./Components/NextGenButton";
 import MutationRateSlider from "./Components/MutationRateSlider";
-
-import {
-  SubContainer,
-  Row,
-  ProgressBar,
-  ProgressContainer,
-} from "../../MenuStyle";
-import { StyledIconButton } from "../ToggleButtonStyle";
-import { useInitalise } from "./useInitalise";
 import PopulationSizeSlider from "./Components/PopulationSizeSlider";
+import ResetTrainingButton from "./Components/ResetTrainingButton";
+
+import { useInitalise } from "./useInitalise";
+
 const worker = new Worker("./simWorker/simWorker.js");
 
 const initialDNA = {
@@ -47,14 +43,6 @@ export default function TrainButton({ training }) {
 
   useInitalise(initialDNA, training, onTrain);
 
-  const onNext = () => {
-    setScore(newScore);
-    setAvgScore(newAvgScore);
-    setGeneration((prev) => prev + 1);
-    dispatch(setCurrentDNA(newBestDNA));
-    onTrain();
-  };
-
   useEffect(() => {
     worker.onmessage = (e) => {
       if (e.data.log) {
@@ -72,12 +60,21 @@ export default function TrainButton({ training }) {
     };
   }, []);
 
+  const onNext = () => {
+    setScore(newScore);
+    setAvgScore(newAvgScore);
+    setGeneration((prev) => prev + 1);
+    dispatch(setCurrentDNA(newBestDNA));
+    onTrain();
+  };
+
   const onChangeMutationRate = (e, value) => {
     worker.postMessage({ mutationRate: value });
   };
   const onChangePopulationSize = (e, value) => {
     worker.postMessage({ populationSize: value });
   };
+
   const onReset = () => {
     worker.postMessage({ reset: true });
     dispatch(setCurrentDNA(initialDNA));
@@ -90,37 +87,16 @@ export default function TrainButton({ training }) {
     <>
       {training && (
         <>
-          <SubContainer>
-            <div>Generation {generation}</div>
-            <Row>
-              <div>Best Score: {score}%</div>
-              <div>Average Score: {avgScore}%</div>
-            </Row>
-          </SubContainer>
+          <Stats generation={generation} score={score} avgScore={avgScore} />
 
-          <SubContainer>
-            <ProgressContainer>
-              {progress < 100 ? "Training in progress" : "Training complete"}
-              <ProgressBar progress={progress} />
-            </ProgressContainer>
-          </SubContainer>
+          <Progress progress={progress} />
 
-          <SubContainer>
-            <StyledIconButton disabled={progress < 100} onClick={onNext}>
-              <SkipNextIcon fontSize="large" />
-            </StyledIconButton>
-            Next generation
-          </SubContainer>
+          <NextGenButton disabled={progress < 100} onClick={onNext} />
 
           <MutationRateSlider onChange={onChangeMutationRate} />
           <PopulationSizeSlider onChange={onChangePopulationSize} />
 
-          <SubContainer>
-            <StyledIconButton disabled={progress < 100} onClick={onReset}>
-              <RefreshIcon fontSize="large" />
-            </StyledIconButton>
-            Reset training
-          </SubContainer>
+          <ResetTrainingButton disabled={progress < 100} onClick={onReset} />
         </>
       )}
     </>
