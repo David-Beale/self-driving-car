@@ -174,7 +174,7 @@ class Sim {
   translateDNA(DNA) {
     if (DNA.testingData) return DNA;
     return {
-      steerVal: DNA[0] * 1.5,
+      steerVal: DNA[0] * 3,
       maxForce: DNA[1] * 2000,
       maxBrakeForce: (DNA[2] + 1) * 30,
       maxSpeed: (DNA[3] + 1) * 40,
