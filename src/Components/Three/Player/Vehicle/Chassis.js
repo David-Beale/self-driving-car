@@ -13,6 +13,8 @@ const Chassis = forwardRef(
         rotation: rotation,
         angularVelocity: angularVelocity,
         args: boxSize,
+        collisionFilterGroup: 2,
+        collisionFilterMask: 1,
         onCollide: onCollide,
         userData: {
           id: "playerCar",

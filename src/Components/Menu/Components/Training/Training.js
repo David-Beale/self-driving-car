@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 
-import { setCurrentDNA } from "../../../../redux/training";
+import { setCurrentDNA, updateGhosts } from "../../../../redux/training";
 
 import Stats from "./Components/Stats";
 import Progress from "./Components/Progress";
@@ -11,6 +11,7 @@ import PopulationSizeSlider from "./Components/PopulationSizeSlider";
 import ResetTrainingButton from "./Components/ResetTrainingButton";
 
 import { useInitalise } from "./useInitalise";
+import Ghosts from "./Components/Ghosts";
 
 const worker = new Worker("./simWorker/simWorker.js");
 
@@ -34,6 +35,11 @@ export default function TrainButton({ training }) {
 
   const [generation, setGeneration] = useState(1);
   const [progress, setProgress] = useState(100);
+  const [populationSize, setPopulationSize] = useState(100);
+  const mutationRate = useRef(0.01);
+  const ghosts = useRef(0);
+  const arrayOfDNA = useRef([]);
+  const newArrayOfDNA = useRef([]);
 
   const onTrain = useCallback(() => {
     worker.postMessage("train");
@@ -50,29 +56,40 @@ export default function TrainButton({ training }) {
       } else if (e.data.progress) {
         setProgress(e.data.progress);
       } else {
-        const { bestDNA, bestScore, avgScore } = e.data;
+        const { bestDNA, bestScore, avgScore, allDNA } = e.data;
         setNewBestDNA(bestDNA);
         setNewScore(Math.round(bestScore));
         setNewAvgScore(Math.round(avgScore));
         setProgress(100);
+        newArrayOfDNA.current = allDNA;
         console.timeEnd("timer");
       }
     };
-  }, []);
+  }, [dispatch]);
 
   const onNext = () => {
     setScore(newScore);
     setAvgScore(newAvgScore);
     setGeneration((prev) => prev + 1);
+    arrayOfDNA.current = newArrayOfDNA.current;
     dispatch(setCurrentDNA(newBestDNA));
+    dispatch(updateGhosts(arrayOfDNA.current.slice(0, ghosts.current)));
     onTrain();
   };
 
   const onChangeMutationRate = (e, value) => {
+    mutationRate.current = value;
     worker.postMessage({ mutationRate: value });
   };
   const onChangePopulationSize = (e, value) => {
+    setPopulationSize(value);
     worker.postMessage({ populationSize: value });
+  };
+  const onChangeGhosts = (e, value) => {
+    if (arrayOfDNA.current) {
+      dispatch(updateGhosts(arrayOfDNA.current.slice(0, value)));
+    }
+    ghosts.current = value;
   };
 
   const onReset = () => {
@@ -88,14 +105,21 @@ export default function TrainButton({ training }) {
       {training && (
         <>
           <Stats generation={generation} score={score} avgScore={avgScore} />
-
           <Progress progress={progress} />
-
           <NextGenButton disabled={progress < 100} onClick={onNext} />
-
-          <MutationRateSlider onChange={onChangeMutationRate} />
-          <PopulationSizeSlider onChange={onChangePopulationSize} />
-
+          <MutationRateSlider
+            init={mutationRate.current}
+            onChange={onChangeMutationRate}
+          />
+          <PopulationSizeSlider
+            init={populationSize}
+            onChange={onChangePopulationSize}
+          />
+          <Ghosts
+            init={ghosts.current}
+            populationSize={populationSize}
+            onChange={onChangeGhosts}
+          />
           <ResetTrainingButton disabled={progress < 100} onClick={onReset} />
         </>
       )}

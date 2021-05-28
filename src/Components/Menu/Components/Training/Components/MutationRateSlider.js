@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import CustomSlider from "../../../../../Styling/Components/CustomSlider";
 import { SubContainer } from "../../../MenuStyle";
 
-export default function MutationRateSlider({ onChange }) {
-  const [localSliderValue, setLocalSliderValue] = useState(0.01);
+export default function MutationRateSlider({ init, onChange }) {
+  const [localSliderValue, setLocalSliderValue] = useState(init);
 
   return (
     <SubContainer>

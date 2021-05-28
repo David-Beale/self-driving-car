@@ -1,18 +1,15 @@
-/* eslint-disable no-undef */
-/* eslint-disable no-restricted-globals */
-importScripts("d3-ease.v2.min.js");
-importScripts("three.min.js");
-importScripts("path.js");
+import * as THREE from "three";
+import * as d3 from "d3-ease";
+import { path } from "../../Car/path";
 
-class Car {
+export default class GhostClass {
   constructor() {
     this.arrayOfSteps = path.slice();
     this.target = new THREE.Vector2();
-    this.position2d = new THREE.Vector2();
-    this.rotationVector = new THREE.Vector3();
+    this.velocityVector = new THREE.Vector3();
+    this.position = new THREE.Vector2();
     this.slowDown = 0;
     this.reverse = false;
-    this.velocity = 0;
     this.steerVal = 0.875;
     this.maxForce = 1000;
     this.maxBrakeForce = 20;
@@ -25,10 +22,8 @@ class Car {
     const targetFound = this.getNextTarget();
     if (!targetFound) return this.destinationReached();
 
-    const vecDiff = this.target.sub(this.position2d);
+    const vecDiff = this.target.sub(this.position);
     const angle = vecDiff.angle();
-    this.quaternion.toEuler(this.rotationVector);
-    this.rotation = this.rotationVector.y - Math.PI / 2;
     let angleDiff = angle - this.rotation;
     if (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
     else if (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
@@ -39,7 +34,6 @@ class Car {
       ? 8
       : false;
 
-    this.velocity = this.velocityVector.length();
     if (maxSpeed && this.velocity > maxSpeed) this.slowDown = maxSpeed;
 
     const [steering, engine, braking] = this.getForces(angleDiff);
@@ -62,9 +56,8 @@ class Car {
       const { x: xTarget, z: zTarget } =
         this.arrayOfSteps[this.arrayOfSteps.length - 1];
       this.target.set(xTarget, -zTarget);
-      this.position2d.set(this.position.x, -this.position.z);
 
-      const distanceCheck = this.position2d.distanceTo(this.target) < 2;
+      const distanceCheck = this.position.distanceTo(this.target) < 2;
       if (distanceCheck) {
         this.arrayOfSteps.pop();
       } else {
@@ -112,6 +105,7 @@ class Car {
 
     return [steering, engine, braking];
   };
+
   updateDNA(DNA) {
     this.steerVal = DNA.steerVal;
     this.maxForce = DNA.maxForce;

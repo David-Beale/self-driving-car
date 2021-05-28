@@ -42,9 +42,16 @@ self.onmessage = (e) => {
     }
   });
 
+  const allDNA = genetics.arrayOfDNA.map((dna, index) => {
+    const newDNA = sim.translateDNA(dna);
+    newDNA.id = `${Date.now()}${index}`;
+    return newDNA;
+  });
+
   self.postMessage({
     bestDNA: sim.translateDNA(bestDNA),
     bestScore,
     avgScore: genetics.totalScores / genetics.arrayOfDNA.length,
+    allDNA,
   });
 };

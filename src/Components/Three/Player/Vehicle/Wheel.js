@@ -20,8 +20,7 @@ const Wheel = forwardRef(({ leftSide }, ref) => {
     () => ({
       mass: 1,
       type: "Kinematic",
-      collisionFilterGroup: 0, // turn off collisions, or turn them on if you want to fly!
-      // the rotation should be applied to the shape (not the body)
+      collisionFilterGroup: 0,
     }),
     ref
   );

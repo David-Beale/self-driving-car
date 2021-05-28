@@ -6,6 +6,7 @@ export default function Road({ tile }) {
     position: [tile.x, 0, tile.z],
     args: [10, 10, 0.01],
     rotation: [-Math.PI / 2, 0, 0],
+    collisionFilterGroup: 1,
   }));
 
   return <></>;

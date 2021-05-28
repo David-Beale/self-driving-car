@@ -1,6 +1,6 @@
 import React, { Suspense, useState, memo } from "react";
 import { Canvas } from "react-three-fiber";
-import { Loader, Sky } from "@react-three/drei";
+import { Loader, Sky, Stats } from "@react-three/drei";
 import { Physics } from "@react-three/cannon";
 
 import Controls from "./Controls/Controls";
@@ -13,6 +13,7 @@ import { ThreeContainer } from "./ThreeStyle";
 import TrafficLights from "./TrafficLights/TrafficLights";
 import { useSelector } from "react-redux";
 import Car from "../Car/Car";
+import Ghost from "./Ghosts/Ghost";
 
 const player = new Car(map);
 
@@ -24,6 +25,7 @@ export default memo(function Three({ setGauges }) {
   const cameraLock = useSelector(({ settings }) => settings.cameraLock);
   const mode = useSelector(({ mode }) => mode.mode);
   const currentDNA = useSelector(({ training }) => training.currentDNA);
+  const ghosts = useSelector(({ training }) => training.ghosts);
 
   return (
     <ThreeContainer>
@@ -33,7 +35,7 @@ export default memo(function Three({ setGauges }) {
         invalidateFrameloop={true}
       >
         <Physics gravity={[0, -10, 0]} broadphase="SAP" allowSleep>
-          {/* <Stats className="stats" /> */}
+          <Stats className="stats" />
           <ambientLight color="#ffffff" intensity={0.3} />
           <directionalLight color="#ffffff" position={[-100, 50, 50]} />
           <directionalLight color="#ffffff" position={[100, 50, 50]} />
@@ -53,6 +55,9 @@ export default memo(function Three({ setGauges }) {
                 currentDNA={currentDNA}
                 setGauges={setGauges}
               />
+              {ghosts.map((ghostDNA, index) => (
+                <Ghost key={index} ghostDNA={ghostDNA} />
+              ))}
             </Suspense>
           </group>
           <Sky

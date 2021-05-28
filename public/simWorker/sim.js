@@ -136,7 +136,6 @@ class Sim {
   }
 
   resetCar() {
-    this.car.reset();
     this.chassisBody.position.set(147.5, 4, 192.5);
     this.chassisBody.velocity.set(0, 0, 0);
     this.chassisBody.angularVelocity.set(0, 0, 0);
