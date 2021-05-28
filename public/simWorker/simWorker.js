@@ -20,7 +20,7 @@ self.onmessage = (e) => {
     genetics.reset = true;
     return;
   }
-  let bestDNA;
+  let bestDNAIndex;
   let bestScore = 0;
   let progress = 10;
 
@@ -34,7 +34,7 @@ self.onmessage = (e) => {
 
     if (DNA.fitness > bestScore) {
       bestScore = DNA.fitness;
-      bestDNA = DNA;
+      bestDNAIndex = index;
     }
     if ((100 * index) / genetics.arrayOfDNA.length >= progress) {
       self.postMessage({ progress });
@@ -42,16 +42,13 @@ self.onmessage = (e) => {
     }
   });
 
-  const allDNA = genetics.arrayOfDNA.map((dna, index) => {
-    const newDNA = sim.translateDNA(dna);
-    newDNA.id = `${Date.now()}${index}`;
-    return newDNA;
-  });
+  const allDNA = genetics.arrayOfDNA.map((dna) => sim.translateDNA(dna));
+  const bestDNA = allDNA.splice(bestDNAIndex, 1)[0];
 
   self.postMessage({
-    bestDNA: sim.translateDNA(bestDNA),
+    bestDNA,
     bestScore,
-    avgScore: genetics.totalScores / genetics.arrayOfDNA.length,
+    avgScore: genetics.totalScores / genetics.populationSize,
     allDNA,
   });
 };
