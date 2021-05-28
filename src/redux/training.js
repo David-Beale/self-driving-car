@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { mouseMode } from "./mode";
 import { enableCameraLock } from "./settings";
 
 export const initialState = {
@@ -26,7 +27,10 @@ export const { setCurrentDNA, toggleTraining, updateGhosts } = training.actions;
 
 export const onTrainingMode = () => async (dispatch, getState) => {
   const trainingMode = getState().training.training;
-  if (!trainingMode) dispatch(enableCameraLock());
+  if (!trainingMode) {
+    dispatch(enableCameraLock());
+    dispatch(mouseMode());
+  }
   dispatch(toggleTraining());
 };
 
