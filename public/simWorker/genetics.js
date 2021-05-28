@@ -1,7 +1,9 @@
 class Genetics {
   constructor() {
     this.mutationRate = 0.01;
-    this.arrayOfDNA = this.randomiseDNA(100);
+    this.reset = true;
+    this.populationSize = 100;
+    this.arrayOfDNA = [];
     this.totalScores = 0;
   }
 
@@ -31,12 +33,12 @@ class Genetics {
   }
 
   createNewGeneration() {
-    if (this.newPopulationSize) this.updatePopulationSize();
-    if (this.reset) this.resetPopulation();
-    if (!this.arrayOfDNA[0].fitness) return; //array is random
-
+    if (this.reset) {
+      this.resetPopulation();
+      return;
+    }
     const newArrayOfDNA = [];
-    for (let i = 0; i < this.arrayOfDNA.length; i++) {
+    for (let i = 0; i < this.populationSize; i++) {
       const parent1 = this.pickRandom();
       const parent2 = this.pickRandom();
       const child = this.bonk(parent1, parent2);
@@ -69,18 +71,9 @@ class Genetics {
     });
     return child;
   }
-  updatePopulationSize() {
-    if (this.newPopulationSize < this.arrayOfDNA.length) {
-      this.arrayOfDNA = this.arrayOfDNA.slice(0, this.newPopulationSize);
-    } else {
-      const diff = this.newPopulationSize - this.arrayOfDNA.length;
-      const newPopualtion = this.randomiseDNA(diff);
-      this.arrayOfDNA = [...this.arrayOfDNA, ...newPopualtion];
-    }
-    this.newPopulationSize = false;
-  }
+
   resetPopulation() {
-    this.arrayOfDNA = this.randomiseDNA(this.arrayOfDNA.length);
+    this.arrayOfDNA = this.randomiseDNA(this.populationSize);
     this.reset = false;
   }
 }

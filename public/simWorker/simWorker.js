@@ -13,7 +13,7 @@ self.onmessage = (e) => {
     return;
   }
   if (e.data.populationSize) {
-    genetics.newPopulationSize = e.data.populationSize;
+    genetics.populationSize = e.data.populationSize;
     return;
   }
   if (e.data.reset) {
