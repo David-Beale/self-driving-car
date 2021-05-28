@@ -39,7 +39,7 @@ export const useKeyboardControls = (mode, vehicleRef, setReset, setGauges) => {
     if (reset) {
       setReset([true]);
     }
-    if (mode !== "keyboard" || !vehicleRef.current?.ap) return;
+    if (mode !== "keyboard" || !vehicleRef.current?.api) return;
     let steering = 0;
     let braking = 0;
     let engine = 0;
@@ -58,7 +58,6 @@ export const useKeyboardControls = (mode, vehicleRef, setReset, setGauges) => {
     if (brake) {
       braking = 20;
     }
-
     vehicleRef.current.api.applyEngineForce(engine, 2);
     vehicleRef.current.api.applyEngineForce(engine, 3);
 

@@ -39,27 +39,25 @@ export default memo(function Three({ setGauges }) {
           <ambientLight color="#ffffff" intensity={0.3} />
           <directionalLight color="#ffffff" position={[-100, 50, 50]} />
           <directionalLight color="#ffffff" position={[100, 50, 50]} />
-          <group>
-            <Controls cameraLock={cameraLock} player={player} />
+          <Controls cameraLock={cameraLock} player={player} />
 
-            <Suspense fallback={null}>
-              <Roads
-                verticesMap={map.lookup}
-                setSelectedVertex={setSelectedVertex}
-              />
-              <TrafficLights verticesMap={map.lookup} enabled={trafficLights} />
-              <Player
-                player={player}
-                selectedVertex={selectedVertex}
-                mode={mode}
-                currentDNA={currentDNA}
-                setGauges={setGauges}
-              />
-              {ghosts.map((ghostDNA, index) => (
-                <Ghost key={index} ghostDNA={ghostDNA} />
-              ))}
-            </Suspense>
-          </group>
+          <Suspense fallback={null}>
+            <Roads
+              verticesMap={map.lookup}
+              setSelectedVertex={setSelectedVertex}
+            />
+            <TrafficLights verticesMap={map.lookup} enabled={trafficLights} />
+            <Player
+              player={player}
+              selectedVertex={selectedVertex}
+              mode={mode}
+              currentDNA={currentDNA}
+              setGauges={setGauges}
+            />
+            {ghosts.map((ghostDNA, index) => (
+              <Ghost key={index} ghostDNA={ghostDNA} />
+            ))}
+          </Suspense>
           <Sky
             distance={45000} // Camera distance (default=450000)
             inclination={0.49} // Sun elevation angle from 0 to 1 (default=0)
