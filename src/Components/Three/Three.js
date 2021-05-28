@@ -12,7 +12,7 @@ import { map } from "./graph/graphSetup";
 import { ThreeContainer } from "./ThreeStyle";
 import TrafficLights from "./TrafficLights/TrafficLights";
 import { useSelector } from "react-redux";
-import Car from "../Car/Car";
+import Car from "./Car/Car";
 import Ghost from "./Ghosts/Ghost";
 
 const player = new Car(map);

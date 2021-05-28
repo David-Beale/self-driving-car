@@ -3,7 +3,7 @@ import { useRaycastVehicle } from "@react-three/cannon";
 
 import Chassis from "./Chassis";
 import Wheel from "./Wheel";
-import { useWheels } from "./useWheels";
+import { useWheels } from "../../Car/useWheels";
 
 export default function Vehicle({
   playerRef,

@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import * as d3 from "d3-ease";
-import { path } from "../../Car/path";
+import { path } from "../Car/path";
 
 export default class GhostClass {
   constructor() {
