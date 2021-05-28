@@ -4,6 +4,7 @@ import { SubContainer } from "../../../MenuStyle";
 
 export default function Ghosts({ init, populationSize, onChange }) {
   const [localSliderValue, setLocalSliderValue] = useState(init);
+  const max = Math.min(populationSize, 50);
 
   return (
     <SubContainer>
@@ -11,7 +12,7 @@ export default function Ghosts({ init, populationSize, onChange }) {
       <CustomSlider
         value={localSliderValue}
         min={0}
-        max={populationSize}
+        max={max}
         step={1}
         onChange={(e, value) => setLocalSliderValue(value)}
         onChangeCommitted={onChange}

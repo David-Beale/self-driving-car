@@ -37,7 +37,7 @@ export default function TrainButton({ training }) {
   const [progress, setProgress] = useState(100);
   const [populationSize, setPopulationSize] = useState(100);
   const mutationRate = useRef(0.01);
-  const ghosts = useRef(0);
+  const ghosts = useRef(5);
   const arrayOfDNA = useRef([]);
   const newArrayOfDNA = useRef([]);
 
