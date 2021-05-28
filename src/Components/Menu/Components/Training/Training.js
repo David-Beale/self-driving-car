@@ -95,6 +95,7 @@ export default function TrainButton({ training }) {
   const onReset = () => {
     worker.postMessage({ reset: true });
     dispatch(setCurrentDNA(initialDNA));
+    dispatch(updateGhosts([]));
     setGeneration(1);
     setScore(1);
     setAvgScore(1);
