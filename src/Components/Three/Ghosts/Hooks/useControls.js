@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { useMouseControls } from "./useMouseControls";
 
-export const useControls = (ghostCar, ghostDNA) => {
-  const [forces, setForces] = useState({ steering: 0, engine: 0, braking: 0 });
+export const useControls = (ghostRef, vehicleRef, ghostCar, ghostDNA) => {
   const [reset, setReset] = useState(false);
 
-  useMouseControls(ghostCar, setForces);
+  useMouseControls(ghostCar, vehicleRef);
 
   useEffect(() => {
     if (!ghostDNA) return;
@@ -13,5 +12,11 @@ export const useControls = (ghostCar, ghostDNA) => {
     setReset([false]);
   }, [ghostCar, ghostDNA]);
 
-  return [forces, reset];
+  useEffect(() => {
+    if (!reset) return;
+    ghostRef.current.api.position.set(147.5, 4, 192.5);
+    ghostRef.current.api.angularVelocity.set(0, 0, 0);
+    ghostRef.current.api.velocity.set(0, 0, 0);
+    ghostRef.current.api.rotation.set(0, Math.PI, 0);
+  }, [reset, ghostRef]);
 };

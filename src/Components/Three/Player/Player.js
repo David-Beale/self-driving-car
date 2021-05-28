@@ -15,10 +15,13 @@ export default function Player({
 }) {
   const playerRef = useRef();
   const followCameraRef = useRef();
+  const vehicleRef = useRef();
 
   useSubscriptions(player, playerRef);
 
-  const [forces, reset] = useControls(
+  useControls(
+    playerRef,
+    vehicleRef,
     player,
     mode,
     setGauges,
@@ -34,12 +37,11 @@ export default function Player({
     <>
       <Vehicle
         playerRef={playerRef}
+        vehicleRef={vehicleRef}
         followCameraRef={followCameraRef}
         position={[147.5, 4, 192.5]}
         angularVelocity={[0, 0, 0]}
         rotation={[0, Math.PI, 0]}
-        forces={forces}
-        reset={reset}
       />
       <PlayerPath player={player} />
       <ClickIndicator selectedVertex={selectedVertex} />

@@ -8,19 +8,19 @@ import { useControls } from "./Hooks/useControls";
 export default function Ghost({ ghostDNA }) {
   const ghostCar = useMemo(() => new ghostClass(), []);
   const ghostRef = useRef();
+  const vehicleRef = useRef();
 
   useSubscriptions(ghostCar, ghostRef);
 
-  const [forces, reset] = useControls(ghostCar, ghostDNA);
+  useControls(ghostRef, vehicleRef, ghostCar, ghostDNA);
 
   return (
     <Vehicle
       ghostRef={ghostRef}
+      vehicleRef={vehicleRef}
       position={[147.5, 4, 192.5]}
       angularVelocity={[0, 0, 0]}
       rotation={[0, Math.PI, 0]}
-      forces={forces}
-      reset={reset}
     />
   );
 }

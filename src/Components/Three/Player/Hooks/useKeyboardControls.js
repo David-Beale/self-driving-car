@@ -27,7 +27,7 @@ function useKeyPress(target, mode) {
   return keyPressed;
 }
 
-export const useKeyboardControls = (mode, setForces, setReset, setGauges) => {
+export const useKeyboardControls = (mode, vehicleRef, setReset, setGauges) => {
   const forward = useKeyPress("w", mode);
   const backward = useKeyPress("s", mode);
   const left = useKeyPress("a", mode);
@@ -39,7 +39,7 @@ export const useKeyboardControls = (mode, setForces, setReset, setGauges) => {
     if (reset) {
       setReset([true]);
     }
-    if (mode !== "keyboard") return;
+    if (mode !== "keyboard" || !vehicleRef.current?.ap) return;
     let steering = 0;
     let braking = 0;
     let engine = 0;
@@ -59,7 +59,15 @@ export const useKeyboardControls = (mode, setForces, setReset, setGauges) => {
       braking = 20;
     }
 
-    setForces({ steering, engine, braking });
+    vehicleRef.current.api.applyEngineForce(engine, 2);
+    vehicleRef.current.api.applyEngineForce(engine, 3);
+
+    vehicleRef.current.api.setSteeringValue(steering, 0);
+    vehicleRef.current.api.setSteeringValue(steering, 1);
+
+    for (let i = 0; i < 4; i++) {
+      vehicleRef.current.api.setBrake(braking, i);
+    }
     setGauges({
       steering: -steering * 2,
       accel: braking ? -1 : engine ? -engine / 1500 : 0,
