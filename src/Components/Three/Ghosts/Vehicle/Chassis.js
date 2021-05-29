@@ -20,7 +20,12 @@ const Chassis = ({ rotation, position, angularVelocity, ghostRef }) => {
   return (
     <mesh ref={ghostRef} api={api}>
       <boxBufferGeometry attach="geometry" args={[1.7, 1, 4]} />
-      <meshLambertMaterial color="grey" attach="material" />
+      <meshLambertMaterial
+        transparent={true}
+        opacity={0.5}
+        color="grey"
+        attach="material"
+      />
     </mesh>
   );
 };

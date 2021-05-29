@@ -2,7 +2,7 @@ import { useMemo, useRef } from "react";
 
 // chassis - wheel connection helpers
 const chassisWidth = 1.6;
-const chassisHeight = -0.04; // ground clearance
+const chassisHeight = -0.15; // ground clearance
 const chassisFront = 1.3;
 const chassisBack = -1.35;
 

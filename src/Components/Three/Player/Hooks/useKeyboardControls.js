@@ -56,7 +56,7 @@ export const useKeyboardControls = (mode, vehicleRef, setReset, setGauges) => {
     }
 
     if (brake) {
-      braking = 20;
+      braking = 50;
     }
     vehicleRef.current.api.applyEngineForce(engine, 2);
     vehicleRef.current.api.applyEngineForce(engine, 3);

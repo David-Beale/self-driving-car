@@ -81,7 +81,7 @@ class Sim {
     this.chassisBody = chassisBody;
 
     const chassisWidth = 1.6;
-    const chassisHeight = -0.04; // ground clearance
+    const chassisHeight = -0.15; // ground clearance
     const chassisFront = 1.3;
     const chassisBack = -1.35;
 
@@ -160,7 +160,7 @@ class Sim {
       (185 - this.chassisBody.position.distanceTo(this.endPoint)) * (50 / 185);
     //lose 0.5% per frame over best time
     let timeScore =
-      !this.finish || distanceScore < 45 ? 0 : (2224 - this.finish) / 2;
+      !this.finish || distanceScore < 48 ? 0 : (2224 - this.finish) / 2;
     let totalScore = distanceScore + timeScore;
     if (totalScore <= 0) totalScore = 1;
     this.totalScores += totalScore;
@@ -174,12 +174,12 @@ class Sim {
   translateDNA(DNA) {
     if (DNA.testingData) return DNA;
     return {
-      steerVal: DNA[0] * 3,
+      steerVal: DNA[0] * 5,
       maxForce: DNA[1] * 2000,
-      maxBrakeForce: (DNA[2] + 1) * 30,
-      maxSpeed: (DNA[3] + 1) * 40,
-      stoppingDistance: Math.round((DNA[4] + 1) * 30),
-      slowDistance: Math.round((DNA[5] + 1) * 30),
+      maxBrakeForce: (DNA[2] + 1) * 50,
+      maxSpeed: (DNA[3] + 1) * 50,
+      stoppingDistance: Math.round((DNA[4] + 1) * 40),
+      slowDistance: Math.round((DNA[5] + 1) * 40),
     };
   }
 

@@ -20,7 +20,7 @@ const Chassis = ({
       args: boxSize,
       collisionFilterGroup: 2,
       collisionFilterMask: 1,
-      onCollide: onCollide,
+      // onCollide: onCollide,
       userData: {
         id: "playerCar",
       },
@@ -28,12 +28,12 @@ const Chassis = ({
     playerRef
   );
 
-  const onCollide = (e) => {
-    // console.log("bonk!", e.body.userData);
-  };
+  // const onCollide = (e) => {
+  // console.log("bonk!", e.body.userData);
+  // };
   return (
     <mesh ref={playerRef} api={api}>
-      <Aston position={[0, -0.6, 0]} scale={0.01} />
+      <Aston position={[0, -0.7, 0]} scale={0.01} />
       <object3D ref={followCameraRef} position={[0, 5, -8]} />
     </mesh>
   );
