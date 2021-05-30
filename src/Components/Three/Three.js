@@ -1,6 +1,6 @@
 import React, { Suspense, useState, memo } from "react";
 import { Canvas } from "react-three-fiber";
-import { Loader, Sky, Stats } from "@react-three/drei";
+import { Loader, Stats } from "@react-three/drei";
 import { Physics } from "@react-three/cannon";
 
 import Controls from "./Controls/Controls";
@@ -14,6 +14,7 @@ import TrafficLights from "./TrafficLights/TrafficLights";
 import { useSelector } from "react-redux";
 import Car from "./Car/Car";
 import Ghost from "./Ghosts/Ghost";
+import SkyComponent from "./SkyComponent/SkyComponent";
 
 const player = new Car(map);
 
@@ -36,9 +37,7 @@ export default memo(function Three({ setGauges }) {
       >
         <Physics gravity={[0, -10, 0]} broadphase="SAP" allowSleep>
           <Stats className="stats" />
-          <ambientLight color="#ffffff" intensity={0.3} />
-          <directionalLight color="#ffffff" position={[-100, 50, 50]} />
-          <directionalLight color="#ffffff" position={[100, 50, 50]} />
+
           <Controls cameraLock={cameraLock} player={player} />
 
           <Suspense fallback={null}>
@@ -58,11 +57,7 @@ export default memo(function Three({ setGauges }) {
               <Ghost key={index} ghostDNA={ghostDNA} />
             ))}
           </Suspense>
-          <Sky
-            distance={45000} // Camera distance (default=450000)
-            inclination={0.49} // Sun elevation angle from 0 to 1 (default=0)
-            azimuth={0.25} // Sun rotation around the Y axis from 0 to 1 (default=0.25)
-          />
+          <SkyComponent />
         </Physics>
       </Canvas>
       <Loader />

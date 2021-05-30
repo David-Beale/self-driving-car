@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useBox } from "@react-three/cannon";
 import Aston from "./Aston";
+import { SpotLight } from "@react-three/drei";
 
 // The vehicle chassis
 const Chassis = ({
@@ -10,6 +11,8 @@ const Chassis = ({
   followCameraRef,
   playerRef,
 }) => {
+  const spotlightTarget = useRef();
+  const [target, setTarget] = useState(undefined);
   const boxSize = [1.7, 1, 4]; // roughly the cars's visual dimensions
   const [, api] = useBox(
     () => ({
@@ -28,13 +31,37 @@ const Chassis = ({
     playerRef
   );
 
+  useEffect(() => {
+    setTarget(spotlightTarget.current);
+  }, []);
   // const onCollide = (e) => {
   // console.log("bonk!", e.body.userData);
   // };
   return (
     <mesh ref={playerRef} api={api}>
       <Aston position={[0, -0.7, 0]} scale={0.01} />
-      <object3D ref={followCameraRef} position={[0, 5, -8]} />
+      <object3D ref={followCameraRef} position={[0, 3, -8]} />
+      <object3D ref={spotlightTarget} position={[0, -2, 10]} />
+      <SpotLight
+        position={[-0.8, -0.15, 1.9]}
+        intensity={7}
+        target={target}
+        distance={20}
+        angle={0.5}
+        attenuation={5}
+        anglePower={5}
+        color="rgb(24, 235, 254)"
+      />
+      <SpotLight
+        position={[0.8, -0.15, 1.9]}
+        intensity={7}
+        target={target}
+        distance={20}
+        angle={0.5}
+        attenuation={5}
+        anglePower={5}
+        color="rgb(24, 235, 254)"
+      />
     </mesh>
   );
 };

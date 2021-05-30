@@ -2,6 +2,7 @@ import { useRef, useEffect } from "react";
 import { useFrame } from "react-three-fiber";
 import * as d3 from "d3-ease";
 
+const up = { x: 0, y: 1, z: 0 };
 function updateSource(parameter) {
   parameter.sourceX = parameter.x;
   parameter.sourceY = parameter.y;
@@ -121,7 +122,7 @@ export function useAnimatedMovement({ controls, camera, cameraLock, player }) {
       player.followCam.getWorldPosition(player.followCamVector),
       0.03
     );
-    camera.up.lerp(parameters.current.up, 0.03);
+    camera.up.lerp(up, 0.03);
     controls.current.target.lerp(player.followCam.parent.position, 0.03);
   };
 }

@@ -55,7 +55,7 @@ export default function Roads({ verticesMap, setSelectedVertex }) {
         rotation={[-Math.PI / 2, 0, 0]}
       >
         <planeBufferGeometry attach="geometry" args={[300, 300]} />
-        <meshBasicMaterial
+        <meshStandardMaterial
           map={roadsTexture}
           attach="material"
           transparent={true}
