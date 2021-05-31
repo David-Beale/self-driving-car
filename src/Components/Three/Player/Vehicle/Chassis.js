@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useBox } from "@react-three/cannon";
 import Aston from "./Aston";
-import { SpotLight } from "@react-three/drei";
 
 // The vehicle chassis
 const Chassis = ({
@@ -42,24 +41,22 @@ const Chassis = ({
       <Aston position={[0, -0.7, 0]} scale={0.01} />
       <object3D ref={followCameraRef} position={[0, 3, -8]} />
       <object3D ref={spotlightTarget} position={[0, -2, 10]} />
-      <SpotLight
+      <spotLight
         position={[-0.8, -0.15, 1.9]}
-        intensity={7}
+        intensity={8}
         target={target}
         distance={20}
         angle={0.5}
-        attenuation={5}
-        anglePower={5}
+        penumbra={0.4}
         color="rgb(24, 235, 254)"
       />
-      <SpotLight
+      <spotLight
         position={[0.8, -0.15, 1.9]}
-        intensity={7}
+        intensity={8}
         target={target}
         distance={20}
         angle={0.5}
-        attenuation={5}
-        anglePower={5}
+        penumbra={0.4}
         color="rgb(24, 235, 254)"
       />
     </mesh>
