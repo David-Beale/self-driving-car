@@ -11,6 +11,7 @@ import Mode from "./Components/Mode/Mode";
 import ToggleTraining from "./Components/ToggleTraining/ToggleTraining";
 
 import { Container } from "./MenuStyle";
+import ToggleTime from "./Components/ToggleTime/ToggleTime";
 
 export default memo(function Menu() {
   const [menuOpen, setMenuOpen] = useState(true);
@@ -23,6 +24,7 @@ export default memo(function Menu() {
         <Container>
           <Help />
           <ToggleCameraLock />
+          <ToggleTime />
           {!training && (
             <>
               <Mode />

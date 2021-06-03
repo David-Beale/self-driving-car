@@ -27,6 +27,7 @@ export default memo(function Three({ setGauges }) {
   const mode = useSelector(({ mode }) => mode.mode);
   const currentDNA = useSelector(({ training }) => training.currentDNA);
   const ghosts = useSelector(({ training }) => training.ghosts);
+  const time = useSelector(({ settings }) => settings.time);
 
   return (
     <ThreeContainer>
@@ -57,7 +58,7 @@ export default memo(function Three({ setGauges }) {
               <Ghost key={index} ghostDNA={ghostDNA} />
             ))}
           </Suspense>
-          <SkyComponent />
+          <SkyComponent time={time} />
         </Physics>
       </Canvas>
       <Loader />

@@ -6,6 +6,7 @@ export const initialState = {
   collisionBoxes: false,
   computerNumber: 60,
   trafficConditions: false,
+  time: "night",
 };
 const settings = createSlice({
   name: "settings",
@@ -29,6 +30,11 @@ const settings = createSlice({
     changeComputerNumber(state, action) {
       state.computerNumber = action.payload;
     },
+    toggleTime(state) {
+      if (state.time === "day") state.time = "sunset";
+      else if (state.time === "sunset") state.time = "night";
+      else if (state.time === "night") state.time = "day";
+    },
   },
 });
 
@@ -39,6 +45,7 @@ export const {
   toggleCollisionBoxes,
   toggleTrafficConditions,
   changeComputerNumber,
+  toggleTime,
 } = settings.actions;
 
 export default settings.reducer;
