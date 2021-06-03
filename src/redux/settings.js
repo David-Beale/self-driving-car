@@ -6,7 +6,7 @@ export const initialState = {
   collisionBoxes: false,
   computerNumber: 60,
   trafficConditions: false,
-  time: "night",
+  time: "sunset",
 };
 const settings = createSlice({
   name: "settings",
