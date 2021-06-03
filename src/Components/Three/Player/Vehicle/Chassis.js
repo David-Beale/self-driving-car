@@ -9,6 +9,7 @@ const Chassis = ({
   angularVelocity,
   followCameraRef,
   playerRef,
+  time,
 }) => {
   const spotlightTarget = useRef();
   const [target, setTarget] = useState(undefined);
@@ -41,24 +42,28 @@ const Chassis = ({
       <Aston position={[0, -0.7, 0]} scale={0.01} />
       <object3D ref={followCameraRef} position={[0, 3, -8]} />
       <object3D ref={spotlightTarget} position={[0, -2, 10]} />
-      <spotLight
-        position={[-0.8, -0.15, 1.9]}
-        intensity={8}
-        target={target}
-        distance={20}
-        angle={0.5}
-        penumbra={0.4}
-        color="rgb(24, 235, 254)"
-      />
-      <spotLight
-        position={[0.8, -0.15, 1.9]}
-        intensity={8}
-        target={target}
-        distance={20}
-        angle={0.5}
-        penumbra={0.4}
-        color="rgb(24, 235, 254)"
-      />
+      {time === "night" && (
+        <>
+          <spotLight
+            position={[-0.8, -0.15, 1.9]}
+            intensity={8}
+            target={target}
+            distance={20}
+            angle={0.5}
+            penumbra={0.4}
+            color="rgb(24, 235, 254)"
+          />
+          <spotLight
+            position={[0.8, -0.15, 1.9]}
+            intensity={8}
+            target={target}
+            distance={20}
+            angle={0.5}
+            penumbra={0.4}
+            color="rgb(24, 235, 254)"
+          />
+        </>
+      )}
     </mesh>
   );
 };

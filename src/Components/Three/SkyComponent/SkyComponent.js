@@ -36,6 +36,7 @@ const lerp = (start, end, progress) => {
 
 export default function SkyComponent({ time }) {
   const [currentSettings, setCurrentSettings] = useState(settings[time]);
+  const [starsOn, setStarsOn] = useState(false);
   const prevTime = useRef(time);
   const animate = useRef(false);
   const progress = useRef(0);
@@ -60,7 +61,8 @@ export default function SkyComponent({ time }) {
     if (progress.current > 99) {
       animate.current = false;
       prevTime.current = time;
-      console.log(newSettings);
+      if (time === "night") setStarsOn(true);
+      else setStarsOn(false);
     }
   });
   return (
@@ -77,7 +79,7 @@ export default function SkyComponent({ time }) {
         azimuth={0.25} // Sun rotation around the Y axis from 0 to 1 (default=0.25)
         rayleigh={currentSettings.rayleigh}
       />
-      {time === "night" && <Stars radius={1000} factor={15} />}
+      {starsOn && <Stars radius={1000} factor={15} />}
       <Effects strength={currentSettings.bloom} />
     </>
   );
