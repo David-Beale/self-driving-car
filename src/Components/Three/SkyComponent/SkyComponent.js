@@ -7,7 +7,7 @@ const settings = {
   night: {
     directionalLight: 0.25,
     ambientLight: 0.3,
-    inclination: 0,
+    inclination: 0.48,
     bloom: 1,
     rayleigh: 5,
     sunPosition: 750,
@@ -42,6 +42,8 @@ export default function SkyComponent({ time }) {
   const progress = useRef(0);
   useEffect(() => {
     if (prevTime.current === time) return;
+    if (time === "night") setStarsOn(true);
+    else setStarsOn(false);
     animate.current = true;
     progress.current = 0;
   }, [time]);
@@ -61,8 +63,6 @@ export default function SkyComponent({ time }) {
     if (progress.current > 99) {
       animate.current = false;
       prevTime.current = time;
-      if (time === "night") setStarsOn(true);
-      else setStarsOn(false);
     }
   });
   return (
