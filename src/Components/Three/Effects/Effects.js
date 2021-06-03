@@ -10,7 +10,6 @@ import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader";
 extend({ EffectComposer, ShaderPass, RenderPass, UnrealBloomPass });
 
 export default function Effects({ strength }) {
-  const bloomRef = useRef();
   const composer = useRef();
   const { scene, gl, size, camera } = useThree();
   const [aspect] = React.useState(() => new THREE.Vector2(512, 512));
@@ -30,7 +29,7 @@ export default function Effects({ strength }) {
     <effectComposer ref={composer} args={[gl]}>
       <renderPass attachArray="passes" scene={scene} camera={camera} />
       <unrealBloomPass
-        ref={bloomRef}
+        key={strength}
         attachArray="passes"
         args={[bloom.resolution, strength, bloom.radius, bloom.threshold]}
       />
