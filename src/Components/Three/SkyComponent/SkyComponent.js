@@ -5,11 +5,11 @@ import Effects from "../Effects/Effects";
 
 const settings = {
   night: {
-    directionalLight: 0.1,
+    directionalLight: 0.25,
     ambientLight: 0.3,
     inclination: 0,
-    bloom: 2.3,
-    rayleigh: 8,
+    bloom: 1,
+    rayleigh: 5,
     sunPosition: 750,
   },
   sunset: {
