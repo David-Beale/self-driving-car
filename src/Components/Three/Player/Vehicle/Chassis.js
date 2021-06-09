@@ -1,7 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import * as THREE from "three";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useBox } from "@react-three/cannon";
 import Aston from "./Aston";
+import Ray from "./Ray";
 
+const start = [0, 0, 0];
 // The vehicle chassis
 const Chassis = ({
   rotation,
@@ -37,8 +40,19 @@ const Chassis = ({
   // const onCollide = (e) => {
   // console.log("bonk!", e.body.userData);
   // };
+
+  const rayEndPoints = useMemo(() => {
+    const curve = new THREE.EllipseCurve(0, 0, 5, 5, 0, Math.PI, false, 0);
+    const curvePoints = curve.getPoints(10);
+
+    return curvePoints.map((end) => [end.x, -0.5, end.y]);
+  }, []);
+
   return (
     <mesh ref={playerRef} api={api}>
+      {rayEndPoints.map((to, index) => {
+        return <Ray key={index} from={start} to={to} />;
+      })}
       <Aston position={[0, -0.7, 0]} scale={0.01} />
       <object3D ref={followCameraRef} position={[0, 3, -8]} />
       <object3D ref={spotlightTarget} position={[0, -2, 10]} />
