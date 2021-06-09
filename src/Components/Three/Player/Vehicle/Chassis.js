@@ -4,7 +4,7 @@ import { useBox } from "@react-three/cannon";
 import Aston from "./Aston";
 import Ray from "./Ray";
 
-const start = [0, 0, 0];
+const from = [0, 0, 3];
 // The vehicle chassis
 const Chassis = ({
   rotation,
@@ -42,16 +42,16 @@ const Chassis = ({
   // };
 
   const rayEndPoints = useMemo(() => {
-    const curve = new THREE.EllipseCurve(0, 0, 5, 5, 0, Math.PI, false, 0);
-    const curvePoints = curve.getPoints(10);
+    const curve = new THREE.EllipseCurve(0, 2, 10, 10, 0, Math.PI, false, 0);
+    const curvePoints = curve.getPoints(20);
 
-    return curvePoints.map((end) => [end.x, -0.5, end.y]);
+    return curvePoints.map((end) => [end.x, 0, end.y]);
   }, []);
 
   return (
     <mesh ref={playerRef} api={api}>
       {rayEndPoints.map((to, index) => {
-        return <Ray key={index} from={start} to={to} />;
+        return <Ray key={index} from={from} to={to} />;
       })}
       <Aston position={[0, -0.7, 0]} scale={0.01} />
       <object3D ref={followCameraRef} position={[0, 3, -8]} />

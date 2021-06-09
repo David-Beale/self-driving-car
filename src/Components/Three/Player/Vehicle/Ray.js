@@ -1,33 +1,43 @@
 import * as THREE from "three";
-import { useBox, useParticle, useSphere } from "@react-three/cannon";
+import { useRaycastClosest } from "@react-three/cannon";
 import { useEffect, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 
 export default function Ray({ from, to, setHit }) {
   const geometry = useRef(new THREE.BufferGeometry());
-  const lineRef = useRef();
-  const worldVector = useRef(new THREE.Vector3());
-  const [color, setColor] = useState("black");
+  const endRef = useRef();
+  const fromRef = useRef();
+  const worldVectorFrom = useRef(new THREE.Vector3());
+  const worldVectorTo = useRef(new THREE.Vector3());
+  const [color, setColor] = useState("limegreen");
 
-  const onCollide = (e) => {
-    console.log("bonk!", e.body.userData);
-    setColor("red");
-  };
-  const [, api] = useParticle(() => ({
-    type: "Kinetic",
-    mass: 1,
-    onCollide,
-  }));
+  const [rayFrom, setRayFrom] = useState(from);
+  const [rayTo, setRayTo] = useState(to);
+
+  useRaycastClosest(
+    { from: rayFrom, to: rayTo },
+    (result) => {
+      if (result.hasHit) {
+        setColor("red");
+      }
+    },
+    [rayFrom, rayTo]
+  );
 
   useFrame(() => {
-    setColor("black");
-    lineRef.current.getWorldPosition(worldVector.current);
-    if (!worldVector.current.x) return;
-    api.position.set(
-      worldVector.current.x,
-      worldVector.current.y,
-      worldVector.current.z
-    );
+    setColor("limegreen");
+    fromRef.current.getWorldPosition(worldVectorFrom.current);
+    endRef.current.getWorldPosition(worldVectorTo.current);
+    setRayTo([
+      worldVectorTo.current.x,
+      worldVectorTo.current.y,
+      worldVectorTo.current.z,
+    ]);
+    setRayFrom([
+      worldVectorFrom.current.x,
+      worldVectorFrom.current.y,
+      worldVectorFrom.current.z,
+    ]);
   });
 
   useEffect(() => {
@@ -38,10 +48,8 @@ export default function Ray({ from, to, setHit }) {
 
   return (
     <>
-      <mesh ref={lineRef} position={to}>
-        <sphereBufferGeometry args={[0.1, 64, 64]} />
-        <meshNormalMaterial />
-      </mesh>
+      <object3D ref={fromRef} position={from} />
+      <object3D ref={endRef} position={to} />
       <line geometry={geometry.current}>
         <lineBasicMaterial color={color} />
       </line>
