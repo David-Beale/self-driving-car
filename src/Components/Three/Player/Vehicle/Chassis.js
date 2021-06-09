@@ -4,7 +4,7 @@ import { useBox } from "@react-three/cannon";
 import Aston from "./Aston";
 import Ray from "./Ray";
 
-const from = [0, 0, 3];
+const from = [0, 0, 0];
 // The vehicle chassis
 const Chassis = ({
   rotation,
@@ -42,7 +42,16 @@ const Chassis = ({
   // };
 
   const rayEndPoints = useMemo(() => {
-    const curve = new THREE.EllipseCurve(0, 2, 10, 10, 0, Math.PI, false, 0);
+    const curve = new THREE.EllipseCurve(
+      0,
+      0,
+      10,
+      10,
+      Math.PI / 8,
+      (7 * Math.PI) / 8,
+      false,
+      0
+    );
     const curvePoints = curve.getPoints(20);
 
     return curvePoints.map((end) => [end.x, 0, end.y]);
