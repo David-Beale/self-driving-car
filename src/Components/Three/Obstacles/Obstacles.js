@@ -1,4 +1,4 @@
-import Obstacle from "./Obstalce";
+import Obstacle from "./Obstacle";
 
 export default function Obstacles({ obstacles }) {
   return (
