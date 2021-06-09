@@ -13,6 +13,7 @@ const Chassis = ({
   followCameraRef,
   playerRef,
   time,
+  player,
 }) => {
   const spotlightTarget = useRef();
   const [target, setTarget] = useState(undefined);
@@ -42,6 +43,7 @@ const Chassis = ({
   // };
 
   const rayEndPoints = useMemo(() => {
+    const segments = 20;
     const curve = new THREE.EllipseCurve(
       0,
       0,
@@ -52,15 +54,30 @@ const Chassis = ({
       false,
       0
     );
-    const curvePoints = curve.getPoints(20);
+    const curvePoints = curve.getPoints(segments);
+    let eachAngle = (6 * Math.PI) / (8 * segments);
+    let currentAngle = Math.PI / 8;
 
-    return curvePoints.map((end) => [end.x, 0, end.y]);
+    return curvePoints.map((end) => {
+      const pos = [end.x, 0, end.y];
+      const angle = currentAngle;
+      currentAngle += eachAngle;
+      return { pos, angle };
+    });
   }, []);
 
   return (
     <mesh ref={playerRef} api={api}>
-      {rayEndPoints.map((to, index) => {
-        return <Ray key={index} from={from} to={to} />;
+      {rayEndPoints.map((ray, index) => {
+        return (
+          <Ray
+            key={index}
+            from={from}
+            to={ray.pos}
+            angle={ray.angle}
+            player={player}
+          />
+        );
       })}
       <Aston position={[0, -0.7, 0]} scale={0.01} />
       <object3D ref={followCameraRef} position={[0, 3, -8]} />

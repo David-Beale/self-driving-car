@@ -13,6 +13,7 @@ export default function Vehicle({
   rotation,
   angularVelocity,
   time,
+  player,
 }) {
   const [wheels, wheelInfos] = useWheels();
 
@@ -37,6 +38,7 @@ export default function Vehicle({
         position={position}
         angularVelocity={angularVelocity}
         time={time}
+        player={player}
       />
       <Wheel ref={wheels[0]} leftSide />
       <Wheel ref={wheels[1]} />

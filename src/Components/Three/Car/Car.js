@@ -23,6 +23,7 @@ export default class Car {
     this.maxSpeed = 18;
     this.stoppingDistance = 35;
     this.slowDistance = 20;
+    this.obstacles = {};
   }
   run() {
     if (!this.position) return;
@@ -86,6 +87,8 @@ export default class Car {
     let braking = 0;
     let steering = angleDiff * this.steerVal;
 
+    this.obstacleCheck();
+
     if (this.slowDown && this.velocity > this.slowDown) {
       //braking
       braking =
@@ -114,6 +117,12 @@ export default class Car {
 
     return [steering, engine, braking];
   };
+  obstacleCheck() {
+    const obstaclesArray = Object.keys(this.obstacles);
+    if (!obstaclesArray.length) return;
+    // console.log(this.obstacles);
+    this.obstacles = {};
+  }
 
   getGuagevals(steering, engine, braking) {
     const convertSteering = (steering) => {

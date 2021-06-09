@@ -44,6 +44,7 @@ export default function Player({
         angularVelocity={[0, 0, 0]}
         rotation={[0, Math.PI, 0]}
         time={time}
+        player={player}
       />
       <PlayerPath player={player} />
       <ClickIndicator selectedVertex={selectedVertex} />
