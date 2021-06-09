@@ -15,9 +15,14 @@ export default function Ray({ from, to, setHit }) {
   const [rayTo, setRayTo] = useState(to);
 
   useRaycastClosest(
-    { from: rayFrom, to: rayTo },
+    {
+      from: rayFrom,
+      to: rayTo,
+      collisionFilterGroup: 2,
+      collisionFilterMask: 1,
+    },
     (result) => {
-      if (result.hasHit) {
+      if (result.hasHit && result.body.userData.id === "obstacle") {
         setColor("red");
       }
     },

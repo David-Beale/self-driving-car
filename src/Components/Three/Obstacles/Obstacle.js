@@ -7,6 +7,9 @@ export default function Obstacle({ obstacle }) {
     position: [obstacle.x, 3, obstacle.z],
     args: [1, 2, 1],
     collisionFilterGroup: 1,
+    userData: {
+      id: "obstacle",
+    },
   }));
 
   return (
