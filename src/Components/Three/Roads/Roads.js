@@ -3,7 +3,11 @@ import { formattedTiles } from "../data/formattedMapData";
 import { roadsTexture } from "./RoadTextures";
 import Road from "./Road";
 
-export default function Roads({ verticesMap, setSelectedVertex }) {
+export default function Roads({
+  setSelectedVertex,
+  addObstacles,
+  setObstacles,
+}) {
   const prevMouse = useRef(null);
 
   const roadTiles = useMemo(() => {
@@ -31,7 +35,12 @@ export default function Roads({ verticesMap, setSelectedVertex }) {
       Math.abs(prevMouse.current.x - e.clientX) +
       Math.abs(prevMouse.current.y - e.clientY);
     if (dist > 10) return;
-    setSelectedVertex({ x: e.point.x, z: e.point.z });
+    if (addObstacles)
+      setObstacles((prev) => [
+        ...prev,
+        { id: Date.now(), x: e.point.x, z: e.point.z },
+      ]);
+    else setSelectedVertex({ x: e.point.x, z: e.point.z });
   };
 
   const ref = useRef();

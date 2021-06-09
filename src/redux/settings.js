@@ -35,6 +35,9 @@ const settings = createSlice({
       else if (state.time === "sunset") state.time = "night";
       else if (state.time === "night") state.time = "day";
     },
+    addObstacles(state) {
+      state.addObstacles = !state.addObstacles;
+    },
   },
 });
 
@@ -46,6 +49,7 @@ export const {
   toggleTrafficConditions,
   changeComputerNumber,
   toggleTime,
+  addObstacles,
 } = settings.actions;
 
 export default settings.reducer;

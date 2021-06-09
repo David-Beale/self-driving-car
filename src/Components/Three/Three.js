@@ -15,11 +15,13 @@ import { useSelector } from "react-redux";
 import Car from "./Car/Car";
 import Ghost from "./Ghosts/Ghost";
 import SkyComponent from "./SkyComponent/SkyComponent";
+import Obstacles from "./Obstacles/Obstacles";
 
 const player = new Car(map);
 
 export default memo(function Three({ setGauges }) {
   const [selectedVertex, setSelectedVertex] = useState(null);
+  const [obstacles, setObstacles] = useState([]);
 
   const trafficLights = useSelector(({ settings }) => settings.trafficLights);
 
@@ -28,9 +30,10 @@ export default memo(function Three({ setGauges }) {
   const currentDNA = useSelector(({ training }) => training.currentDNA);
   const ghosts = useSelector(({ training }) => training.ghosts);
   const time = useSelector(({ settings }) => settings.time);
+  const addObstacles = useSelector(({ settings }) => settings.addObstacles);
 
   return (
-    <ThreeContainer>
+    <ThreeContainer cursorTarget={addObstacles}>
       <Canvas
         colorManagement={false}
         camera={{ far: 4000 }}
@@ -43,10 +46,12 @@ export default memo(function Three({ setGauges }) {
 
           <Suspense fallback={null}>
             <Roads
-              verticesMap={map.lookup}
+              addObstacles={addObstacles}
               setSelectedVertex={setSelectedVertex}
+              setObstacles={setObstacles}
             />
-            <TrafficLights verticesMap={map.lookup} enabled={trafficLights} />
+            {/* <TrafficLights verticesMap={map.lookup} enabled={trafficLights} /> */}
+            <Obstacles obstacles={obstacles} />
             <Player
               player={player}
               selectedVertex={selectedVertex}
