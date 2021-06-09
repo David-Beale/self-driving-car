@@ -24,6 +24,7 @@ export default class Car {
     this.stoppingDistance = 35;
     this.slowDistance = 20;
     this.obstacles = {};
+    this.pathDistanceCheck = 2;
   }
   run() {
     if (!this.position) return;
@@ -32,9 +33,9 @@ export default class Car {
 
     const vecDiff = this.target.sub(this.position);
     const angle = vecDiff.angle();
-    let angleDiff = angle - this.rotation;
-    if (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
-    else if (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
+    this.angleDiff = angle - this.rotation;
+    if (this.angleDiff > Math.PI) this.angleDiff -= 2 * Math.PI;
+    else if (this.angleDiff < -Math.PI) this.angleDiff += 2 * Math.PI;
 
     if (this.pathGeometry) this.pathGeometry.setVertices(this.arrayOfSteps);
     const maxSpeed = this.approachingEnd()
@@ -45,7 +46,7 @@ export default class Car {
 
     if (maxSpeed && this.velocity > maxSpeed) this.slowDown = maxSpeed;
 
-    const [steering, engine, braking] = this.getForces(angleDiff);
+    const [steering, engine, braking] = this.getForces();
 
     return {
       forces: { steering, engine, braking },
@@ -67,7 +68,8 @@ export default class Car {
         this.arrayOfSteps[this.arrayOfSteps.length - 1];
       this.target.set(xTarget, -zTarget);
 
-      const distanceCheck = this.position.distanceTo(this.target) < 2;
+      const distanceCheck =
+        this.position.distanceTo(this.target) < this.pathDistanceCheck;
       if (distanceCheck) {
         this.arrayOfSteps.pop();
       } else {
@@ -82,12 +84,13 @@ export default class Car {
       gauges: { steering: 0, accel: 0 },
     };
   };
-  getForces = (angleDiff) => {
+  getForces = () => {
     let engine = 0;
     let braking = 0;
-    let steering = angleDiff * this.steerVal;
 
     this.obstacleCheck();
+
+    let steering = this.angleDiff * this.steerVal;
 
     if (this.slowDown && this.velocity > this.slowDown) {
       //braking
@@ -106,10 +109,10 @@ export default class Car {
     }
 
     //check if reversing required
-    if (this.reverse && Math.abs(angleDiff) < Math.PI / 3) {
+    if (this.reverse && Math.abs(this.angleDiff) < Math.PI / 3) {
       //cancel reverse
       this.reverse = false;
-    } else if (this.reverse || Math.abs(angleDiff) > Math.PI / 2) {
+    } else if (this.reverse || Math.abs(this.angleDiff) > Math.PI / 2) {
       this.reverse = true;
       steering = -steering / 2;
       engine = -engine;
@@ -118,12 +121,39 @@ export default class Car {
     return [steering, engine, braking];
   };
   obstacleCheck() {
+    this.pathDistanceCheck = 2;
     const obstaclesArray = Object.keys(this.obstacles);
     if (!obstaclesArray.length) return;
-    // console.log(this.obstacles);
     this.obstacles = {};
-  }
 
+    const blocked = this.angleCheck(obstaclesArray);
+    if (blocked === false) return;
+
+    this.pathDistanceCheck = 10;
+    let found = false;
+    while (this.angleDiff < Math.PI / 2) {
+      this.angleDiff -= 0.15;
+      const blocked = this.angleCheck(obstaclesArray);
+      if (blocked === false) {
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      this.slowDown = 0;
+    } else if (this.velocity > 8) {
+      this.slowDown = 8;
+    }
+  }
+  angleCheck(obstacles) {
+    for (let i = 0; i < obstacles.length; i++) {
+      let obstacle = obstacles[i];
+      if (Math.abs(this.angleDiff - obstacle) < 0.35) {
+        return i;
+      }
+    }
+    return false;
+  }
   getGuagevals(steering, engine, braking) {
     const convertSteering = (steering) => {
       if (!steering) return 0;

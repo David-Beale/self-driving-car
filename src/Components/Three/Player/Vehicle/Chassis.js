@@ -56,16 +56,15 @@ const Chassis = ({
     );
     const curvePoints = curve.getPoints(segments);
     let eachAngle = (6 * Math.PI) / (8 * segments);
-    let currentAngle = Math.PI / 8;
+    let currentAngle = (3 * Math.PI) / 8;
 
     return curvePoints.map((end) => {
       const pos = [end.x, 0, end.y];
       const angle = currentAngle;
-      currentAngle += eachAngle;
+      currentAngle -= eachAngle;
       return { pos, angle };
     });
   }, []);
-
   return (
     <mesh ref={playerRef} api={api}>
       {rayEndPoints.map((ray, index) => {
