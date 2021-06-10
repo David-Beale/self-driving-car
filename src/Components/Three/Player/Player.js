@@ -13,6 +13,7 @@ export default function Player({
   setGauges,
   currentDNA,
   time,
+  obstacles,
 }) {
   const playerRef = useRef();
   const followCameraRef = useRef();
@@ -45,6 +46,7 @@ export default function Player({
         rotation={[0, Math.PI, 0]}
         time={time}
         player={player}
+        obstacles={obstacles}
       />
       <PlayerPath player={player} />
       <ClickIndicator selectedVertex={selectedVertex} />

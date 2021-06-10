@@ -66,6 +66,7 @@ export default memo(function Three({ setGauges }) {
               currentDNA={currentDNA}
               setGauges={setGauges}
               time={time}
+              obstacles={obstacles}
             />
             {ghosts.map((ghostDNA, index) => (
               <Ghost key={index} ghostDNA={ghostDNA} />
