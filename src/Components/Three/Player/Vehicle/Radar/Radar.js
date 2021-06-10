@@ -36,18 +36,18 @@ const rayEndPoints = [...longRangePoints, ...shortRangePoints];
 export default function Radar({ player, obstacles }) {
   return (
     <>
-      {obstacles.length &&
-        rayEndPoints.map((ray, index) => {
-          return (
-            <Ray
-              key={index}
-              from={from}
-              to={ray.pos}
-              angle={ray.angle}
-              player={player}
-            />
-          );
-        })}
+      {/* {obstacles.length && */}
+      {rayEndPoints.map((ray, index) => {
+        return (
+          <Ray
+            key={index}
+            from={from}
+            to={ray.pos}
+            angle={ray.angle}
+            player={player}
+          />
+        );
+      })}
     </>
   );
 }
