@@ -45,7 +45,9 @@ export default class Car {
       ? 8
       : false;
 
-    if (maxSpeed && this.velocity > maxSpeed) this.slowDown = maxSpeed;
+    if (maxSpeed && this.velocity > maxSpeed) {
+      this.slowDown = maxSpeed;
+    } else this.slowDown = false;
 
     const [steering, engine, braking] = this.getForces();
 
@@ -61,7 +63,8 @@ export default class Car {
     const current = this.arrayOfSteps[this.arrayOfSteps.length - 1];
     const target =
       this.arrayOfSteps[this.arrayOfSteps.length - this.slowDistance];
-    return current?.x !== target?.x && current?.z !== target?.z;
+    if (!current || !target) return false;
+    return current.x !== target.x && current.z !== target.z;
   }
   getNextTarget() {
     while (true) {
@@ -153,7 +156,7 @@ export default class Car {
       this.slowDown = 0.01;
     } else if (this.velocity > 10) {
       this.slowDown = 10;
-    } else this.slowDistance = false;
+    }
   }
   anyObstacles(obstacles) {
     let minDistance = Infinity;
