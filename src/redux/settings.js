@@ -7,6 +7,8 @@ export const initialState = {
   computerNumber: 60,
   trafficConditions: false,
   time: "sunset",
+  addObstacles: false,
+  removeObstacles: false,
 };
 const settings = createSlice({
   name: "settings",
@@ -38,6 +40,9 @@ const settings = createSlice({
     addObstacles(state) {
       state.addObstacles = !state.addObstacles;
     },
+    removeObstacles(state) {
+      state.removeObstacles = [true];
+    },
   },
 });
 
@@ -50,6 +55,7 @@ export const {
   changeComputerNumber,
   toggleTime,
   addObstacles,
+  removeObstacles,
 } = settings.actions;
 
 export default settings.reducer;

@@ -1,4 +1,4 @@
-import React, { Suspense, useState, memo } from "react";
+import React, { Suspense, useState, memo, useEffect } from "react";
 import { Canvas } from "react-three-fiber";
 import { Loader, Stats } from "@react-three/drei";
 import { Physics } from "@react-three/cannon";
@@ -31,7 +31,14 @@ export default memo(function Three({ setGauges }) {
   const ghosts = useSelector(({ training }) => training.ghosts);
   const time = useSelector(({ settings }) => settings.time);
   const addObstacles = useSelector(({ settings }) => settings.addObstacles);
+  const removeObstacles = useSelector(
+    ({ settings }) => settings.removeObstacles
+  );
 
+  useEffect(() => {
+    if (!removeObstacles) return;
+    setObstacles([]);
+  }, [removeObstacles]);
   return (
     <ThreeContainer cursorTarget={addObstacles}>
       <Canvas

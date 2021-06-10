@@ -13,6 +13,7 @@ import ToggleTraining from "./Components/ToggleTraining/ToggleTraining";
 import { Container } from "./MenuStyle";
 import ToggleTime from "./Components/ToggleTime/ToggleTime";
 import AddObstacles from "./Components/Collisions/AddObstacles";
+import RemoveObstacles from "./Components/Collisions/RemoveObstacles";
 
 export default memo(function Menu() {
   const [menuOpen, setMenuOpen] = useState(true);
@@ -33,6 +34,7 @@ export default memo(function Menu() {
           )}
           {/* <ToggleTrafficLights /> */}
           <AddObstacles />
+          <RemoveObstacles />
           <Training training={training} />
           <ToggleTraining training={training} />
         </Container>
