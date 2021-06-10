@@ -23,7 +23,10 @@ export default function Ray({ from, to, angle, player }) {
     },
     (result) => {
       if (result.hasHit && result.body.userData.id === "obstacle") {
-        player.obstacles[angle] = true;
+        player.obstacles[angle] = result.distance;
+        setColor("red");
+      } else if (!result.hasHit) {
+        player.obstacles[angle] = false;
         setColor("red");
       }
     },
@@ -34,16 +37,8 @@ export default function Ray({ from, to, angle, player }) {
     setColor("limegreen");
     fromRef.current.getWorldPosition(worldVectorFrom.current);
     endRef.current.getWorldPosition(worldVectorTo.current);
-    setRayTo([
-      worldVectorTo.current.x,
-      worldVectorTo.current.y,
-      worldVectorTo.current.z,
-    ]);
-    setRayFrom([
-      worldVectorFrom.current.x,
-      worldVectorFrom.current.y,
-      worldVectorFrom.current.z,
-    ]);
+    setRayTo([worldVectorTo.current.x, 0, worldVectorTo.current.z]);
+    setRayFrom([worldVectorFrom.current.x, 0.5, worldVectorFrom.current.z]);
   });
 
   useEffect(() => {

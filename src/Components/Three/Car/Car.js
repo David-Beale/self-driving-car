@@ -25,6 +25,7 @@ export default class Car {
     this.slowDistance = 20;
     this.obstacles = {};
     this.pathDistanceCheck = 2;
+    this.maxAngle = (2 * Math.PI) / 8;
   }
   run() {
     if (!this.position) return;
@@ -89,6 +90,7 @@ export default class Car {
     let braking = 0;
 
     this.obstacleCheck();
+    this.obstacles = {};
 
     let steering = this.angleDiff * this.steerVal;
 
@@ -124,16 +126,20 @@ export default class Car {
     this.pathDistanceCheck = 2;
     const obstaclesArray = Object.keys(this.obstacles);
     if (!obstaclesArray.length) return;
-    this.obstacles = {};
 
-    const blocked = this.angleCheck(obstaclesArray);
-    if (blocked === false) return;
+    const minDistance = this.anyObstacles(obstaclesArray);
+    if (minDistance === Infinity) return;
+    else if (minDistance > 7) {
+      this.slowDown = 8;
+      return;
+    }
 
     this.pathDistanceCheck = 10;
     let found = false;
-    while (this.angleDiff < Math.PI / 2) {
+    this.angleDiff = this.maxAngle;
+    while (this.angleDiff > -this.maxAngle) {
       this.angleDiff -= 0.15;
-      const blocked = this.angleCheck(obstaclesArray);
+      const blocked = this.angleCheck(obstaclesArray, minDistance);
       if (blocked === false) {
         found = true;
         break;
@@ -145,10 +151,25 @@ export default class Car {
       this.slowDown = 8;
     }
   }
-  angleCheck(obstacles) {
+  anyObstacles(obstacles) {
+    let minDistance = Infinity;
     for (let i = 0; i < obstacles.length; i++) {
       let obstacle = obstacles[i];
-      if (Math.abs(this.angleDiff - obstacle) < 0.35) {
+      const distance = this.obstacles[obstacle];
+      if (!distance) continue;
+      if (Math.abs(this.angleDiff - obstacle) < 0.2) {
+        if (distance < minDistance) minDistance = distance;
+      }
+    }
+    return minDistance;
+  }
+
+  angleCheck(obstacles, minDistance) {
+    for (let i = 0; i < obstacles.length; i++) {
+      let obstacle = obstacles[i];
+      const distance = this.obstacles[obstacle];
+      if (distance > 7) continue;
+      if (Math.abs(this.angleDiff - obstacle) < 0.75 / Math.sqrt(minDistance)) {
         return i;
       }
     }

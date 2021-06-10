@@ -43,27 +43,50 @@ const Chassis = ({
   // };
 
   const rayEndPoints = useMemo(() => {
-    const segments = 20;
-    const curve = new THREE.EllipseCurve(
+    let segments = 4;
+    let curve = new THREE.EllipseCurve(
       0,
       0,
-      10,
-      10,
-      Math.PI / 8,
-      (7 * Math.PI) / 8,
+      12,
+      12,
+      (3.5 * Math.PI) / 8,
+      (4.5 * Math.PI) / 8,
       false,
       0
     );
-    const curvePoints = curve.getPoints(segments);
-    let eachAngle = (6 * Math.PI) / (8 * segments);
-    let currentAngle = (3 * Math.PI) / 8;
+    let curvePoints = curve.getPoints(segments);
+    let eachAngle = (1 * Math.PI) / (8 * segments);
+    let currentAngle = (0.5 * Math.PI) / 8;
 
-    return curvePoints.map((end) => {
+    const longRangePoints = curvePoints.map((end) => {
       const pos = [end.x, 0, end.y];
       const angle = currentAngle;
       currentAngle -= eachAngle;
       return { pos, angle };
     });
+
+    segments = 20;
+    curve = new THREE.EllipseCurve(
+      0,
+      0,
+      7,
+      7,
+      Math.PI / 8,
+      (7 * Math.PI) / 8,
+      false,
+      0
+    );
+    curvePoints = curve.getPoints(segments);
+    eachAngle = (6 * Math.PI) / (8 * segments);
+    currentAngle = (3 * Math.PI) / 8;
+
+    const shortRangePoints = curvePoints.map((end) => {
+      const pos = [end.x, 0, end.y];
+      const angle = currentAngle;
+      currentAngle -= eachAngle;
+      return { pos, angle };
+    });
+    return [...longRangePoints, ...shortRangePoints];
   }, []);
   return (
     <mesh ref={playerRef} api={api}>
