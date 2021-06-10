@@ -130,7 +130,9 @@ export default class Car {
     const minDistance = this.anyObstacles(obstaclesArray);
     if (minDistance === Infinity) return;
     else if (minDistance > 7) {
-      this.slowDown = 8;
+      if (this.velocity > 10) {
+        this.slowDown = 10;
+      }
       return;
     }
 
@@ -147,8 +149,8 @@ export default class Car {
     }
     if (!found) {
       this.slowDown = 0;
-    } else if (this.velocity > 8) {
-      this.slowDown = 8;
+    } else if (this.velocity > 10) {
+      this.slowDown = 10;
     }
   }
   anyObstacles(obstacles) {

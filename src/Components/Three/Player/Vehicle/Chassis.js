@@ -65,20 +65,20 @@ const Chassis = ({
       return { pos, angle };
     });
 
-    segments = 20;
+    segments = 14;
     curve = new THREE.EllipseCurve(
       0,
       0,
       7,
       7,
-      Math.PI / 8,
-      (7 * Math.PI) / 8,
+      (2 * Math.PI) / 8,
+      (6 * Math.PI) / 8,
       false,
       0
     );
     curvePoints = curve.getPoints(segments);
-    eachAngle = (6 * Math.PI) / (8 * segments);
-    currentAngle = (3 * Math.PI) / 8;
+    eachAngle = (4 * Math.PI) / (8 * segments);
+    currentAngle = (2 * Math.PI) / 8;
 
     const shortRangePoints = curvePoints.map((end) => {
       const pos = [end.x, 0, end.y];

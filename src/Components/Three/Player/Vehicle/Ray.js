@@ -22,7 +22,7 @@ export default function Ray({ from, to, angle, player }) {
       collisionFilterMask: 1,
     },
     (result) => {
-      if (result.hasHit && result.body.userData.id === "obstacle") {
+      if (result.hasHit && result.body?.userData.id === "obstacle") {
         player.obstacles[angle] = result.distance;
         setColor("red");
       } else if (!result.hasHit) {
