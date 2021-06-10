@@ -58,8 +58,10 @@ export default class Car {
     return !this.arrayOfSteps[this.stoppingDistance];
   }
   approachingTurn() {
-    return this.arrayOfSteps[this.arrayOfSteps.length - this.slowDistance]
-      ?.turn;
+    const current = this.arrayOfSteps[this.arrayOfSteps.length - 1];
+    const target =
+      this.arrayOfSteps[this.arrayOfSteps.length - this.slowDistance];
+    return current.x !== target.x && current.z !== target.z;
   }
   getNextTarget() {
     while (true) {
