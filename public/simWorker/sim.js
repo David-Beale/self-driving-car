@@ -154,7 +154,7 @@ class Sim {
     }
   }
 
-  getFitness(DNA) {
+  getFitness() {
     //0% for 0 distance travelled, 100% for arriving perfectly
     const distanceScore =
       (185 - this.chassisBody.position.distanceTo(this.endPoint)) * (50 / 185);
@@ -163,11 +163,7 @@ class Sim {
       !this.finish || distanceScore < 48 ? 0 : (2224 - this.finish) / 2;
     let totalScore = distanceScore + timeScore;
     if (totalScore <= 0) totalScore = 1;
-    this.totalScores += totalScore;
-    if (totalScore > this.bestScore) {
-      this.bestScore = totalScore;
-      this.bestDNA = DNA;
-    }
+
     return totalScore;
   }
 
