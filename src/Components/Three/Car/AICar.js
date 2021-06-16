@@ -1,76 +1,67 @@
 import * as THREE from "three";
-import * as d3 from "d3-ease";
 import pathfinding from "./pathfinding/pathfinder";
 import { getCurve } from "./ellipseCurve";
 import { path } from "./path";
 import { map } from "../graph/graphSetup";
+// import NeuralNetwork from "tensorflow";
+import recordBrain from "./recordBrain";
 const RADIUS = 2.5;
 
-export default class Car {
+export default class AICar {
   constructor() {
+    this.stepCount = 10;
     this.map = map.graphObj;
     this.verticesLookup = map.lookup;
-    this.stepCount = 10;
     this.arrayOfSteps = path.slice();
     this.target = new THREE.Vector2();
     this.velocityVector = new THREE.Vector3();
     this.position = new THREE.Vector2();
     this.followCamVector = new THREE.Vector3();
-    this.slowDown = 0;
-    this.reverse = false;
-    this.steerVal = 0.875;
-    this.maxForce = 1000;
-    this.maxBrakeForce = 20;
-    this.maxSpeed = 18;
-    this.stoppingDistance = 35;
-    this.slowDistance = 20;
-    this.obstacles = {};
+    this.distanceToTurn = 0;
+    this.outputs = null;
     this.pathDistanceCheck = 2;
-    this.maxAngle = (2 * Math.PI) / 8;
+    // this.brain = NeuralNetwork.loadJSON(recordBrain);
   }
   run() {
     if (!this.position) return;
+    // console.log(this.position);
     const targetFound = this.getNextTarget();
     if (!targetFound) return this.destinationReached();
 
-    const vecDiff = this.target.sub(this.position);
-    const angle = vecDiff.angle();
-    this.angleDiff = angle - this.rotation;
-    if (this.angleDiff > Math.PI) this.angleDiff -= 2 * Math.PI;
-    else if (this.angleDiff < -Math.PI) this.angleDiff += 2 * Math.PI;
+    const angleDiff = this.getAngleDiff();
 
     if (this.pathGeometry) this.pathGeometry.setVertices(this.arrayOfSteps);
-    const maxSpeed = this.approachingEnd()
-      ? 3
-      : this.approachingTurn()
-      ? 8
-      : false;
 
-    if (maxSpeed && this.velocity > maxSpeed) {
-      this.slowDown = maxSpeed;
-    } else this.slowDown = false;
+    const distanceToEnd = Math.min(this.arrayOfSteps.length, 50);
 
-    const [steering, engine, braking] = this.getForces();
+    this.inputs = [
+      angleDiff / Math.PI,
+      this.velocity / 30,
+      1 - distanceToEnd / 50,
+      1 - this.distanceToTurn / 50,
+    ];
+    this.outputs = this.brain.predict(this.inputs);
+    const { steering, engine, braking } = this.convertOutputs(this.outputs);
 
     return {
       forces: { steering, engine, braking },
       gauges: this.getGuagevals(steering, engine, braking),
     };
   }
-  approachingEnd() {
-    return !this.arrayOfSteps[this.stoppingDistance];
+  getAngleDiff() {
+    const vecDiff = this.target.sub(this.position);
+    const angleTotarget = vecDiff.angle();
+    let angleDiff = angleTotarget - this.rotation;
+
+    if (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
+    else if (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
+    return angleDiff;
   }
-  approachingTurn() {
-    const current = this.arrayOfSteps[this.arrayOfSteps.length - 1];
-    const target =
-      this.arrayOfSteps[this.arrayOfSteps.length - this.slowDistance];
-    if (!current || !target) return false;
-    return current.x !== target.x && current.z !== target.z;
-  }
+
   getNextTarget() {
     while (true) {
       if (!this.arrayOfSteps.length) return;
-
+      if (this.distanceToTurn <= 0) this.getDistanceToTurn();
       const { x: xTarget, z: zTarget } =
         this.arrayOfSteps[this.arrayOfSteps.length - 1];
       this.target.set(xTarget, -zTarget);
@@ -78,11 +69,46 @@ export default class Car {
       const distanceCheck =
         this.position.distanceTo(this.target) < this.pathDistanceCheck;
       if (distanceCheck) {
+        this.distanceToTurn--;
         this.arrayOfSteps.pop();
       } else {
         return true;
       }
     }
+  }
+
+  getDistanceToTurn() {
+    const currentTarget = this.arrayOfSteps[this.arrayOfSteps.length - 1];
+    if (!currentTarget) {
+      this.distanceToTurn = 0;
+      return;
+    }
+    let counter = 0;
+    for (
+      let i = this.arrayOfSteps.length - 1;
+      i >= this.arrayOfSteps.length - 50;
+      i--
+    ) {
+      counter++;
+      const nextTarget = this.arrayOfSteps[i];
+      if (!nextTarget) break;
+      if (
+        currentTarget.x !== nextTarget.x &&
+        currentTarget.z !== nextTarget.z
+      ) {
+        this.distanceToTurn = counter;
+        return;
+      }
+    }
+    this.distanceToTurn = Math.min(this.arrayOfSteps.length, 50);
+  }
+
+  convertOutputs(outputs) {
+    let [normSteering, force] = outputs;
+    const steering = 2 * (normSteering - 0.5);
+    const engine = force > 0.5 ? (force - 0.5) * -3000 : 0;
+    const braking = force < 0.5 ? (0.5 - force) * 100 : 0;
+    return { steering, engine, braking };
   }
 
   destinationReached = () => {
@@ -91,98 +117,7 @@ export default class Car {
       gauges: { steering: 0, accel: 0 },
     };
   };
-  getForces = () => {
-    let engine = 0;
-    let braking = 0;
 
-    this.obstacleCheck();
-    this.obstacles = {};
-
-    let steering = this.angleDiff * this.steerVal;
-
-    if (this.slowDown && this.velocity > this.slowDown) {
-      //braking
-      braking =
-        this.maxBrakeForce * d3.easeCubicInOut(this.velocity / this.maxSpeed);
-    } else if (this.slowDown && this.velocity < this.slowDown) {
-      //cancel braking
-      this.slowDown = false;
-    } else {
-      //accelerating
-      engine =
-        -this.maxForce *
-        d3.easeCubicOut(
-          Math.max(this.maxSpeed - this.velocity, 0) / this.maxSpeed
-        );
-    }
-
-    //check if reversing required
-    if (this.reverse && Math.abs(this.angleDiff) < Math.PI / 3) {
-      //cancel reverse
-      this.reverse = false;
-    } else if (this.reverse || Math.abs(this.angleDiff) > Math.PI / 2) {
-      this.reverse = true;
-      steering = -steering / 2;
-      engine = -engine;
-    }
-
-    return [steering, engine, braking];
-  };
-  obstacleCheck() {
-    this.pathDistanceCheck = 2;
-    const obstaclesArray = Object.keys(this.obstacles);
-    if (!obstaclesArray.length) return;
-
-    const minDistance = this.anyObstacles(obstaclesArray);
-    if (minDistance === Infinity) return;
-    else if (minDistance > 7) {
-      if (this.velocity > 10) {
-        this.slowDown = 10;
-      }
-      return;
-    }
-
-    this.pathDistanceCheck = 10;
-    let found = false;
-    this.angleDiff = this.maxAngle;
-    while (this.angleDiff > -this.maxAngle) {
-      this.angleDiff -= 0.15;
-      const blocked = this.angleCheck(obstaclesArray, minDistance);
-      if (blocked === false) {
-        found = true;
-        break;
-      }
-    }
-    if (!found) {
-      this.slowDown = 0.01;
-    } else if (this.velocity > 10) {
-      this.slowDown = 10;
-    }
-  }
-  anyObstacles(obstacles) {
-    let minDistance = Infinity;
-    for (let i = 0; i < obstacles.length; i++) {
-      let obstacle = obstacles[i];
-      const distance = this.obstacles[obstacle];
-      if (!distance) continue;
-      if (Math.abs(this.angleDiff - obstacle) < 0.2) {
-        if (distance < minDistance) minDistance = distance;
-      }
-    }
-    return minDistance;
-  }
-
-  angleCheck(obstacles, minDistance) {
-    for (let i = 0; i < obstacles.length; i++) {
-      let obstacle = obstacles[i];
-      const distance = this.obstacles[obstacle];
-      if (distance > 7) continue;
-      if (Math.abs(this.angleDiff - obstacle) < 0.75 / Math.sqrt(minDistance)) {
-        return i;
-      }
-    }
-    return false;
-  }
   getGuagevals(steering, engine, braking) {
     const convertSteering = (steering) => {
       if (!steering) return 0;
@@ -330,14 +265,5 @@ export default class Car {
 
       this.pathParameters.arrayOfSteps.push(object);
     }
-  }
-  updateDNA(DNA) {
-    this.steerVal = DNA.steerVal;
-    this.maxForce = DNA.maxForce;
-    this.maxBrakeForce = DNA.maxBrakeForce;
-    this.maxSpeed = DNA.maxSpeed;
-    this.stoppingDistance = DNA.stoppingDistance;
-    this.slowDistance = DNA.slowDistance;
-    this.arrayOfSteps = path.slice();
   }
 }

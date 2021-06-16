@@ -9,6 +9,7 @@ export const initialState = {
   time: "sunset",
   addObstacles: false,
   removeObstacles: false,
+  AICar: false,
 };
 const settings = createSlice({
   name: "settings",
@@ -43,6 +44,9 @@ const settings = createSlice({
     removeObstacles(state) {
       state.removeObstacles = [true];
     },
+    toggleAICar(state) {
+      state.AICar = !state.AICar;
+    },
   },
 });
 
@@ -56,6 +60,7 @@ export const {
   toggleTime,
   addObstacles,
   removeObstacles,
+  toggleAICar,
 } = settings.actions;
 
 export default settings.reducer;

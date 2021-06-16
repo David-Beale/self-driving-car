@@ -1,4 +1,4 @@
-import React, { Suspense, useState, memo, useEffect } from "react";
+import React, { Suspense, useState, memo, useEffect, useMemo } from "react";
 import { Canvas } from "react-three-fiber";
 import { Loader, Stats } from "@react-three/drei";
 import { Physics } from "@react-three/cannon";
@@ -7,17 +7,14 @@ import Controls from "./Controls/Controls";
 import Roads from "./Roads/Roads";
 import Player from "./Player/Player";
 
-import { map } from "./graph/graphSetup";
-
 import { ThreeContainer } from "./ThreeStyle";
 import TrafficLights from "./TrafficLights/TrafficLights";
 import { useSelector } from "react-redux";
 import Car from "./Car/Car";
+import AICar from "./Car/AICar";
 import Ghost from "./Ghosts/Ghost";
 import SkyComponent from "./SkyComponent/SkyComponent";
 import Obstacles from "./Obstacles/Obstacles";
-
-const player = new Car(map);
 
 export default memo(function Three({ setGauges }) {
   const [selectedVertex, setSelectedVertex] = useState(null);
@@ -34,7 +31,12 @@ export default memo(function Three({ setGauges }) {
   const removeObstacles = useSelector(
     ({ settings }) => settings.removeObstacles
   );
+  const useAICar = useSelector(({ settings }) => settings.AICar);
 
+  const player = useMemo(
+    () => (useAICar ? new AICar() : new Car()),
+    [useAICar]
+  );
   useEffect(() => {
     if (!removeObstacles) return;
     setObstacles([]);
@@ -67,6 +69,7 @@ export default memo(function Three({ setGauges }) {
               setGauges={setGauges}
               time={time}
               obstacles={obstacles}
+              useAICar={useAICar}
             />
             {ghosts.map((ghostDNA, index) => (
               <Ghost key={index} ghostDNA={ghostDNA} />

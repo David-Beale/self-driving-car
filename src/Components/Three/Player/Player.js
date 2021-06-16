@@ -14,6 +14,7 @@ export default function Player({
   currentDNA,
   time,
   obstacles,
+  useAICar,
 }) {
   const playerRef = useRef();
   const followCameraRef = useRef();
@@ -28,7 +29,8 @@ export default function Player({
     mode,
     setGauges,
     selectedVertex,
-    currentDNA
+    currentDNA,
+    useAICar
   );
 
   useEffect(() => {

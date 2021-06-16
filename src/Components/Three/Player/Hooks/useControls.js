@@ -9,18 +9,24 @@ export const useControls = (
   mode,
   setGauges,
   selectedVertex,
-  currentDNA
+  currentDNA,
+  useAICar
 ) => {
   const [reset, setReset] = useState(false);
+
   useKeyboardControls(mode, vehicleRef, setReset, setGauges);
 
   useMouseControls(selectedVertex, player, mode, vehicleRef, setGauges);
 
   useEffect(() => {
+    if (useAICar) {
+      setReset(false);
+      return;
+    }
     if (!currentDNA) return;
     player.updateDNA(currentDNA);
-    setReset([false]);
-  }, [player, currentDNA]);
+    setReset([false]); //reset position but don't clear player path
+  }, [player, currentDNA, useAICar]);
 
   useEffect(() => {
     if (!reset || !reset[0]) return;
