@@ -16,16 +16,18 @@ export default function Player({
   obstacles,
   useAICar,
 }) {
+  const playerRef = useRef(player);
+  playerRef.current = player;
   const chassisRef = useRef();
   const followCameraRef = useRef();
   const vehicleRef = useRef();
 
-  useSubscriptions(player, chassisRef);
+  useSubscriptions(playerRef, chassisRef);
 
   useControls(
     chassisRef,
     vehicleRef,
-    player,
+    playerRef,
     mode,
     setGauges,
     selectedVertex,

@@ -30,8 +30,8 @@ function useKeyPress(target, mode) {
 export const useKeyboardControls = (
   mode,
   vehicleRef,
-  setResetPosition,
-  setClearPath,
+  resetPosition,
+  clearPath,
   setGauges
 ) => {
   const forward = useKeyPress("w", mode);
@@ -43,8 +43,8 @@ export const useKeyboardControls = (
 
   useFrame(() => {
     if (reset) {
-      setResetPosition([true]);
-      setClearPath([true]);
+      resetPosition();
+      clearPath();
     }
     if (mode !== "keyboard" || !vehicleRef.current?.api) return;
     let steering = 0;

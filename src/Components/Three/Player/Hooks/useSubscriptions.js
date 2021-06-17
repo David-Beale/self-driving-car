@@ -1,16 +1,17 @@
 import { useEffect } from "react";
 
-export const useSubscriptions = (player, chassisRef) => {
+export const useSubscriptions = (playerRef, chassisRef) => {
   useEffect(() => {
+    console.log("new subscription");
     chassisRef.current.api.position.subscribe((p) => {
-      player.position.set(p[0], -p[2]);
+      playerRef.current.position.set(p[0], -p[2]);
     });
     chassisRef.current.api.velocity.subscribe((v) => {
-      player.velocityVector.set(...v);
-      player.velocity = player.velocityVector.length();
+      playerRef.current.velocityVector.set(...v);
+      playerRef.current.velocity = playerRef.current.velocityVector.length();
     });
     chassisRef.current.api.rotation.subscribe((r) => {
-      player.rotation = r[1] - Math.PI / 2;
+      playerRef.current.rotation = r[1] - Math.PI / 2;
     });
-  }, [chassisRef, player]);
+  }, [chassisRef, playerRef]);
 };

@@ -3,7 +3,7 @@ import { useFrame } from "@react-three/fiber";
 
 export const useMouseControls = (
   selectedVertex,
-  player,
+  playerRef,
   mode,
   vehicleRef,
   setGauges
@@ -11,17 +11,17 @@ export const useMouseControls = (
   const prevVertex = useRef();
   useEffect(() => {
     if (mode === "keyboard") {
-      player.clearPath();
+      playerRef.current.clearPath();
       return;
     }
     if (!selectedVertex || selectedVertex === prevVertex.current) return;
     prevVertex.current = selectedVertex;
-    player.click(selectedVertex);
-  }, [mode, selectedVertex, player]);
+    playerRef.current.click(selectedVertex);
+  }, [mode, selectedVertex, playerRef]);
 
   useFrame(() => {
     if (mode !== "mouse" || !vehicleRef.current?.api) return;
-    const res = player.run();
+    const res = playerRef.current.run();
     if (!res) return;
     const { forces, gauges } = res;
 
