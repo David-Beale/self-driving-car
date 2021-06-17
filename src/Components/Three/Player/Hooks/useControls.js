@@ -12,33 +12,40 @@ export const useControls = (
   currentDNA,
   useAICar
 ) => {
-  const [reset, setReset] = useState(false);
+  const [resetPosition, setResetPosition] = useState(false);
+  const [clearPath, setClearPath] = useState(false);
 
-  useKeyboardControls(mode, vehicleRef, setReset, setGauges);
+  useKeyboardControls(
+    mode,
+    vehicleRef,
+    setResetPosition,
+    setClearPath,
+    setGauges
+  );
 
   useMouseControls(selectedVertex, player, mode, vehicleRef, setGauges);
 
   useEffect(() => {
     if (useAICar) {
-      setReset(false);
+      setResetPosition([true]);
       return;
     }
     if (!currentDNA) return;
     player.updateDNA(currentDNA);
-    setReset([false]); //reset position but don't clear player path
+    setResetPosition([true]);
   }, [player, currentDNA, useAICar]);
 
   useEffect(() => {
-    if (!reset || !reset[0]) return;
+    if (!clearPath) return;
     player.arrayOfSteps = [];
     player.pathGeometry.setVertices([]);
-  }, [player, reset]);
+  }, [player, clearPath]);
 
   useEffect(() => {
-    if (!reset) return;
+    if (!resetPosition) return;
     playerRef.current.api.position.set(147.5, 4, 192.5);
     playerRef.current.api.angularVelocity.set(0, 0, 0);
     playerRef.current.api.velocity.set(0, 0, 0);
     playerRef.current.api.rotation.set(0, Math.PI, 0);
-  }, [reset, playerRef]);
+  }, [resetPosition, playerRef]);
 };

@@ -1,10 +1,10 @@
 import * as THREE from "three";
-import pathfinding from "./pathfinding/pathfinder";
-import { getCurve } from "./ellipseCurve";
-import { path } from "./path";
-import { map } from "../graph/graphSetup";
-// import NeuralNetwork from "tensorflow";
-import recordBrain from "./recordBrain";
+import pathfinding from "../pathfinding/pathfinder";
+import { getCurve } from "../ellipseCurve";
+import { path } from "../path";
+import { map } from "../../graph/graphSetup";
+import { recordBrain } from "./recordBrain";
+import NeuralNetwork from "./nn";
 const RADIUS = 2.5;
 
 export default class AICar {
@@ -20,7 +20,7 @@ export default class AICar {
     this.distanceToTurn = 0;
     this.outputs = null;
     this.pathDistanceCheck = 2;
-    // this.brain = NeuralNetwork.loadJSON(recordBrain);
+    this.brain = NeuralNetwork.loadJSON(recordBrain);
   }
   run() {
     if (!this.position) return;

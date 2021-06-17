@@ -118,6 +118,7 @@ export function useAnimatedMovement({ controls, camera, cameraLock, player }) {
     }
   };
   const follow = () => {
+    if (!player.followCam) return;
     camera.position.lerp(
       player.followCam.getWorldPosition(player.followCamVector),
       0.03

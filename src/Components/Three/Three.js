@@ -11,7 +11,7 @@ import { ThreeContainer } from "./ThreeStyle";
 import TrafficLights from "./TrafficLights/TrafficLights";
 import { useSelector } from "react-redux";
 import Car from "./Car/Car";
-import AICar from "./Car/AICar";
+import AICar from "./Car/AI/AICar";
 import Ghost from "./Ghosts/Ghost";
 import SkyComponent from "./SkyComponent/SkyComponent";
 import Obstacles from "./Obstacles/Obstacles";
