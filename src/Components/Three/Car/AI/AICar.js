@@ -28,34 +28,22 @@ export default class AICar {
     const targetFound = this.getNextTarget();
     if (!targetFound) return this.destinationReached();
 
-    const angleDiff = this.getAngleDiff();
+    this.getAngleDiff();
 
     if (this.pathGeometry) this.pathGeometry.setVertices(this.arrayOfSteps);
 
-    const distanceToEnd = Math.min(this.arrayOfSteps.length, 50);
-
-    this.inputs = [
-      angleDiff / Math.PI,
-      this.velocity / 30,
-      1 - distanceToEnd / 50,
-      1 - this.distanceToTurn / 50,
-    ];
-    this.outputs = this.brain.predict(this.inputs);
-    const { steering, engine, braking } = this.convertOutputs(this.outputs);
-
-    return {
-      forces: { steering, engine, braking },
-      gauges: this.getGuagevals(steering, engine, braking),
-    };
+    if (this.reverse || Math.abs(this.angleDiff) > Math.PI / 2) {
+      return this.reverseSteering();
+    }
+    return this.AISteering();
   }
   getAngleDiff() {
     const vecDiff = this.target.sub(this.position);
     const angleTotarget = vecDiff.angle();
-    let angleDiff = angleTotarget - this.rotation;
+    this.angleDiff = angleTotarget - this.rotation;
 
-    if (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
-    else if (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
-    return angleDiff;
+    if (this.angleDiff > Math.PI) this.angleDiff -= 2 * Math.PI;
+    else if (this.angleDiff < -Math.PI) this.angleDiff += 2 * Math.PI;
   }
 
   getNextTarget() {
@@ -111,13 +99,43 @@ export default class AICar {
     return { steering, engine, braking };
   }
 
-  destinationReached = () => {
+  destinationReached() {
     return {
       forces: { steering: 0, engine: 0, braking: 25 },
       gauges: { steering: 0, accel: 0 },
     };
-  };
+  }
+  AISteering() {
+    const distanceToEnd = Math.min(this.arrayOfSteps.length, 50);
 
+    this.inputs = [
+      this.angleDiff / Math.PI,
+      this.velocity / 30,
+      1 - distanceToEnd / 50,
+      1 - this.distanceToTurn / 50,
+    ];
+    this.outputs = this.brain.predict(this.inputs);
+    const { steering, engine, braking } = this.convertOutputs(this.outputs);
+
+    return {
+      forces: { steering, engine, braking },
+      gauges: this.getGuagevals(steering, engine, braking),
+    };
+  }
+  reverseSteering() {
+    if (Math.abs(this.angleDiff) < Math.PI / 3) {
+      this.reverse = false;
+    } else {
+      this.reverse = true;
+    }
+    const steering = Math.sign(this.angleDiff) * -0.5;
+    const engine = 750;
+    const braking = 0;
+    return {
+      forces: { steering, engine, braking },
+      gauges: this.getGuagevals(steering, engine, braking),
+    };
+  }
   getGuagevals(steering, engine, braking) {
     const convertSteering = (steering) => {
       if (!steering) return 0;
