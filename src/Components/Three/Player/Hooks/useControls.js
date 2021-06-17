@@ -3,7 +3,7 @@ import { useKeyboardControls } from "./useKeyboardControls";
 import { useMouseControls } from "./useMouseControls";
 
 export const useControls = (
-  playerRef,
+  chassisRef,
   vehicleRef,
   player,
   mode,
@@ -26,13 +26,9 @@ export const useControls = (
   useMouseControls(selectedVertex, player, mode, vehicleRef, setGauges);
 
   useEffect(() => {
-    if (useAICar) {
-      setResetPosition([true]);
-      return;
-    }
-    if (!currentDNA) return;
-    player.updateDNA(currentDNA);
     setResetPosition([true]);
+    if (!currentDNA || useAICar) return;
+    player.updateDNA(currentDNA);
   }, [player, currentDNA, useAICar]);
 
   useEffect(() => {
@@ -43,9 +39,9 @@ export const useControls = (
 
   useEffect(() => {
     if (!resetPosition) return;
-    playerRef.current.api.position.set(147.5, 4, 192.5);
-    playerRef.current.api.angularVelocity.set(0, 0, 0);
-    playerRef.current.api.velocity.set(0, 0, 0);
-    playerRef.current.api.rotation.set(0, Math.PI, 0);
-  }, [resetPosition, playerRef]);
+    chassisRef.current.api.position.set(147.5, 4, 192.5);
+    chassisRef.current.api.angularVelocity.set(0, 0, 0);
+    chassisRef.current.api.velocity.set(0, 0, 0);
+    chassisRef.current.api.rotation.set(0, Math.PI, 0);
+  }, [resetPosition, chassisRef]);
 };

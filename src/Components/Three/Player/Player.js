@@ -16,14 +16,14 @@ export default function Player({
   obstacles,
   useAICar,
 }) {
-  const playerRef = useRef();
+  const chassisRef = useRef();
   const followCameraRef = useRef();
   const vehicleRef = useRef();
 
-  useSubscriptions(player, playerRef);
+  useSubscriptions(player, chassisRef);
 
   useControls(
-    playerRef,
+    chassisRef,
     vehicleRef,
     player,
     mode,
@@ -40,7 +40,7 @@ export default function Player({
   return (
     <>
       <Vehicle
-        playerRef={playerRef}
+        chassisRef={chassisRef}
         vehicleRef={vehicleRef}
         followCameraRef={followCameraRef}
         position={[147.5, 4, 192.5]}

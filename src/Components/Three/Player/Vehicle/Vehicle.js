@@ -6,7 +6,7 @@ import Wheel from "./Wheel";
 import { useWheels } from "../../Car/useWheels";
 
 export default function Vehicle({
-  playerRef,
+  chassisRef,
   vehicleRef,
   followCameraRef,
   position,
@@ -20,7 +20,7 @@ export default function Vehicle({
 
   const [, api] = useRaycastVehicle(
     () => ({
-      chassisBody: playerRef,
+      chassisBody: chassisRef,
       wheels,
       wheelInfos,
       indexForwardAxis: 2,
@@ -33,7 +33,7 @@ export default function Vehicle({
   return (
     <group ref={vehicleRef} api={api}>
       <Chassis
-        playerRef={playerRef}
+        chassisRef={chassisRef}
         followCameraRef={followCameraRef}
         rotation={rotation}
         position={position}

@@ -1,16 +1,16 @@
 import { useEffect } from "react";
 
-export const useSubscriptions = (player, playerRef) => {
+export const useSubscriptions = (player, chassisRef) => {
   useEffect(() => {
-    playerRef.current.api.position.subscribe((p) => {
+    chassisRef.current.api.position.subscribe((p) => {
       player.position.set(p[0], -p[2]);
     });
-    playerRef.current.api.velocity.subscribe((v) => {
+    chassisRef.current.api.velocity.subscribe((v) => {
       player.velocityVector.set(...v);
       player.velocity = player.velocityVector.length();
     });
-    playerRef.current.api.rotation.subscribe((r) => {
+    chassisRef.current.api.rotation.subscribe((r) => {
       player.rotation = r[1] - Math.PI / 2;
     });
-  }, [playerRef, player]);
+  }, [chassisRef, player]);
 };

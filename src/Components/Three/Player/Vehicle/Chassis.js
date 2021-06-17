@@ -8,7 +8,7 @@ export default function Chassis({
   position,
   angularVelocity,
   followCameraRef,
-  playerRef,
+  chassisRef,
   time,
   player,
   obstacles,
@@ -30,7 +30,7 @@ export default function Chassis({
         id: "playerCar",
       },
     }),
-    playerRef
+    chassisRef
   );
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export default function Chassis({
   // };
 
   return (
-    <mesh ref={playerRef} api={api}>
+    <mesh ref={chassisRef} api={api}>
       {/* <Radar player={player} obstacles={obstacles} /> */}
       <Aston position={[0, -0.7, 0]} scale={0.01} />
       <object3D ref={followCameraRef} position={[0, 3, -8]} />
