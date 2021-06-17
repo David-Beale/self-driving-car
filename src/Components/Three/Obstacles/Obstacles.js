@@ -5,12 +5,16 @@ import { walls } from "./walls";
 export default function Obstacles({ obstacles }) {
   return (
     <>
-      {obstacles.map((obstacle) => (
-        <Obstacle key={obstacle.id} obstacle={obstacle} />
-      ))}
-      {walls.map((wall, index) => (
-        <Wall key={index} wall={wall} />
-      ))}
+      {obstacles.length > 0 && (
+        <>
+          {obstacles.map((obstacle) => (
+            <Obstacle key={obstacle.id} obstacle={obstacle} />
+          ))}
+          {walls.map((wall, index) => (
+            <Wall key={index} wall={wall} />
+          ))}
+        </>
+      )}
     </>
   );
 }

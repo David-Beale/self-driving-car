@@ -34,6 +34,7 @@ export default function Ray({ from, to, angle, player }) {
   );
 
   useFrame(() => {
+    if (!fromRef.current) return;
     setColor("limegreen");
     fromRef.current.getWorldPosition(worldVectorFrom.current);
     endRef.current.getWorldPosition(worldVectorTo.current);

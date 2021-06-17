@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { useKeyboardControls } from "./useKeyboardControls";
 import { useMouseControls } from "./useMouseControls";
 
