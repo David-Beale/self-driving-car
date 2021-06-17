@@ -2,7 +2,6 @@ import { useEffect } from "react";
 
 export const useSubscriptions = (playerRef, chassisRef) => {
   useEffect(() => {
-    console.log("new subscription");
     chassisRef.current.api.position.subscribe((p) => {
       playerRef.current.position.set(p[0], -p[2]);
     });
