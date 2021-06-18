@@ -124,6 +124,9 @@ export function useAnimatedMovement({ controls, camera, cameraLock, player }) {
       0.03
     );
     camera.up.lerp(up, 0.03);
-    controls.current.target.lerp(player.followCam.parent.position, 0.03);
+    controls.current.target.lerp(
+      player.followCam.parent.getWorldPosition(player.chassisVector),
+      0.03
+    );
   };
 }

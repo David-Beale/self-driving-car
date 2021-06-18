@@ -16,6 +16,7 @@ export default class Car {
     this.velocityVector = new THREE.Vector3();
     this.position = new THREE.Vector2();
     this.followCamVector = new THREE.Vector3();
+    this.chassisVector = new THREE.Vector3();
     this.slowDown = 0;
     this.reverse = false;
     this.steerVal = 0.875;

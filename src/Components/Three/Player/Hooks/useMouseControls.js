@@ -37,5 +37,5 @@ export const useMouseControls = (
     }
 
     setGauges(gauges);
-  }, -2);
+  }, -1);
 };

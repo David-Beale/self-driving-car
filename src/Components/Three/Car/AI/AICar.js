@@ -17,6 +17,7 @@ export default class AICar {
     this.velocityVector = new THREE.Vector3();
     this.position = new THREE.Vector2();
     this.followCamVector = new THREE.Vector3();
+    this.chassisVector = new THREE.Vector3();
     this.distanceToTurn = 0;
     this.outputs = null;
     this.pathDistanceCheck = 2;
