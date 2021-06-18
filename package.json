@@ -5,7 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^4.11.4",
     "@material-ui/icons": "^4.11.2",
-    "@react-three/cannon": "^2.3.0",
+    "@react-three/cannon": "^2.3.1",
     "@react-three/drei": "^5.3.0",
     "@reduxjs/toolkit": "^1.5.1",
     "@tensorflow/tfjs": "^3.7.0",
