@@ -17,7 +17,7 @@ export default function Player({
   useAICar,
 }) {
   const playerRef = useRef(player);
-  playerRef.current = player;
+
   const chassisRef = useRef();
   const followCameraRef = useRef();
   const vehicleRef = useRef();
@@ -36,6 +36,7 @@ export default function Player({
   );
 
   useEffect(() => {
+    playerRef.current = player;
     player.followCam = followCameraRef.current;
   }, [player, followCameraRef]);
 
@@ -49,7 +50,7 @@ export default function Player({
         angularVelocity={[0, 0, 0]}
         rotation={[0, Math.PI, 0]}
         time={time}
-        player={player}
+        playerRef={playerRef}
         obstacles={obstacles}
       />
       <PlayerPath player={player} />

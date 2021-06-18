@@ -33,7 +33,7 @@ const shortRangePoints = getCirclePoints(7, Math.PI / 2, 14);
 
 const rayEndPoints = [...longRangePoints, ...shortRangePoints];
 
-export default function Radar({ player, obstacles }) {
+export default function Radar({ playerRef, obstacles }) {
   return (
     <>
       {obstacles.length > 0 &&
@@ -44,7 +44,7 @@ export default function Radar({ player, obstacles }) {
               from={from}
               to={ray.pos}
               angle={ray.angle}
-              player={player}
+              playerRef={playerRef}
             />
           );
         })}

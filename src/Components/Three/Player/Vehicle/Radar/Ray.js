@@ -3,7 +3,7 @@ import { useRaycastClosest } from "@react-three/cannon";
 import { useEffect, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 
-export default function Ray({ from, to, angle, player }) {
+export default function Ray({ from, to, angle, playerRef }) {
   const geometry = useRef(new THREE.BufferGeometry());
   const endRef = useRef();
   const fromRef = useRef();
@@ -23,10 +23,10 @@ export default function Ray({ from, to, angle, player }) {
     },
     (result) => {
       if (result.hasHit && result.body?.userData.id === "obstacle") {
-        player.obstacles[angle] = result.distance;
+        playerRef.current.obstacles[angle] = result.distance;
         setColor("red");
       } else if (!result.hasHit) {
-        player.obstacles[angle] = false;
+        playerRef.current.obstacles[angle] = false;
         setColor("red");
       }
     },

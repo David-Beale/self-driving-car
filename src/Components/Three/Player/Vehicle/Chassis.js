@@ -10,7 +10,7 @@ export default function Chassis({
   followCameraRef,
   chassisRef,
   time,
-  player,
+  playerRef,
   obstacles,
 }) {
   const spotlightTarget = useRef();
@@ -42,7 +42,7 @@ export default function Chassis({
 
   return (
     <mesh ref={chassisRef} api={api}>
-      <Radar player={player} obstacles={obstacles} />
+      <Radar playerRef={playerRef} obstacles={obstacles} />
       <Aston position={[0, -0.7, 0]} scale={0.01} />
       <object3D ref={followCameraRef} position={[0, 3, -8]} />
       <object3D ref={spotlightTarget} position={[0, -2, 10]} />
