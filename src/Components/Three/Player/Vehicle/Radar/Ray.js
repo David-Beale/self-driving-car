@@ -19,15 +19,15 @@ export default function Ray({ from, to, angle, playerRef }) {
       from: rayFrom,
       to: rayTo,
       collisionFilterGroup: 2,
-      collisionFilterMask: 1,
+      collisionFilterMask: 1 | 4,
     },
     (result) => {
-      if (result.hasHit && result.body?.userData.id === "obstacle") {
-        playerRef.current.obstacles[angle] = result.distance;
+      if (result.body?.userData.id === "obstacle") {
+        playerRef.current.obstacles[angle] = [result.distance, 1];
         setColor("red");
-      } else if (!result.hasHit) {
-        playerRef.current.obstacles[angle] = false;
-        setColor("red");
+      } else if (result.body?.userData.id === "wall") {
+        playerRef.current.obstacles[angle] = [result.distance, 0];
+        setColor("blue");
       }
     },
     [rayFrom, rayTo]

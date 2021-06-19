@@ -22,6 +22,7 @@ export default class AICar {
     this.outputs = null;
     this.pathDistanceCheck = 2;
     this.brain = NeuralNetwork.loadJSON(recordBrain);
+    this.obstacles = {};
   }
   run() {
     if (!this.position) return;

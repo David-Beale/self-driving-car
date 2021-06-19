@@ -27,9 +27,9 @@ const getCirclePoints = (radius, angle, segments) => {
 
 const from = [0, 0, 0];
 
-const longRangePoints = getCirclePoints(12, Math.PI / 8, 4);
+const longRangePoints = getCirclePoints(5, Math.PI / 8, 0);
 
-const shortRangePoints = getCirclePoints(7, Math.PI / 2, 14);
+const shortRangePoints = getCirclePoints(20, Math.PI / 1.5, 30);
 
 const rayEndPoints = [...longRangePoints, ...shortRangePoints];
 
