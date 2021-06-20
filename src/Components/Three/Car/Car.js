@@ -29,6 +29,7 @@ export default class Car {
     this.pathDistanceCheck = 2;
     this.maxAngle = (2 * Math.PI) / 8;
     this.anglesToCheck = this.getAnglesToCheck(0);
+    this.prevVel = 0;
   }
   run() {
     if (!this.position) return;
@@ -121,6 +122,10 @@ export default class Car {
 
     //check if reversing required
     if (this.reverseObstacle) {
+      if (this.velocity > this.prevVel) {
+        steering = -steering;
+      }
+      this.prevVel = this.velocity;
       engine = 300;
     } else if (this.reverse && Math.abs(this.angleDiff) < Math.PI / 3) {
       //cancel reverse
@@ -139,6 +144,7 @@ export default class Car {
 
     let minDistance = this.distanceToClosestObstacle(obstaclesAngles);
     const emergency = this.checkEmergency();
+    if (emergency) return;
     if (minDistance < 2.5 || (this.reverseObstacle && minDistance < 6)) {
       this.reverseObstacle = true;
       return;
@@ -148,7 +154,6 @@ export default class Car {
       return;
     }
 
-    if (emergency) return;
     this.reverseObstacle = false;
     //increase radius to next target so car can go around obstacles
     this.pathDistanceCheck = 10;
@@ -235,7 +240,6 @@ export default class Car {
   }
   checkEmergency() {
     if (this.leftBumper || this.rightBumper) {
-      // console.log("bumper hit");
       this.reverseObstacle = true;
     }
     if (this.leftBumper && this.rightBumper) {
@@ -243,11 +247,11 @@ export default class Car {
       return true;
     }
     if (this.leftBumper) {
-      this.angleDiff = -0.5;
+      this.angleDiff = -0.75;
       return true;
     }
     if (this.rightBumper) {
-      this.angleDiff = 0.5;
+      this.angleDiff = 0.75;
       return true;
     }
     if (this.leftSide || this.rightSide) {
