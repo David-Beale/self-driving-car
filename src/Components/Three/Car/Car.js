@@ -139,16 +139,17 @@ export default class Car {
     if (!obstaclesAngles.length) return;
 
     let minDistance = this.distanceToClosestObstacle(obstaclesAngles);
+    const emergency = this.checkEmergency();
     if (minDistance === Infinity) {
       this.reverseObstacle = false;
       return;
-    } else if (minDistance < 2.5 || (this.reverseObstacle && minDistance < 6)) {
+    } else if (minDistance < 2.5 || (this.reverseObstacle && minDistance < 5)) {
       this.reverseObstacle = true;
       return;
     }
-
     this.reverseObstacle = false;
 
+    if (emergency) return;
     //increase radius to next target so car can go around obstacles
     this.pathDistanceCheck = 10;
 
@@ -177,8 +178,15 @@ export default class Car {
     }
   }
   distanceToClosestObstacle(obstaclesAngles) {
+    this.leftSide = this.leftBumper = this.rightBumper = this.rightSide = false;
     return obstaclesAngles.reduce((min, angle) => {
       const [distance, obstacle] = this.obstacles[angle];
+      if (obstacle && distance < 2.5) {
+        if (angle > Math.PI / 6) this.leftSide = true;
+        else if (angle > 0) this.leftBumper = true;
+        else if (angle > -Math.PI / 6) this.rightBumper = true;
+        else this.rightSide = true;
+      }
       if (
         (obstacle || (!obstacle && distance < 6)) &&
         Math.abs(this.angleDiff - angle) < 0.15 &&
@@ -220,6 +228,26 @@ export default class Car {
       anglesToCheck.push(i);
     }
     return anglesToCheck;
+  }
+  checkEmergency() {
+    if (this.leftBumper && this.rightBumper) {
+      this.angleDiff = 0;
+      return true;
+    }
+    if (this.leftBumper) {
+      this.angleDiff = -0.5;
+      // console.log("AAAREGH");
+      return true;
+    }
+    if (this.rightBumper) {
+      this.angleDiff = 0.5;
+      return true;
+    }
+    if (this.leftSide || this.rightSide) {
+      // console.log("aargh");
+      this.angleDiff = 0;
+      return true;
+    }
   }
   getGuagevals(steering, engine, braking) {
     const convertSteering = (steering) => {

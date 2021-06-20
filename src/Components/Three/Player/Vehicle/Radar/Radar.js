@@ -1,8 +1,6 @@
 import * as THREE from "three";
 import React from "react";
 import Ray from "./Ray";
-import Bumper from "./Bumper";
-import { useSphere } from "@react-three/cannon";
 
 const getCirclePoints = (radius, angle, segments) => {
   const curve = new THREE.EllipseCurve(
@@ -29,20 +27,9 @@ const getCirclePoints = (radius, angle, segments) => {
 
 const from = [0, 0, 0];
 
-const longRangePoints = getCirclePoints(5, Math.PI / 8, 0);
-
-const shortRangePoints = getCirclePoints(20, Math.PI / 1.5, 30);
-
-const rayEndPoints = [...longRangePoints, ...shortRangePoints];
+const rayEndPoints = getCirclePoints(20, Math.PI / 1.5, 30);
 
 export default function Radar({ playerRef, obstacles }) {
-  const onCollideBegin = (e) => {
-    console.log("Begin", e);
-  };
-  const onCollideEnd = (e) => {
-    console.log("End", e);
-  };
-
   return (
     <>
       {obstacles.length > 0 && (
@@ -58,13 +45,6 @@ export default function Radar({ playerRef, obstacles }) {
               />
             );
           })}
-          <Bumper
-            // position={[0.8, 0, 1.7]}
-            position={[5, 1.5, 5]}
-            args={[2]}
-            onCollideBegin={onCollideBegin}
-            onCollideEnd={onCollideEnd}
-          />
           ;
         </>
       )}
