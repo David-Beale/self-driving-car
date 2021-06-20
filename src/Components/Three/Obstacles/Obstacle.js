@@ -5,8 +5,9 @@ export default function Obstacle({ obstacle }) {
   const [ref] = useCylinder(() => ({
     mass: 1000,
     position: [obstacle.x, 3, obstacle.z],
-    args: [0.5, 0.5, 1],
+    args: [0.75, 0.75, 1],
     collisionFilterGroup: 1,
+    collisionFilterMask: 1 | 2,
     userData: {
       id: "obstacle",
     },

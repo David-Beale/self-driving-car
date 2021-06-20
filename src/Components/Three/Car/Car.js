@@ -28,7 +28,7 @@ export default class Car {
     this.obstacles = {};
     this.pathDistanceCheck = 2;
     this.maxAngle = (2 * Math.PI) / 8;
-    this.anglestoCheck = this.getAnglesToCheck();
+    this.anglesToCheck = this.getAnglesToCheck(0);
   }
   run() {
     if (!this.position) return;
@@ -81,6 +81,7 @@ export default class Car {
         this.position.distanceTo(this.target) < this.pathDistanceCheck;
       if (distanceCheck) {
         this.arrayOfSteps.pop();
+        this.pathDistanceCheck = 2;
       } else {
         return true;
       }
@@ -102,11 +103,11 @@ export default class Car {
 
     let steering = this.angleDiff * this.steerVal;
 
-    if (this.slowDown && this.velocity > this.slowDown) {
+    if (this.slowDown !== false && this.velocity > this.slowDown) {
       //braking
       braking =
         this.maxBrakeForce * d3.easeCubicInOut(this.velocity / this.maxSpeed);
-    } else if (this.slowDown && this.velocity < this.slowDown) {
+    } else if (this.slowDown !== false && this.velocity < this.slowDown) {
       //cancel braking
       this.slowDown = false;
     } else {
@@ -134,8 +135,6 @@ export default class Car {
     return [steering, engine, braking];
   };
   obstacleCheck() {
-    this.pathDistanceCheck = 2;
-
     const obstaclesAngles = Object.keys(this.obstacles);
     if (!obstaclesAngles.length) return;
 
@@ -158,7 +157,8 @@ export default class Car {
     minDistance += 1;
 
     let availableAngle = false;
-    for (let angle of this.anglestoCheck) {
+    this.anglesToCheck = this.getAnglesToCheck(this.angleDiff);
+    for (let angle of this.anglesToCheck) {
       this.angleDiff = angle;
       const blocked = this.checkIfAngleIsObstructed(
         obstaclesAngles,
@@ -171,7 +171,7 @@ export default class Car {
       }
     }
     if (!availableAngle) {
-      this.slowDown = 0.01;
+      this.slowDown = 0;
     } else if (this.velocity > 10) {
       this.slowDown = 10;
     }
@@ -180,8 +180,8 @@ export default class Car {
     return obstaclesAngles.reduce((min, angle) => {
       const [distance, obstacle] = this.obstacles[angle];
       if (
-        obstacle &&
-        Math.abs(this.angleDiff - angle) < 0.2 &&
+        (obstacle || (!obstacle && distance < 6)) &&
+        Math.abs(this.angleDiff - angle) < 0.15 &&
         distance < min
       ) {
         return distance;
@@ -195,6 +195,7 @@ export default class Car {
       let angle = obstaclesAngles[i];
       const [distance, obstacle] = this.obstacles[angle];
       if (!obstacle && distance > minDistance) continue;
+      if (obstacle && distance > minDistance + 4) continue;
       if (Math.abs(this.angleDiff - angle) < angleSpaceRequired) {
         return true;
       }
@@ -202,19 +203,23 @@ export default class Car {
     return false;
   }
   findAngleSpaceRequired(minDistance) {
-    return Math.asin(2 / minDistance);
+    return Math.asin(1.5 / minDistance);
   }
-  getAnglesToCheck() {
-    let anglestoCheck = [];
+  getAnglesToCheck(start) {
+    let anglesToCheck = [];
     //check 45 angles in arc
     const angleDiff = Math.PI / (45 * 1.5);
-    for (let i = Math.PI / 10; i >= -Math.PI / 3; i -= angleDiff) {
-      anglestoCheck.push(i);
+    for (let i = start - Math.PI / 10; i >= -Math.PI / 3; i -= angleDiff) {
+      anglesToCheck.push(i);
     }
-    for (let i = Math.PI / 10 + angleDiff; i <= Math.PI / 3; i += angleDiff) {
-      anglestoCheck.push(i);
+    for (
+      let i = start - Math.PI / 10 + angleDiff;
+      i <= Math.PI / 3;
+      i += angleDiff
+    ) {
+      anglesToCheck.push(i);
     }
-    return anglestoCheck;
+    return anglesToCheck;
   }
   getGuagevals(steering, engine, braking) {
     const convertSteering = (steering) => {
