@@ -1,7 +1,7 @@
 import React, { Suspense, useState, memo, useEffect, useMemo } from "react";
 import { Canvas } from "react-three-fiber";
 import { Loader, Stats } from "@react-three/drei";
-import { Physics } from "@react-three/cannon";
+import { Physics, Debug } from "@react-three/cannon";
 
 import Controls from "./Controls/Controls";
 import Roads from "./Roads/Roads";
@@ -49,33 +49,35 @@ export default memo(function Three({ setGauges }) {
         invalidateFrameloop={true}
       >
         <Physics gravity={[0, -10, 0]} broadphase="SAP" allowSleep>
-          <Stats className="stats" />
+          <Debug color="black" scale={1.1}>
+            <Stats className="stats" />
 
-          <Controls cameraLock={cameraLock} player={player} />
+            <Controls cameraLock={cameraLock} player={player} />
 
-          <Suspense fallback={null}>
-            <Roads
-              addObstacles={addObstacles}
-              setSelectedVertex={setSelectedVertex}
-              setObstacles={setObstacles}
-            />
-            {/* <TrafficLights verticesMap={map.lookup} enabled={trafficLights} /> */}
-            <Obstacles obstacles={obstacles} />
-            <Player
-              player={player}
-              selectedVertex={selectedVertex}
-              mode={mode}
-              currentDNA={currentDNA}
-              setGauges={setGauges}
-              time={time}
-              obstacles={obstacles}
-              useAICar={useAICar}
-            />
-            {ghosts.map((ghostDNA, index) => (
-              <Ghost key={index} ghostDNA={ghostDNA} />
-            ))}
-          </Suspense>
-          <SkyComponent time={time} />
+            <Suspense fallback={null}>
+              <Roads
+                addObstacles={addObstacles}
+                setSelectedVertex={setSelectedVertex}
+                setObstacles={setObstacles}
+              />
+              {/* <TrafficLights verticesMap={map.lookup} enabled={trafficLights} /> */}
+              <Obstacles obstacles={obstacles} />
+              <Player
+                player={player}
+                selectedVertex={selectedVertex}
+                mode={mode}
+                currentDNA={currentDNA}
+                setGauges={setGauges}
+                time={time}
+                obstacles={obstacles}
+                useAICar={useAICar}
+              />
+              {ghosts.map((ghostDNA, index) => (
+                <Ghost key={index} ghostDNA={ghostDNA} />
+              ))}
+            </Suspense>
+            <SkyComponent time={time} />
+          </Debug>
         </Physics>
       </Canvas>
       <Loader />

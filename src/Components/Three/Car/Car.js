@@ -203,7 +203,7 @@ export default class Car {
     return false;
   }
   findAngleSpaceRequired(minDistance) {
-    return Math.asin(1.5 / minDistance);
+    return Math.asin(1.6 / minDistance);
   }
   getAnglesToCheck(start) {
     let anglesToCheck = [];
