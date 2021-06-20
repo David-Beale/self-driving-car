@@ -121,7 +121,6 @@ export default class Car {
 
     //check if reversing required
     if (this.reverseObstacle) {
-      steering = 0;
       engine = 300;
     } else if (this.reverse && Math.abs(this.angleDiff) < Math.PI / 3) {
       //cancel reverse
@@ -140,16 +139,17 @@ export default class Car {
 
     let minDistance = this.distanceToClosestObstacle(obstaclesAngles);
     const emergency = this.checkEmergency();
-    if (minDistance === Infinity) {
-      this.reverseObstacle = false;
-      return;
-    } else if (minDistance < 2.5 || (this.reverseObstacle && minDistance < 5)) {
+    if (minDistance < 2.5 || (this.reverseObstacle && minDistance < 6)) {
       this.reverseObstacle = true;
       return;
     }
-    this.reverseObstacle = false;
+    if (minDistance === Infinity) {
+      this.reverseObstacle = false;
+      return;
+    }
 
     if (emergency) return;
+    this.reverseObstacle = false;
     //increase radius to next target so car can go around obstacles
     this.pathDistanceCheck = 10;
 
@@ -172,6 +172,10 @@ export default class Car {
       }
     }
     if (!availableAngle) {
+      if (minDistance < 6) {
+        this.steering = 0;
+        this.reverseObstacle = true;
+      }
       this.slowDown = 0;
     } else if (this.velocity > 10) {
       this.slowDown = 10;
@@ -181,7 +185,7 @@ export default class Car {
     this.leftSide = this.leftBumper = this.rightBumper = this.rightSide = false;
     return obstaclesAngles.reduce((min, angle) => {
       const [distance, obstacle] = this.obstacles[angle];
-      if (obstacle && distance < 2.5) {
+      if (obstacle && distance < 3) {
         if (angle > Math.PI / 6) this.leftSide = true;
         else if (angle > 0) this.leftBumper = true;
         else if (angle > -Math.PI / 6) this.rightBumper = true;
@@ -230,13 +234,16 @@ export default class Car {
     return anglesToCheck;
   }
   checkEmergency() {
+    if (this.leftBumper || this.rightBumper) {
+      // console.log("bumper hit");
+      this.reverseObstacle = true;
+    }
     if (this.leftBumper && this.rightBumper) {
       this.angleDiff = 0;
       return true;
     }
     if (this.leftBumper) {
       this.angleDiff = -0.5;
-      // console.log("AAAREGH");
       return true;
     }
     if (this.rightBumper) {
@@ -244,7 +251,6 @@ export default class Car {
       return true;
     }
     if (this.leftSide || this.rightSide) {
-      // console.log("aargh");
       this.angleDiff = 0;
       return true;
     }
