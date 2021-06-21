@@ -9,38 +9,37 @@ import Player from "./Player/Player";
 
 import { ThreeContainer } from "./ThreeStyle";
 import TrafficLights from "./TrafficLights/TrafficLights";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Car from "./Car/Car";
 import AICar from "./Car/AI/AICar";
 import Ghost from "./Ghosts/Ghost";
 import SkyComponent from "./SkyComponent/SkyComponent";
 import Obstacles from "./Obstacles/Obstacles";
+import { newObstacle } from "../../redux/settings";
 
 export default memo(function Three({ setGauges }) {
+  const dispatch = useDispatch();
   const [selectedVertex, setSelectedVertex] = useState(null);
-  const [obstacles, setObstacles] = useState([]);
 
   const trafficLights = useSelector(({ settings }) => settings.trafficLights);
-
   const cameraLock = useSelector(({ settings }) => settings.cameraLock);
   const mode = useSelector(({ mode }) => mode.mode);
   const currentDNA = useSelector(({ training }) => training.currentDNA);
   const ghosts = useSelector(({ training }) => training.ghosts);
   const time = useSelector(({ settings }) => settings.time);
   const addObstacles = useSelector(({ settings }) => settings.addObstacles);
-  const removeObstacles = useSelector(
-    ({ settings }) => settings.removeObstacles
-  );
+  const obstacles = useSelector(({ settings }) => settings.obstacles);
   const useAICar = useSelector(({ settings }) => settings.AICar);
 
   const player = useMemo(
     () => (useAICar ? new AICar() : new Car()),
     [useAICar]
   );
-  useEffect(() => {
-    if (!removeObstacles) return;
-    setObstacles([]);
-  }, [removeObstacles]);
+
+  const onNewObstacle = (payload) => {
+    dispatch(newObstacle(payload));
+  };
+
   return (
     <ThreeContainer cursorTarget={addObstacles}>
       <Canvas
@@ -58,7 +57,7 @@ export default memo(function Three({ setGauges }) {
             <Roads
               addObstacles={addObstacles}
               setSelectedVertex={setSelectedVertex}
-              setObstacles={setObstacles}
+              onNewObstacle={onNewObstacle}
             />
             {/* <TrafficLights verticesMap={map.lookup} enabled={trafficLights} /> */}
             <Obstacles obstacles={obstacles} />

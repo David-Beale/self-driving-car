@@ -19,6 +19,8 @@ import ToggleAICar from "./Components/ToggleAICar/ToggleAICar";
 export default memo(function Menu() {
   const [menuOpen, setMenuOpen] = useState(true);
   const training = useSelector(({ training }) => training.training);
+  const AICar = useSelector(({ settings }) => settings.AICar);
+  const obstacles = useSelector(({ settings }) => settings.obstacles);
 
   return (
     <>
@@ -31,14 +33,22 @@ export default memo(function Menu() {
           {!training && (
             <>
               <Mode />
+              <ToggleAICar />
             </>
           )}
           {/* <ToggleTrafficLights /> */}
-          <AddObstacles />
-          <RemoveObstacles />
-          <Training training={training} />
-          <ToggleTraining training={training} />
-          <ToggleAICar />
+          {!AICar && (
+            <>
+              <Training training={training} />
+              <ToggleTraining training={training} />
+            </>
+          )}
+          {!training && !AICar && (
+            <>
+              <AddObstacles />
+              {obstacles.length > 0 && <RemoveObstacles />}
+            </>
+          )}
         </Container>
       </Drawer>
     </>

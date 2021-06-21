@@ -1,6 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { mouseMode } from "./mode";
-import { enableCameraLock } from "./settings";
+import {
+  addObstacles,
+  disableAICar,
+  enableCameraLock,
+  removeObstacles,
+} from "./settings";
+
+const defaultSettings = {
+  steerVal: 0.875,
+  maxForce: 1000,
+  maxBrakeForce: 20,
+  maxSpeed: 18,
+  stoppingDistance: 35,
+  slowDistance: 20,
+};
 
 export const initialState = {
   currentDNA: null,
@@ -12,7 +26,8 @@ const training = createSlice({
   initialState,
   reducers: {
     setCurrentDNA(state, action) {
-      state.currentDNA = action.payload;
+      const dna = action.payload || defaultSettings;
+      state.currentDNA = dna;
     },
     toggleTraining(state) {
       state.training = !state.training;
@@ -30,6 +45,12 @@ export const onTrainingMode = () => async (dispatch, getState) => {
   if (!trainingMode) {
     dispatch(enableCameraLock());
     dispatch(mouseMode());
+    dispatch(disableAICar());
+    dispatch(removeObstacles());
+    dispatch(addObstacles(false));
+  } else {
+    dispatch(updateGhosts([]));
+    dispatch(setCurrentDNA());
   }
   dispatch(toggleTraining());
 };

@@ -7,8 +7,8 @@ export const initialState = {
   computerNumber: 60,
   trafficConditions: false,
   time: "sunset",
+  obstacles: [],
   addObstacles: false,
-  removeObstacles: false,
   AICar: false,
 };
 const settings = createSlice({
@@ -38,14 +38,23 @@ const settings = createSlice({
       else if (state.time === "sunset") state.time = "night";
       else if (state.time === "night") state.time = "day";
     },
-    addObstacles(state) {
-      state.addObstacles = !state.addObstacles;
+    addObstacles(state, action) {
+      const payload = action.payload || !state.addObstacles;
+      state.addObstacles = payload;
+    },
+    newObstacle(state, action) {
+      state.obstacles.push(action.payload);
     },
     removeObstacles(state) {
-      state.removeObstacles = [true];
+      state.obstacles = [];
     },
     toggleAICar(state) {
       state.AICar = !state.AICar;
+      state.addObstacles = false;
+      state.obstacles = [];
+    },
+    disableAICar(state) {
+      state.AICar = false;
     },
   },
 });
@@ -59,8 +68,10 @@ export const {
   changeComputerNumber,
   toggleTime,
   addObstacles,
+  newObstacle,
   removeObstacles,
   toggleAICar,
+  disableAICar,
 } = settings.actions;
 
 export default settings.reducer;

@@ -6,7 +6,7 @@ import Road from "./Road";
 export default function Roads({
   setSelectedVertex,
   addObstacles,
-  setObstacles,
+  onNewObstacle,
 }) {
   const prevMouse = useRef(null);
 
@@ -35,12 +35,9 @@ export default function Roads({
       Math.abs(prevMouse.current.x - e.clientX) +
       Math.abs(prevMouse.current.y - e.clientY);
     if (dist > 10) return;
-    if (addObstacles)
-      setObstacles((prev) => [
-        ...prev,
-        { id: Date.now(), x: e.point.x, z: e.point.z },
-      ]);
-    else setSelectedVertex({ x: e.point.x, z: e.point.z });
+    if (addObstacles) {
+      onNewObstacle({ id: Date.now(), x: e.point.x, z: e.point.z });
+    } else setSelectedVertex({ x: e.point.x, z: e.point.z });
   };
 
   const ref = useRef();

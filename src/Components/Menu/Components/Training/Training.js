@@ -9,6 +9,7 @@ import NextGenButton from "./Components/NextGenButton";
 import MutationRateSlider from "./Components/MutationRateSlider";
 import PopulationSizeSlider from "./Components/PopulationSizeSlider";
 import ResetTrainingButton from "./Components/ResetTrainingButton";
+import PretrainedButton from "./Components/PretrainedButton";
 
 import { useInitalise } from "./useInitalise";
 import Ghosts from "./Components/Ghosts";
@@ -37,7 +38,7 @@ export default function TrainButton({ training }) {
   const [progress, setProgress] = useState(100);
   const [populationSize, setPopulationSize] = useState(100);
   const mutationRate = useRef(0.01);
-  const ghosts = useRef(5);
+  const ghosts = useRef(20);
   const arrayOfDNA = useRef([]);
   const newArrayOfDNA = useRef([]);
 
@@ -122,6 +123,7 @@ export default function TrainButton({ training }) {
             onChange={onChangeGhosts}
           />
           <ResetTrainingButton disabled={progress < 100} onClick={onReset} />
+          <PretrainedButton disabled={progress < 100} />
         </>
       )}
     </>

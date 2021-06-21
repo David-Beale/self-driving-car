@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import ComputerIcon from "@material-ui/icons/Computer";
+import AdbIcon from "@material-ui/icons/Adb";
 
 import { StyledIconButton } from "../ToggleButtonStyle";
 import { toggleAICar } from "../../../../redux/settings";
@@ -19,9 +19,9 @@ export default function ToggleAICar() {
     <>
       <SubContainer>
         <StyledIconButton enabled={AICar ? 1 : 0} onClick={onClick}>
-          <ComputerIcon fontSize="large" />
+          <AdbIcon fontSize="large" />
         </StyledIconButton>
-        {AICar ? "remove AI Car" : "Use AI car"}
+        Neural network
       </SubContainer>
     </>
   );
