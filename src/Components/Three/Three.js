@@ -1,5 +1,5 @@
 import React, { Suspense, useState, memo, useEffect, useMemo } from "react";
-import { Canvas } from "react-three-fiber";
+import { Canvas, invalidate } from "@react-three/fiber";
 import { Loader, Stats } from "@react-three/drei";
 import { Physics, Debug } from "@react-three/cannon";
 
@@ -30,6 +30,7 @@ export default memo(function Three({ setGauges }) {
   const addObstacles = useSelector(({ settings }) => settings.addObstacles);
   const obstacles = useSelector(({ settings }) => settings.obstacles);
   const useAICar = useSelector(({ settings }) => settings.AICar);
+  const isPaused = useSelector(({ settings }) => settings.helpOpen);
 
   const player = useMemo(
     () => (useAICar ? new AICar() : new Car()),
@@ -45,13 +46,22 @@ export default memo(function Three({ setGauges }) {
       <Canvas
         colorManagement={false}
         camera={{ far: 4000 }}
-        invalidateFrameloop={true}
+        frameloop={"on demand"}
       >
-        <Physics gravity={[0, -10, 0]} broadphase="SAP" allowSleep>
+        <Physics
+          gravity={[0, -10, 0]}
+          broadphase="SAP"
+          allowSleep
+          shouldInvalidate={false}
+        >
           {/* <Debug color="black" scale={1.1}> */}
           <Stats className="stats" />
 
-          <Controls cameraLock={cameraLock} player={player} />
+          <Controls
+            cameraLock={cameraLock}
+            player={player}
+            isPaused={isPaused}
+          />
 
           <Suspense fallback={null}>
             <Roads

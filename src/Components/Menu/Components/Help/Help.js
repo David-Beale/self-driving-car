@@ -1,30 +1,32 @@
-import React, { useState } from "react";
+import React from "react";
 import { Dialog, Grow, Button } from "@material-ui/core";
 import ContactSupportIcon from "@material-ui/icons/ContactSupport";
 
 import { StyledHelp, HelpContainer, HelpRow } from "./HelpStyles";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleHelpOpen } from "../../../../redux/settings";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Grow ref={ref} {...props} />;
 });
 
 export default function Instructions() {
-  const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
+  const open = useSelector(({ settings }) => settings.helpOpen);
 
-  const onClose = () => {
-    setOpen(false);
+  const onToggle = () => {
+    dispatch(toggleHelpOpen());
   };
 
   return (
     <StyledHelp>
-      <Button onClick={() => setOpen(true)}>
+      <Button onClick={onToggle}>
         <ContactSupportIcon fontSize="large" />
       </Button>
       <Dialog
         maxWidth={"lg"}
         open={open}
-        onClose={onClose}
-        onClick={onClose}
+        onClose={onToggle}
         TransitionComponent={Transition}
       >
         <HelpContainer>

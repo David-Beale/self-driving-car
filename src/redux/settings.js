@@ -10,6 +10,7 @@ export const initialState = {
   obstacles: [],
   addObstacles: false,
   AICar: false,
+  helpOpen: false,
 };
 const settings = createSlice({
   name: "settings",
@@ -56,6 +57,9 @@ const settings = createSlice({
     disableAICar(state) {
       state.AICar = false;
     },
+    toggleHelpOpen(state) {
+      state.helpOpen = !state.helpOpen;
+    },
   },
 });
 
@@ -72,6 +76,7 @@ export const {
   removeObstacles,
   toggleAICar,
   disableAICar,
+  toggleHelpOpen,
 } = settings.actions;
 
 export default settings.reducer;
