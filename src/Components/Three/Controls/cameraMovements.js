@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import { useFrame } from "react-three-fiber";
+import { useFrame } from "@react-three/fiber";
 import * as d3 from "d3-ease";
 
 function updateSource(parameter) {

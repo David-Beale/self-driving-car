@@ -1,5 +1,5 @@
 import React, { useRef, Suspense, useState, useCallback } from "react";
-import { Canvas } from "react-three-fiber";
+import { Canvas } from "@react-three/fiber";
 import { Stats, Sphere, Environment, Loader, Sky } from "@react-three/drei";
 
 import Controls from "./Controls/Controls";

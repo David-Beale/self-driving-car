@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import { extend, useFrame, useThree } from "react-three-fiber";
+import { extend, useFrame, useThree } from "@react-three/fiber";
 import { TrackballControls } from "three/examples/jsm/controls/TrackballControls";
 import * as THREE from "three";
 

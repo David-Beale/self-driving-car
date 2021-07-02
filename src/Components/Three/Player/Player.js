@@ -3,7 +3,7 @@ import { useFrame, useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import PlayerPath from "./PlayerPath";
 import playerClass from "./playerClass";
-import ClickIndicator from "./ClickIndicator";
+import ClickIndicator from "./clickIndicator_";
 
 const newPlayer = new playerClass();
 
