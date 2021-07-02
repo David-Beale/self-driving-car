@@ -8,13 +8,17 @@ export const StyledHelp = styled.div`
   align-items: center;
 `;
 export const HelpContainer = styled.div`
+  height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
   font-size: 1rem;
-  padding: 30px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 `;
-export const HelpRow = styled.div`
-  padding: 10px 15px;
-  margin: 10px;
-  background-color: rgba(255, 255, 255, 0.7);
-  border-radius: 15px;
-  text-align: center;
+export const StyledCloseButton = styled.div`
+  cursor: pointer;
+  position: absolute;
+  top: 5px;
+  left: 25px;
+  z-index: 2;
 `;
