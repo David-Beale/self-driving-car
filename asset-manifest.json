@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/self-driving-car/static/css/main.74933ac6.chunk.css",
-    "main.js": "/self-driving-car/static/js/main.78bf117d.chunk.js",
-    "main.js.map": "/self-driving-car/static/js/main.78bf117d.chunk.js.map",
+    "main.js": "/self-driving-car/static/js/main.f3f23438.chunk.js",
+    "main.js.map": "/self-driving-car/static/js/main.f3f23438.chunk.js.map",
     "reactPlayerDailyMotion.js": "/self-driving-car/static/js/reactPlayerDailyMotion.546eb45a.chunk.js",
     "reactPlayerDailyMotion.js.map": "/self-driving-car/static/js/reactPlayerDailyMotion.546eb45a.chunk.js.map",
     "reactPlayerFacebook.js": "/self-driving-car/static/js/reactPlayerFacebook.032f96a7.chunk.js",
@@ -37,12 +37,15 @@
     "static/css/main.74933ac6.chunk.css.map": "/self-driving-car/static/css/main.74933ac6.chunk.css.map",
     "static/js/15.06317b92.chunk.js.LICENSE.txt": "/self-driving-car/static/js/15.06317b92.chunk.js.LICENSE.txt",
     "static/media/AI evolution.40a6be49.JPG": "/self-driving-car/static/media/AI evolution.40a6be49.JPG",
-    "static/media/perceptron.fee338de.png": "/self-driving-car/static/media/perceptron.fee338de.png"
+    "static/media/aston2.c4267f8a.glb": "/self-driving-car/static/media/aston2.c4267f8a.glb",
+    "static/media/cone.c60637f7.glb": "/self-driving-car/static/media/cone.c60637f7.glb",
+    "static/media/perceptron.fee338de.png": "/self-driving-car/static/media/perceptron.fee338de.png",
+    "static/media/wheel.d7a0342f.glb": "/self-driving-car/static/media/wheel.d7a0342f.glb"
   },
   "entrypoints": [
     "static/js/runtime-main.19ec16d9.js",
     "static/js/15.06317b92.chunk.js",
     "static/css/main.74933ac6.chunk.css",
-    "static/js/main.78bf117d.chunk.js"
+    "static/js/main.f3f23438.chunk.js"
   ]
 }
