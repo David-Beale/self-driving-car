@@ -19,6 +19,9 @@ export default function Controls() {
       <SectionRow>
         <b>Space</b> - brake
       </SectionRow>
+      <SectionRow>
+        <b>R</b> - reset
+      </SectionRow>
       <SectionSubHeading>Mouse</SectionSubHeading>
       <SectionRow>
         <b>Point and click</b> on any part of the road to begin self driving.

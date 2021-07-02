@@ -71,10 +71,10 @@ export default function NeuralNetwork() {
         network size, but I'm really happy with how it worked out.
       </SectionRow>
       <SectionRow>
-        You can actually see on the graph where the main challenges were. It
-        took about 25 generations before it figured out how to turn. It didn't
-        figure out how to brake at the end until generation 55, and then it
-        continued tweaking itself, gradually getting faster and faster.
+        You can see on the graph where the main challenges were. It took about
+        25 generations before it figured out how to turn. It didn't figure out
+        how to brake at the end until generation 55, and then it continued
+        tweaking itself, gradually getting faster and faster.
       </SectionRow>
       <SectionRow>
         For the fitness function, I used a combination of the distance

@@ -7,6 +7,8 @@ export const ContentsContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  z-index: 3;
 `;
 export const ContentsSubContainer = styled.div`
   min-width: 600px;

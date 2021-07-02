@@ -44,8 +44,7 @@ export default function Training() {
       <SectionRow>
         <b>Scoring: </b>This is based on the distance travelled and time taken.
         100% is the score I got for my default parameters. It's possible to get
-        higher than 100%, but the braking and turning will get much more
-        aggressive.
+        higher than 100%, but the braking and steering will get more aggressive.
       </SectionRow>
       <SectionRow>
         <b>Ghosts: </b>The best car from each population will be shown as the

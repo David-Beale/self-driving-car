@@ -9,13 +9,24 @@ const Container = styled.div`
 
 const StyledClickableImage = styled.img`
   cursor: ${(props) => (props.clicked ? "zoom-out" : "zoom-in")};
-  width: ${(props) => (props.clicked ? "90vw" : "100%")};
+  max-width: ${(props) => (props.clicked ? "90vw" : "100%")};
   height: ${(props) => (props.clicked ? "90vh" : "100%")};
   position: ${(props) => (props.clicked ? "fixed" : "")};
-  top: 5vh;
-  left: 5vw;
+  top: 50%;
+  left: 50%;
+  transform: ${(props) => (props.clicked ? "translate(-50%, -50%);" : "")};
+  z-index: 1;
 `;
 
+const Backdrop = styled.div`
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  background-color: rgba(0, 0, 0, 0.7);
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+`;
 export default function ClickableImage({ src, alt, height, width }) {
   const [clicked, setClicked] = useState(false);
   return (
@@ -26,6 +37,7 @@ export default function ClickableImage({ src, alt, height, width }) {
         src={src}
         alt={alt}
       />
+      {clicked && <Backdrop />}
     </Container>
   );
 }
