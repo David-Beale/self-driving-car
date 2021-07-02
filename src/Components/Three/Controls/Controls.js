@@ -10,7 +10,7 @@ extend({ TrackballControls });
 
 export default function Controls({ cameraLock, player, isPaused }) {
   const controls = useRef();
-  const { camera, gl, invalidate } = useThree();
+  const { camera, gl } = useThree();
 
   useFrame(() => {
     // update the view as the vis is interacted with

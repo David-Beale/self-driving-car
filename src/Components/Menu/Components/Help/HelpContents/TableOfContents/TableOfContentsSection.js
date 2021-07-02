@@ -1,5 +1,12 @@
 import { Section } from "./TableOfContentsStyle";
 
 export default function TableOfContentsSection({ section, current }) {
-  return <Section current={current}>{section.name}</Section>;
+  const onClick = () => {
+    section.ref.current.scrollIntoView();
+  };
+  return (
+    <Section current={current} onClick={onClick}>
+      {section.name}
+    </Section>
+  );
 }

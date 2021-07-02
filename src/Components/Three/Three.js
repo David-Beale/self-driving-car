@@ -1,5 +1,5 @@
-import React, { Suspense, useState, memo, useEffect, useMemo } from "react";
-import { Canvas, invalidate } from "@react-three/fiber";
+import React, { Suspense, useState, memo, useMemo } from "react";
+import { Canvas } from "@react-three/fiber";
 import { Loader, Stats } from "@react-three/drei";
 import { Physics, Debug } from "@react-three/cannon";
 

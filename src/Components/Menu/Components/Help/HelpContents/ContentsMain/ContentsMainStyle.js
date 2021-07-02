@@ -23,6 +23,7 @@ export const ContentsSubContainer = styled.div`
 export const MainSectionContainer = styled.div`
   display: flex;
   flex-direction: column;
+  margin-top: 16px;
 `;
 export const SectionTitle = styled.div`
   font-size: 2rem;

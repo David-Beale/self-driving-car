@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const TableOfContentsContainer = styled.div`
-  position: absolute;
+  position: fixed;
   z-index: 1;
   width: 300px;
   min-height: 100vh;

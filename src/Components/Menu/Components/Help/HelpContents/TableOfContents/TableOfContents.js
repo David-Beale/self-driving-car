@@ -1,9 +1,9 @@
-import { useState } from "react";
 import { TableOfContentsContainer } from "./TableOfContentsStyle";
 import TableOfContentsSection from "./TableOfContentsSection";
+import { useCheckCurrentSection } from "./useCheckCurrentSection";
 
 export default function TableOfContents({ sections }) {
-  const [currentSection, setCurrentSection] = useState(0);
+  const currentSection = useCheckCurrentSection(sections);
   return (
     <TableOfContentsContainer>
       {sections.map((section, index) => (
