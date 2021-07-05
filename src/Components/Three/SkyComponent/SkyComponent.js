@@ -21,8 +21,8 @@ const settings = {
     sunPosition: 750,
   },
   day: {
-    directionalLight: 2,
-    ambientLight: 2,
+    directionalLight: 1,
+    ambientLight: 1.5,
     inclination: 0.61,
     bloom: 0,
     rayleigh: 0.07,
