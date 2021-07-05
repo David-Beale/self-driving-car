@@ -1,5 +1,6 @@
 import React from "react";
 import ReactSpeedometer from "react-d3-speedometer";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 
 export const Container = styled.div`
@@ -12,7 +13,8 @@ export const Container = styled.div`
   pointer-events: none;
 `;
 
-export default function Gauge({ gauges }) {
+export default function Gauge() {
+  const gauges = useSelector(({ gauges }) => gauges.gauges);
   return (
     <Container>
       <ReactSpeedometer
@@ -20,12 +22,12 @@ export default function Gauge({ gauges }) {
         minValue={-1}
         maxValue={1}
         height={185}
-        needleTransitionDuration={50}
+        needleTransitionDuration={200}
         segments={100}
         maxSegmentLabels={0}
         ringWidth={10}
         currentValueText="Acceleration"
-        needleTransition="easeElastic"
+        needleTransition="easeLinear"
         needleColor={"#90f2ff"}
         needleHeightRatio={0.8}
         textColor={"#d8dee9"}
@@ -35,12 +37,12 @@ export default function Gauge({ gauges }) {
         minValue={-1}
         maxValue={1}
         height={185}
-        needleTransitionDuration={50}
+        needleTransitionDuration={200}
         segments={100}
         maxSegmentLabels={0}
         ringWidth={10}
         currentValueText="Steering"
-        needleTransition="easeElastic"
+        needleTransition="easeLinear"
         needleColor={"#90f2ff"}
         needleHeightRatio={0.8}
         textColor={"#d8dee9"}

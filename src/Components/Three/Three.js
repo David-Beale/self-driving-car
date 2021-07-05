@@ -2,6 +2,7 @@ import React, { Suspense, useState, memo, useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Loader, Stats } from "@react-three/drei";
 import { Physics, Debug } from "@react-three/cannon";
+import _ from "lodash";
 
 import Controls from "./Controls/Controls";
 import Roads from "./Roads/Roads";
@@ -16,8 +17,9 @@ import Ghost from "./Ghosts/Ghost";
 import SkyComponent from "./SkyComponent/SkyComponent";
 import Obstacles from "./Obstacles/Obstacles";
 import { newObstacle } from "../../redux/settings";
+import { setgauges } from "../../redux/gauges";
 
-export default memo(function Three({ setGauges }) {
+export default memo(function Three() {
   const dispatch = useDispatch();
   const [selectedVertex, setSelectedVertex] = useState(null);
 
@@ -40,6 +42,10 @@ export default memo(function Three({ setGauges }) {
   const onNewObstacle = (payload) => {
     dispatch(newObstacle(payload));
   };
+
+  const onSetGauges = _.throttle((value) => {
+    dispatch(setgauges(value));
+  }, 200);
 
   return (
     <ThreeContainer cursorTarget={addObstacles}>
@@ -76,7 +82,7 @@ export default memo(function Three({ setGauges }) {
               selectedVertex={selectedVertex}
               mode={mode}
               currentDNA={currentDNA}
-              setGauges={setGauges}
+              setGauges={onSetGauges}
               time={time}
               obstacles={obstacles}
               useAICar={useAICar}
