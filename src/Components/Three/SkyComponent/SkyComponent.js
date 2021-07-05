@@ -34,7 +34,7 @@ const lerp = (start, end, progress) => {
   return (1 - progress) * start + progress * end;
 };
 
-export default function SkyComponent({ time }) {
+export default function SkyComponent({ time, quality }) {
   const [currentSettings, setCurrentSettings] = useState(settings[time]);
   const [starsOn, setStarsOn] = useState(false);
   const prevTime = useRef(time);
@@ -67,20 +67,27 @@ export default function SkyComponent({ time }) {
   });
   return (
     <>
-      <ambientLight color="#ffffff" intensity={currentSettings.ambientLight} />
-      <directionalLight
+      <ambientLight
         color="#ffffff"
-        intensity={currentSettings.directionalLight}
-        position={[0, currentSettings.sunPosition, -1000]}
+        intensity={currentSettings.ambientLight + (quality === 1 ? 0.7 : 0)}
       />
-      <Sky
-        distance={45000} // Camera distance (default=450000)
-        inclination={currentSettings.inclination} // Sun elevation angle from 0 to 1 (default=0)
-        azimuth={0.25} // Sun rotation around the Y axis from 0 to 1 (default=0.25)
-        rayleigh={currentSettings.rayleigh}
-      />
-      {starsOn && <Stars radius={1000} factor={15} />}
-      <Effects strength={currentSettings.bloom} />
+      {quality > 1 && (
+        <>
+          <directionalLight
+            color="#ffffff"
+            intensity={currentSettings.directionalLight}
+            position={[0, currentSettings.sunPosition, -1000]}
+          />
+          <Sky
+            distance={45000} // Camera distance (default=450000)
+            inclination={currentSettings.inclination} // Sun elevation angle from 0 to 1 (default=0)
+            azimuth={0.25} // Sun rotation around the Y axis from 0 to 1 (default=0.25)
+            rayleigh={currentSettings.rayleigh}
+          />
+          {starsOn && <Stars radius={1000} factor={15} />}
+        </>
+      )}
+      {quality > 2 && <Effects strength={currentSettings.bloom} />}
     </>
   );
 }

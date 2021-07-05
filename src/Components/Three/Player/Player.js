@@ -15,6 +15,7 @@ export default function Player({
   time,
   obstacles,
   useAICar,
+  quality,
 }) {
   const playerRef = useRef(player);
 
@@ -52,6 +53,7 @@ export default function Player({
         time={time}
         playerRef={playerRef}
         obstacles={obstacles}
+        quality={quality}
       />
       <PlayerPath player={player} />
       <ClickIndicator selectedVertex={selectedVertex} />

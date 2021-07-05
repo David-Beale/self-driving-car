@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useBox } from "@react-three/cannon";
-import Aston from "./Aston";
+import AstonHQ from "./AstonHQ";
+import AstonLQ from "./AstonLQ";
 import Radar from "./Radar/Radar";
 
 export default function Chassis({
@@ -12,6 +13,7 @@ export default function Chassis({
   time,
   playerRef,
   obstacles,
+  quality,
 }) {
   const spotlightTarget = useRef();
   const [target, setTarget] = useState(undefined);
@@ -43,7 +45,11 @@ export default function Chassis({
   return (
     <mesh ref={chassisRef} api={api}>
       <Radar playerRef={playerRef} obstacles={obstacles} />
-      <Aston position={[0, -0.7, 0]} scale={0.01} />
+      {quality === 3 ? (
+        <AstonHQ position={[0, -0.7, 0]} scale={0.01} />
+      ) : (
+        <AstonLQ position={[0, -0.7, 0]} scale={0.01} />
+      )}
       <object3D ref={followCameraRef} position={[0, 3, -8]} />
       <object3D ref={spotlightTarget} position={[0, -2, 10]} />
       {time === "night" && (

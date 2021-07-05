@@ -7,6 +7,6 @@ export const ThreeContainer = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: black;
+  background-color: skyblue;
   cursor: ${(props) => (props.cursorTarget ? "crosshair" : "")};
 `;

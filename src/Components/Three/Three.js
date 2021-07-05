@@ -33,6 +33,7 @@ export default memo(function Three() {
   const obstacles = useSelector(({ settings }) => settings.obstacles);
   const useAICar = useSelector(({ settings }) => settings.AICar);
   const isPaused = useSelector(({ settings }) => settings.helpOpen);
+  const quality = useSelector(({ quality }) => quality.quality);
 
   const player = useMemo(
     () => (useAICar ? new AICar() : new Car()),
@@ -86,12 +87,13 @@ export default memo(function Three() {
               time={time}
               obstacles={obstacles}
               useAICar={useAICar}
+              quality={quality}
             />
             {ghosts.map((ghostDNA, index) => (
               <Ghost key={index} ghostDNA={ghostDNA} />
             ))}
           </Suspense>
-          <SkyComponent time={time} />
+          <SkyComponent time={time} quality={quality} />
           {/* </Debug> */}
         </Physics>
       </Canvas>
