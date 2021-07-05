@@ -1,12 +1,5 @@
 import styled from "styled-components";
 
-export const StyledHelp = styled.div`
-  position: absolute;
-  right: 5px;
-  top: 5px;
-  display: flex;
-  align-items: center;
-`;
 export const HelpContainer = styled.div`
   height: 100vh;
   width: 100vw;

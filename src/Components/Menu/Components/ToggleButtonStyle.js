@@ -11,7 +11,10 @@ export const StyledIconButton = styled(IconButton)`
   left: 10px;
 `;
 export const StyledIconButtonTop = styled(IconButton)`
+  margin: 0 10px;
   color: black;
+  height: 45px;
+  width: 45px;
   box-shadow: ${(props) =>
     props.enabled
       ? "inset -4px -4px 8px rgba(255, 255, 255, 0.6), inset 8px 8px 16px rgba(0, 0, 0, 0.2)"

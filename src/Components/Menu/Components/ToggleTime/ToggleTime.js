@@ -8,14 +8,6 @@ import { toggleTime } from "../../../../redux/settings";
 import { Tooltip } from "@material-ui/core";
 import { StyledIconButtonTop } from "../ToggleButtonStyle";
 
-import styled from "styled-components";
-
-const StyledTime = styled.div`
-  position: absolute;
-  right: 140px;
-  top: 5px;
-`;
-
 export default function ToggleTime() {
   const time = useSelector(({ settings }) => settings.time);
   const dispatch = useDispatch();
@@ -24,18 +16,16 @@ export default function ToggleTime() {
     dispatch(toggleTime());
   };
   return (
-    <StyledTime>
-      <Tooltip title="Toggle time of day">
-        <StyledIconButtonTop onClick={onClick}>
+    <Tooltip title="Toggle time of day">
+      <StyledIconButtonTop onClick={onClick}>
+        {
           {
-            {
-              day: <Brightness5Icon />,
-              sunset: <Brightness4Icon />,
-              night: <NightsStayIcon />,
-            }[time]
-          }
-        </StyledIconButtonTop>
-      </Tooltip>
-    </StyledTime>
+            day: <Brightness5Icon />,
+            sunset: <Brightness4Icon />,
+            night: <NightsStayIcon />,
+          }[time]
+        }
+      </StyledIconButtonTop>
+    </Tooltip>
   );
 }

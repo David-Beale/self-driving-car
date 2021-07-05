@@ -21,7 +21,7 @@ export default function Instructions() {
   };
 
   return (
-    <StyledHelp>
+    <>
       <Button onClick={onToggle}>
         <ContactSupportIcon fontSize="large" />
       </Button>
@@ -36,6 +36,6 @@ export default function Instructions() {
           <HelpContents />
         </HelpContainer>
       </Dialog>
-    </StyledHelp>
+    </>
   );
 }

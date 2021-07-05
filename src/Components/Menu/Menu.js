@@ -10,11 +10,12 @@ import Training from "./Components/Training/Training";
 import Mode from "./Components/Mode/Mode";
 import ToggleTraining from "./Components/ToggleTraining/ToggleTraining";
 
-import { Container } from "./MenuStyle";
+import { Container, TopContainer } from "./MenuStyle";
 import ToggleTime from "./Components/ToggleTime/ToggleTime";
 import AddObstacles from "./Components/Collisions/AddObstacles";
 import RemoveObstacles from "./Components/Collisions/RemoveObstacles";
 import ToggleAICar from "./Components/ToggleAICar/ToggleAICar";
+import ToggleQuality from "./Components/ToggleQuality/ToggleQuality";
 
 export default memo(function Menu() {
   const [menuOpen, setMenuOpen] = useState(true);
@@ -27,9 +28,12 @@ export default memo(function Menu() {
       <MenuButton setMenuOpen={setMenuOpen} menuOpen={menuOpen} />
       <Drawer variant="persistent" anchor="left" open={menuOpen}>
         <Container>
-          <Help />
-          <ToggleCameraLock />
-          <ToggleTime />
+          <TopContainer>
+            <ToggleQuality />
+            <ToggleTime />
+            <ToggleCameraLock />
+            <Help />
+          </TopContainer>
           {!training && (
             <>
               <Mode />
